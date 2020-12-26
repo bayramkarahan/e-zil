@@ -17,31 +17,37 @@
  *   Free Software Foundation, Inc.,                                         *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .          *
  *****************************************************************************/
-#include "mainwindow.h"
-#include <QApplication>
-#include<singleinstance.h>
 
-#define SINGLE_INSTANCE ".ezil"
+#ifndef SINGLEINSTANCE_H
+#define SINGLEINSTANCE_H
 
-int main(int argc, char *argv[])
+#include <QObject>
+#include <QDebug>
+#include <QLocalServer>
+#include <QLocalSocket>
+
+class SingleInstance : public QObject
 {
-    QApplication a(argc, argv);
-    QString name = SINGLE_INSTANCE;
+    Q_OBJECT
+public:
+    explicit SingleInstance(QObject *parent = 0);
+    ~SingleInstance();
 
-    SingleInstance cInstance;
-    if(cInstance.hasPrevious(name, QCoreApplication::arguments()))
-    {
-        qDebug() << "E-Zil Zaten Açık...";
-        return 0;
-    }
-    if (cInstance.listen(name)) {
-        qDebug() << "E-Zil Çalışıyor..";
-    } else {
-        qDebug() << "E-Zil Çalışması İptal Edildi...";
-        return 0;
-    }
-    MainWindow w;
-    w.show();
 
-    return a.exec();
-}
+    bool listen(QString name);
+    bool hasPrevious(QString name, QStringList arg);
+
+signals:    
+    void newInstance();
+
+
+public slots:
+    void newConnection();
+    void readyRead();
+
+private:
+    QLocalSocket* mSocket;
+    QLocalServer mServer;
+};
+
+#endif // SINGLEINSTANCE_H

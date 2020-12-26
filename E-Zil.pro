@@ -28,12 +28,12 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    singleinstance.cpp
 
 HEADERS += \
         mainwindow.h \
     filecrud.h \
-    menu.h \
     ayar.h \
     saatpzrts.h \
     saatsl.h \
@@ -41,7 +41,8 @@ HEADERS += \
     saatcrsmb.h \
     saatprsmb.h \
     saatpzr.h \
-    saatcmrts.h
+    saatcmrts.h \
+    singleinstance.h
 
 FORMS +=
 

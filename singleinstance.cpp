@@ -17,31 +17,60 @@
  *   Free Software Foundation, Inc.,                                         *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .          *
  *****************************************************************************/
-#include "mainwindow.h"
-#include <QApplication>
-#include<singleinstance.h>
 
-#define SINGLE_INSTANCE ".ezil"
+#include "singleinstance.h"
 
-int main(int argc, char *argv[])
+SingleInstance::SingleInstance(QObject *parent) : QObject(parent)
 {
-    QApplication a(argc, argv);
-    QString name = SINGLE_INSTANCE;
-
-    SingleInstance cInstance;
-    if(cInstance.hasPrevious(name, QCoreApplication::arguments()))
-    {
-        qDebug() << "E-Zil Zaten Açık...";
-        return 0;
-    }
-    if (cInstance.listen(name)) {
-        qDebug() << "E-Zil Çalışıyor..";
-    } else {
-        qDebug() << "E-Zil Çalışması İptal Edildi...";
-        return 0;
-    }
-    MainWindow w;
-    w.show();
-
-    return a.exec();
+    connect(&mServer, SIGNAL(newConnection()),this,SLOT(newConnection()));
 }
+
+SingleInstance::~SingleInstance()
+{
+
+}
+
+bool SingleInstance::listen(QString name)
+{
+    mServer.removeServer(name);
+    return mServer.listen(name);
+}
+
+bool SingleInstance::hasPrevious(QString name, QStringList arg)
+{
+  //  qDebug() << "Checking for previous instance...";
+    QLocalSocket socket;
+    socket.connectToServer(name, QLocalSocket::ReadWrite);
+
+    if(socket.waitForConnected())
+    {
+     //   qDebug() << "Sending args to previous instance...";
+        QByteArray buffer;
+
+        foreach(QString item, arg)
+        {
+            buffer.append(item + "\n");
+        }
+        socket.write(buffer);
+        socket.waitForBytesWritten();
+        return true;
+    }
+
+    qDebug() << socket.errorString();
+
+    return false;
+
+}
+
+void SingleInstance::newConnection()
+{
+    emit newInstance();
+    mSocket = mServer.nextPendingConnection();
+    connect(mSocket,SIGNAL(readyRead()),this,SLOT(readyRead()));
+}
+
+void SingleInstance::readyRead()
+{   
+    mSocket->deleteLater();
+}
+
