@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
       this->trayIcon->setContextMenu(menu);
 
       // App icon
-      auto appIcon = QIcon(":/icons/bell.png");
+      auto appIcon = QIcon(":/icons/bell.svg");
       this->trayIcon->setIcon(appIcon);
       this->setWindowIcon(appIcon);
 
