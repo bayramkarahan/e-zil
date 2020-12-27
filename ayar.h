@@ -60,7 +60,7 @@ QWidget *MainWindow::ayar()
     ogrenciZilFileSelectButton->setStyleSheet("Text-align:center");
     //ogrenciZilFileSelectButton->setFlat(true);
     connect(ogrenciZilFileSelectButton, &QPushButton::clicked, [=]() {
-        QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),"/home/etapadmin/", tr("Files (*.*)"));
+        QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),QDir::homePath(), tr("Files (*.*)"));
     //qDebug()<<fileName;
         ogrenciZilLineEdit->setText(fileName);
  });
@@ -99,7 +99,7 @@ QWidget *MainWindow::ayar()
         ogretmenZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
         connect(ogretmenZilFileSelectButton, &QPushButton::clicked, [=]() {
-            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),"/home/etapadmin/", tr("Files (*.*)"));
+            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),QDir::homePath(), tr("Files (*.*)"));
         //qDebug()<<fileName;
             ogretmenZilLineEdit->setText(fileName);
      });
@@ -139,7 +139,7 @@ QWidget *MainWindow::ayar()
         cikisZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
         connect(cikisZilFileSelectButton, &QPushButton::clicked, [=]() {
-            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),"/home/etapadmin/", tr("Files (*.*)"));
+            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),QDir::homePath(), tr("Files (*.*)"));
         //qDebug()<<fileName;
             cikisZilLineEdit->setText(fileName);
      });
@@ -179,7 +179,7 @@ QWidget *MainWindow::ayar()
         istiklalZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
         connect(istiklalZilFileSelectButton, &QPushButton::clicked, [=]() {
-            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),"/home/etapadmin/", tr("Files (*.*)"));
+            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),QDir::homePath(), tr("Files (*.*)"));
         //qDebug()<<fileName;
             istiklalZilLineEdit->setText(fileName);
      });
@@ -218,7 +218,7 @@ QWidget *MainWindow::ayar()
         saygiIstiklalZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
         connect(saygiIstiklalZilFileSelectButton, &QPushButton::clicked, [=]() {
-            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),"/home/etapadmin/", tr("Files (*.*)"));
+            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),QDir::homePath(), tr("Files (*.*)"));
         //qDebug()<<fileName;
             saygiIstiklalZilLineEdit->setText(fileName);
      });
@@ -257,7 +257,7 @@ QWidget *MainWindow::ayar()
         sirenZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
         connect(sirenZilFileSelectButton, &QPushButton::clicked, [=]() {
-            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),"/home/etapadmin/", tr("Files (*.*)"));
+            QString fileName = QFileDialog::getOpenFileName(this,tr("Dosya Seç"),QDir::homePath(), tr("Files (*.*)"));
         //qDebug()<<fileName;
             sirenZilLineEdit->setText(fileName);
      });
@@ -321,7 +321,7 @@ muzikFileSelectButton->setText("...");
 muzikFileSelectButton->setStyleSheet("Text-align:center");
 //ogrenciZilFileSelectButton->setFlat(true);
 connect(muzikFileSelectButton, &QPushButton::clicked, [=]() {
-    QString fileName = QFileDialog::getExistingDirectory(this, tr("Klasör Seç"),"/home",
+    QString fileName = QFileDialog::getExistingDirectory(this, tr("Klasör Seç"),QDir::homePath(),
 
                                                          QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);
 //qDebug()<<fileName;
