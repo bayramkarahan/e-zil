@@ -24,6 +24,7 @@
 #include<QLineEdit>
 #include<QMediaPlayer>
 #include<QSystemTrayIcon>
+
 namespace Ui {
 class MainWindow;
 }
@@ -42,6 +43,9 @@ public slots:
     QStringList fileToList(QString filename);
     QString listGetLine(QStringList list,QString data);
     QStringList listRemove(QStringList list,QString data);
+    QStringList listReplace(QStringList list,QString oldData,QString newData,int index);
+    QStringList listMerge(QStringList list1, QStringList list2,int dataIndex);
+    QStringList listGetList(QStringList list, QString data,int index);
     void zilKontrol();
     void zilBaslatma();
     void init();
@@ -53,25 +57,36 @@ public:
     ~MainWindow();
 
 private:
+     bool tenefusMuzikYayinState;
+    bool oglenMuzikYayinState;
+     QStringList saatlist;
+     QStringList ayarlist;
+     QString trn;
+     QString gun;
+     QString currentsaat;
+     bool playState;
     Ui::MainWindow *ui;
+     QTabWidget *tw;
+    QWidget *giris();
+    QWidget *hakkinda();
     QWidget *ayar();
-    QWidget *saatpzrts();
+    QWidget *saatpzrts(int guns);
     QWidget *saatsl();
     QWidget *saatcrsmb();
     QWidget *saatprsmb();
     QWidget *saatcm();
     QWidget *saatcmrts();
     QWidget *saatpzr();
-
+    QString currentsaatState;
     QMediaPlayer* player;
     QTimer *timerZil;
     QTimer *timerZilBaslama;
-    QStringList ayarlst;
+
     QMediaPlaylist *playlist;
     QTimer *timergizle;
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
-
+    bool tenefusYayin;
     QMenu* createMenu();
 
 };
