@@ -26,24 +26,6 @@ class FileCrud
 {
   public:
      QString dosya;//FileCrud *fc=new FileCrud();
-     //fc->dosya="test.txt";
-     /*fc->fileWrite("bayram=1");
-     fc->fileWrite("ahmet=6");
-     fc->fileWrite("mehmet=3");
-     fc->fileWrite("sabri=2");
-     fc->fileWrite("fatih=5");
- */
-   //qDebug()<<fc->fileSearch("mehmet");
-     // fc->fileEdit(fc->fileSearch("mehmet"),"mehmet=88\n");
-      //fc->fileDelete("sabri\n");
-     //fc->fileRead();
-     /*fc->fileWrite("bayram=1");
-     fc->fileWrite("ahmet=6");
-     fc->fileWrite("mehmet=3");
-     fc->fileWrite("sabri=2");
-     fc->fileWrite("fatih=5");
- */
-     //qDebug()<<fc->fileexists();
 
     void fileRemove()
 {
@@ -243,7 +225,7 @@ return rdata;
     }
     void fileEdit(QString oldveri,QString newveri)
     {
-        //   qDebug()<<"selamf";
+
            QFile data(QDir::homePath()+"/"+dosya);
            QFile newData(QDir::homePath()+"/"+dosya);
            data.open(QIODevice::Text | QIODevice::ReadOnly);
