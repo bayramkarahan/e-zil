@@ -1,14 +1,6 @@
 [Desktop Entry]
-Version=1.0
-Name=E-Zil Application
-Name[tr]=E-Zil Uygulaması
 Type=Application
-Comment=Simple Qt based E-Zil Application
-Comment[tr]=Basit Qt tabanlı E-Zil Uygulaması
-Terminal=false
-Exec=/usr/bin/e-zil
-Icon=/usr/share/e-zil/bell.svg
-Categories=Qt;Utility;
-Keywords=zil;ezil;e-zil;bell;
-GenericName=E-Zil
-GenericName[tr]=E-Zil
+Name=e-zil
+#Comment=Opens my cool Python 3 app
+#NoDisplay=false
+Exec=/home/pi/e-zil/b/e-zil
