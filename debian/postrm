@@ -8,7 +8,8 @@ if [ -d "/home" ]; then
         do
             if [ -d "$i"/e-zil-ses ]; then
                 rm -frv "$i"/e-zil-ses
-            fi
+		
+	    fi
         done
     fi
 fi

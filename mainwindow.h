@@ -24,6 +24,10 @@
 #include<QLineEdit>
 #include<QMediaPlayer>
 #include<QSystemTrayIcon>
+#include<QProcess>
+#include <iostream>
+#include <fstream>
+using namespace std;
 namespace Ui {
 class MainWindow;
 }
@@ -38,10 +42,13 @@ virtual void closeEvent ( QCloseEvent * event );
 public slots:
    // QWidget ayar();
     void  WidgetClosed();
-    void listToFile(QStringList list, QString filename);
-    QStringList fileToList(QString filename);
+    void listToFile(QStringList list, QString filename, QString path);
+    QStringList fileToList(QString filename, QString path);
     QString listGetLine(QStringList list,QString data);
     QStringList listRemove(QStringList list,QString data);
+    QStringList listReplace(QStringList list,QString oldData,QString newData,int index);
+    QStringList listMerge(QStringList list1, QStringList list2,int dataIndex);
+    QStringList listGetList(QStringList list, QString data,int index);
     void zilKontrol();
     void zilBaslatma();
     void init();
@@ -53,25 +60,40 @@ public:
     ~MainWindow();
 
 private:
+    int sistem;
+    QString muziklist;
+    QProcess process;
+     bool remoteMuzikState;
+     bool tenefusMuzikYayinState;
+    bool oglenMuzikYayinState;
+     QStringList saatlist;
+     QStringList ayarlist;
+     QString trn;
+     QString gun;
+     QString currentsaat;
+     bool playState;
     Ui::MainWindow *ui;
+     QTabWidget *tw;
+    QWidget *giris();
+    QWidget *hakkinda();
     QWidget *ayar();
-    QWidget *saatpzrts();
+    QWidget *saatpzrts(int guns);
     QWidget *saatsl();
     QWidget *saatcrsmb();
     QWidget *saatprsmb();
     QWidget *saatcm();
     QWidget *saatcmrts();
     QWidget *saatpzr();
-
+    QString currentsaatState;
     QMediaPlayer* player;
     QTimer *timerZil;
     QTimer *timerZilBaslama;
-    QStringList ayarlst;
+
     QMediaPlaylist *playlist;
     QTimer *timergizle;
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
-
+    bool tenefusYayin;
     QMenu* createMenu();
 
 };

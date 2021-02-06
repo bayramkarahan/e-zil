@@ -8,8 +8,9 @@ if [ -d "/home" ]; then
         for i in /home/*
         do
             cp -frv /tmp/musics/e-zil-ses "$i/"
-            user=`basename $i`
+	    user=`basename $i`
             chown -Rv $user:$user "$i/e-zil-ses"
+            
         done
     fi
 fi
