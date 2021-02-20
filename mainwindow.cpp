@@ -196,7 +196,7 @@ void MainWindow::zilKontrol()
                // MyFile.close();                     // Close the file
               process.terminate();
               remoteMuzikState=false;
-
+  QThread::msleep(4000);
               // qDebug()<<"kumanda Off Click";
           }
 
