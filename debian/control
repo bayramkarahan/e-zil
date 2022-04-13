@@ -1,0 +1,28 @@
+Source: e-zil
+Section: utils
+Priority: optional
+Maintainer: Bayram KARAHAN <bayramk@gmail.com>
+Build-Depends: debhelper (>= 10), 
+    libc6,
+    libgcc1,
+    libgcc-8-dev,
+    libgl1-mesa-glx | libgl1,
+    libqt5core5a,
+    libqt5gui5,
+    libqt5network5,
+    libqt5qml5,
+    libqt5quick5,
+    libqt5svg5-dev,
+    libqt5widgets5,
+    libstdc++6,
+    qtdeclarative5-dev
+Standards-Version: 3.9.8
+Homepage: http://pardus.org.tr
+
+Package: e-zil
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends},
+     libqt5multimedia5-plugins,
+     libqt5multimediawidgets5,
+     libqt5xml5
+Description: E-Zil uygulaması

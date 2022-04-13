@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#rm files from user home
+
+if [ -d "/home" ]; then
+    if ! [ -z "$(ls -A /home)" ]; then
+        for i in /home/*
+        do
+            if [ -d "$i"/e-zil-ses ]; then
+                rm -frv "$i"/e-zil-ses
+            fi
+        done
+    fi
+fi
+
+rm -rf /usr/share/e-zil
