@@ -128,7 +128,7 @@ void mouseReleaseEvent(QMouseEvent *event)Q_DECL_OVERRIDE
       //  qDebug()<<"release";
        // Do something
       // bar->accept();
-         bar->ignore();
+        // bar->ignore();
          hide();
    }
 private:
