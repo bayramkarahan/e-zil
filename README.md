@@ -1,7 +1,10 @@
-# E-Zil
+# e-zil
 Debian Tabanlı Sistemlerde Kullanılmak Üzere Kodlanmış Okul Zil Yazılımı
-![E-Zil](https://github.com/bayramkarahan/E-Zil/blob/main/zilayar.png)
-![E-Zil](https://github.com/bayramkarahan/E-Zil/blob/main/zilpazartesi.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil0.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil1.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil2.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil3.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil4.png)
 <br/>
 Uygulama Qt ortamında c++ ile yazılmıştır..
 <br/>
@@ -19,7 +22,7 @@ Derlemek için kodu indiriniz.. kod adında bir dizinde açtığınızı varsaya
 <br/>
 3-cd build
 <br/>
-4-qmake ../E-Zil.pro
+4-qmake ../e-zil.pro
 <br/>
 5-make&make clean
 <br/>
