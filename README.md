@@ -1,7 +1,7 @@
 # e-zil
 Debian Tabanlı Sistemlerde Kullanılmak Üzere Kodlanmış Okul Zil Yazılımı
 <br/>
-![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil0.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil0.png)<br/>
 ![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil1.png)
 ![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil2.png)
 ![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil3.png)
