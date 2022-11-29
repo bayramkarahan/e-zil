@@ -69,6 +69,8 @@ QWidget *MainWindow::saatpzrts(int guns)
     QTimeEdit *s12gle=new QTimeEdit(ayarPage); QTimeEdit *s12ble=new QTimeEdit(ayarPage); QTimeEdit *s12cle=new QTimeEdit(ayarPage);
     QTimeEdit *s13gle=new QTimeEdit(ayarPage); QTimeEdit *s13ble=new QTimeEdit(ayarPage); QTimeEdit *s13cle=new QTimeEdit(ayarPage);
     QTimeEdit *s14gle=new QTimeEdit(ayarPage); QTimeEdit *s14ble=new QTimeEdit(ayarPage); QTimeEdit *s14cle=new QTimeEdit(ayarPage);
+    QTimeEdit *s15gle=new QTimeEdit(ayarPage); QTimeEdit *s15ble=new QTimeEdit(ayarPage); QTimeEdit *s15cle=new QTimeEdit(ayarPage);
+    QTimeEdit *s16gle=new QTimeEdit(ayarPage); QTimeEdit *s16ble=new QTimeEdit(ayarPage); QTimeEdit *s16cle=new QTimeEdit(ayarPage);
     if(derssayisi<1){s1gle->hide();s1ble->hide();s1cle->hide();}
     if(derssayisi<2){s2gle->hide();s2ble->hide();s2cle->hide();}
     if(derssayisi<3){s3gle->hide();s3ble->hide();s3cle->hide();}
@@ -83,6 +85,8 @@ QWidget *MainWindow::saatpzrts(int guns)
     if(derssayisi<12){s12gle->hide();s12ble->hide();s12cle->hide();}
     if(derssayisi<13){s13gle->hide();s13ble->hide();s13cle->hide();}
     if(derssayisi<14){s14gle->hide();s14ble->hide();s14cle->hide();}
+    if(derssayisi<15){s15gle->hide();s15ble->hide();s15cle->hide();}
+    if(derssayisi<16){s16gle->hide();s16ble->hide();s16cle->hide();}
 
   ///  torenbaslama->resize(100,25);
   ///  torenbaslama->setDisplayFormat("hh:mm");
@@ -129,6 +133,15 @@ QWidget *MainWindow::saatpzrts(int guns)
     if(listGetLine(ayarlst,gn+"14")!="")s14gle->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"14").split("|")[1]));
     if(listGetLine(ayarlst,gn+"14")!="")s14ble->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"14").split("|")[2]));
     if(listGetLine(ayarlst,gn+"14")!="")s14cle->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"14").split("|")[3]));
+
+    if(listGetLine(ayarlst,gn+"15")!="")s15gle->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"15").split("|")[1]));
+    if(listGetLine(ayarlst,gn+"15")!="")s15ble->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"15").split("|")[2]));
+    if(listGetLine(ayarlst,gn+"15")!="")s15cle->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"15").split("|")[3]));
+
+    if(listGetLine(ayarlst,gn+"16")!="")s16gle->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"16").split("|")[1]));
+    if(listGetLine(ayarlst,gn+"16")!="")s16ble->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"16").split("|")[2]));
+    if(listGetLine(ayarlst,gn+"16")!="")s16cle->setTime(saniyeToSaat(listGetLine(ayarlst,gn+"16").split("|")[3]));
+
   /************************ornek ders********************************/
  //   QTimeEdit *sgle=new QTimeEdit(ayarPage);
    // sgle->resize(60,25);
@@ -164,6 +177,8 @@ s11gle->setDisplayFormat("hh:mm");s11ble->setDisplayFormat("hh:mm");s11cle->setD
 s12gle->setDisplayFormat("hh:mm");s12ble->setDisplayFormat("hh:mm");s12cle->setDisplayFormat("hh:mm");
 s13gle->setDisplayFormat("hh:mm");s13ble->setDisplayFormat("hh:mm");s13cle->setDisplayFormat("hh:mm");
 s14gle->setDisplayFormat("hh:mm");s14ble->setDisplayFormat("hh:mm");s14cle->setDisplayFormat("hh:mm");
+s15gle->setDisplayFormat("hh:mm");s15ble->setDisplayFormat("hh:mm");s15cle->setDisplayFormat("hh:mm");
+s16gle->setDisplayFormat("hh:mm");s16ble->setDisplayFormat("hh:mm");s16cle->setDisplayFormat("hh:mm");
 
 
 QPushButton *haftaUyarlaButton= new QPushButton;
@@ -239,6 +254,10 @@ if(guns!=1) haftaUyarlaButton->hide();
         anons=s14cle->time();anons=anons.addSecs(gecikme);tenefus=s14cle->time();tenefus=tenefus.addSecs(ctfark-gbfark-gecikme);
         if(derssayisi>=14)
         saathilist.append("1s14|"+saatToSaniye(s14gle->time())+"|"+saatToSaniye(s14ble->time())+"|"+saatToSaniye(s14cle->time()));
+        if(derssayisi>=15)
+        saathilist.append("1s15|"+saatToSaniye(s15gle->time())+"|"+saatToSaniye(s15ble->time())+"|"+saatToSaniye(s15cle->time()));
+        if(derssayisi>=16)
+        saathilist.append("1s16|"+saatToSaniye(s16gle->time())+"|"+saatToSaniye(s16ble->time())+"|"+saatToSaniye(s16cle->time()));
 
 
 
@@ -334,6 +353,8 @@ init();
         if(ogleArasi==12){sg=sg.addSecs(bcfark+molasuresi);molasuresi=0;s12gle->setTime(sg);}else {if(derssayisi>=12){sg=sg.addSecs(bcfark+ctfark);s12gle->setTime(sg);}}
         if(ogleArasi==13){sg=sg.addSecs(bcfark+molasuresi);molasuresi=0;s13gle->setTime(sg);}else {if(derssayisi>=13){sg=sg.addSecs(bcfark+ctfark);s13gle->setTime(sg);}}
         if(ogleArasi==14){sg=sg.addSecs(bcfark+molasuresi);molasuresi=0;s14gle->setTime(sg);}else {if(derssayisi>=14){sg=sg.addSecs(bcfark+ctfark);s14gle->setTime(sg);}}
+        if(ogleArasi==15){sg=sg.addSecs(bcfark+molasuresi);molasuresi=0;s15gle->setTime(sg);}else {if(derssayisi>=15){sg=sg.addSecs(bcfark+ctfark);s15gle->setTime(sg);}}
+        if(ogleArasi==16){sg=sg.addSecs(bcfark+molasuresi);molasuresi=0;s16gle->setTime(sg);}else {if(derssayisi>=16){sg=sg.addSecs(bcfark+ctfark);s16gle->setTime(sg);}}
 
         s1ble->setTime(sb);molasuresi=tmpmolasuresi;
         if(ogleArasi==2&&derssayisi>=2){sb=sb.addSecs(bcfark+molasuresi);molasuresi=0;s2ble->setTime(sb);}else {if(derssayisi>=2){sb=sb.addSecs(bcfark+ctfark);s2ble->setTime(sb);}}
@@ -349,6 +370,8 @@ init();
         if(ogleArasi==12&&derssayisi>=12){sb=sb.addSecs(bcfark+molasuresi);molasuresi=0;s12ble->setTime(sb);}else {if(derssayisi>=12){sb=sb.addSecs(bcfark+ctfark);s12ble->setTime(sb);}}
         if(ogleArasi==13&&derssayisi>=13){sb=sb.addSecs(bcfark+molasuresi);molasuresi=0;s13ble->setTime(sb);}else {if(derssayisi>=13){sb=sb.addSecs(bcfark+ctfark);s13ble->setTime(sb);}}
         if(ogleArasi==14&&derssayisi>=14){sb=sb.addSecs(bcfark+molasuresi);molasuresi=0;s14ble->setTime(sb);}else {if(derssayisi>=14){sb=sb.addSecs(bcfark+ctfark);s14ble->setTime(sb);}}
+        if(ogleArasi==15&&derssayisi>=15){sb=sb.addSecs(bcfark+molasuresi);molasuresi=0;s15ble->setTime(sb);}else {if(derssayisi>=15){sb=sb.addSecs(bcfark+ctfark);s15ble->setTime(sb);}}
+        if(ogleArasi==16&&derssayisi>=16){sb=sb.addSecs(bcfark+molasuresi);molasuresi=0;s16ble->setTime(sb);}else {if(derssayisi>=16){sb=sb.addSecs(bcfark+ctfark);s16ble->setTime(sb);}}
 
 
         s1cle->setTime(sc);molasuresi=tmpmolasuresi;
@@ -365,6 +388,8 @@ init();
         if(ogleArasi==12&&derssayisi>=12){sc=sc.addSecs(bcfark+molasuresi);molasuresi=0;s12cle->setTime(sc);}else {if(derssayisi>=12){sc=sc.addSecs(bcfark+ctfark);s12cle->setTime(sc);}}
         if(ogleArasi==13&&derssayisi>=13){sc=sc.addSecs(bcfark+molasuresi);molasuresi=0;s13cle->setTime(sc);}else {if(derssayisi>=13){sc=sc.addSecs(bcfark+ctfark);s13cle->setTime(sc);}}
         if(ogleArasi==14&&derssayisi>=14){sc=sc.addSecs(bcfark+molasuresi);molasuresi=0;s14cle->setTime(sc);}else {if(derssayisi>=14){sc=sc.addSecs(bcfark+ctfark);s14cle->setTime(sc);}}
+        if(ogleArasi==15&&derssayisi>=15){sc=sc.addSecs(bcfark+molasuresi);molasuresi=0;s15cle->setTime(sc);}else {if(derssayisi>=15){sc=sc.addSecs(bcfark+ctfark);s15cle->setTime(sc);}}
+        if(ogleArasi==16&&derssayisi>=16){sc=sc.addSecs(bcfark+molasuresi);molasuresi=0;s16cle->setTime(sc);}else {if(derssayisi>=16){sc=sc.addSecs(bcfark+ctfark);s16cle->setTime(sc);}}
 
 
  });
@@ -413,8 +438,10 @@ init();
         if(ogleArasi==12)zamanHesapla(s12gle->time(),s12ble->time(),s12cle->time(),s12cle->time().addSecs(tenefusSuresi),"oglen");///hesaplama için önemli
         if(ogleArasi==13)zamanHesapla(s13gle->time(),s13ble->time(),s13cle->time(),s13cle->time().addSecs(tenefusSuresi),"oglen");///hesaplama için önemli
         if(ogleArasi==14)zamanHesapla(s14gle->time(),s14ble->time(),s14cle->time(),s14cle->time().addSecs(tenefusSuresi),"oglen");///hesaplama için önemli
+        if(ogleArasi==15)zamanHesapla(s15gle->time(),s15ble->time(),s15cle->time(),s15cle->time().addSecs(tenefusSuresi),"oglen");///hesaplama için önemli
+        if(ogleArasi==16)zamanHesapla(s16gle->time(),s16ble->time(),s16cle->time(),s16cle->time().addSecs(tenefusSuresi),"oglen");///hesaplama için önemli
 
-        /// qDebug()<<"mola:"<<molasuresi-ctfark;
+         /// qDebug()<<"mola:"<<molasuresi-ctfark;
 
 
       //qDebug()<<"öğle arası:"<<ogleArasi;
@@ -435,7 +462,8 @@ init();
         if(ogleArasi==11&&!hs){hs=true;s11gle->setTime(sg);}else {if (hs){sg=sg.addSecs(bcfark+ctfark);s11gle->setTime(sg);}}
         if(ogleArasi==12&&!hs){hs=true;s12gle->setTime(sg);}else {if (hs){sg=sg.addSecs(bcfark+ctfark);s12gle->setTime(sg);}}
         if(ogleArasi==13&&!hs){hs=true;s13gle->setTime(sg);}else {if (hs){sg=sg.addSecs(bcfark+ctfark);s13gle->setTime(sg);}}
-        if(ogleArasi==14&&!hs){hs=true;s14gle->setTime(sg);}else {if (hs){sg=sg.addSecs(bcfark+ctfark);s14gle->setTime(sg);}}
+        if(ogleArasi==15&&!hs){hs=true;s15gle->setTime(sg);}else {if (hs){sg=sg.addSecs(bcfark+ctfark);s15gle->setTime(sg);}}
+        if(ogleArasi==16&&!hs){hs=true;s16gle->setTime(sg);}else {if (hs){sg=sg.addSecs(bcfark+ctfark);s16gle->setTime(sg);}}
         //başlama öğretmen
         hs=false;
         if(ogleArasi==2&&!hs){hs=true;s2ble->setTime(sb);}else {if (hs){sb=sb.addSecs(bcfark+ctfark);s2ble->setTime(sb);}}
@@ -451,6 +479,8 @@ init();
         if(ogleArasi==12&&!hs){hs=true;s12ble->setTime(sb);}else {if (hs){sb=sb.addSecs(bcfark+ctfark);s12ble->setTime(sb);}}
         if(ogleArasi==13&&!hs){hs=true;s13ble->setTime(sb);}else {if (hs){sb=sb.addSecs(bcfark+ctfark);s13ble->setTime(sb);}}
         if(ogleArasi==14&&!hs){hs=true;s14ble->setTime(sb);}else {if (hs){sb=sb.addSecs(bcfark+ctfark);s14ble->setTime(sb);}}
+        if(ogleArasi==15&&!hs){hs=true;s15ble->setTime(sb);}else {if (hs){sb=sb.addSecs(bcfark+ctfark);s15ble->setTime(sb);}}
+        if(ogleArasi==16&&!hs){hs=true;s16ble->setTime(sb);}else {if (hs){sb=sb.addSecs(bcfark+ctfark);s16ble->setTime(sb);}}
 
 
     //çıkış tenefüs
@@ -468,6 +498,8 @@ init();
         if(ogleArasi==12&&!hs){hs=true;s12cle->setTime(sc);}else {if (hs){sc=sc.addSecs(bcfark+ctfark);s12cle->setTime(sc);}}
         if(ogleArasi==13&&!hs){hs=true;s13cle->setTime(sc);}else {if (hs){sc=sc.addSecs(bcfark+ctfark);s13cle->setTime(sc);}}
         if(ogleArasi==14&&!hs){hs=true;s14cle->setTime(sc);}else {if (hs){sc=sc.addSecs(bcfark+ctfark);s14cle->setTime(sc);}}
+        if(ogleArasi==15&&!hs){hs=true;s15cle->setTime(sc);}else {if (hs){sc=sc.addSecs(bcfark+ctfark);s15cle->setTime(sc);}}
+        if(ogleArasi==16&&!hs){hs=true;s16cle->setTime(sc);}else {if (hs){sc=sc.addSecs(bcfark+ctfark);s16cle->setTime(sc);}}
 
 
  });
@@ -567,6 +599,10 @@ init();
         tenefus=tenefus.addSecs(ctfark-gecikme);
         if(derssayisi>=14)
         saathilist.append(gn+"14"+"|"+saatToSaniye(s14gle->time())+"|"+saatToSaniye(s14ble->time())+"|"+saatToSaniye(s14cle->time()));
+        if(derssayisi>=15)
+        saathilist.append(gn+"15"+"|"+saatToSaniye(s15gle->time())+"|"+saatToSaniye(s15ble->time())+"|"+saatToSaniye(s15cle->time()));
+        if(derssayisi>=16)
+        saathilist.append(gn+"16"+"|"+saatToSaniye(s16gle->time())+"|"+saatToSaniye(s16ble->time())+"|"+saatToSaniye(s16cle->time()));
 
         QStringList listconf=fileToList("e-zil.conf");
         listconf=listMerge(saathilist,listconf,0);
@@ -797,16 +833,45 @@ if(derssayisi>=13){
             if(ogleArasi==13)
             {
                 layout->addWidget(new QLabel("<font size=1>*************** Mola ***************</font>"),45,1,1,3,Qt::AlignHCenter);
-                layout->addWidget(MolaSonrasiSaatUyarlaButton,46,1,1,3,Qt::AlignHCenter);
+                layout->addWidget(MolaSonrasiSaatUyarlaButton,45,1,1,3,Qt::AlignHCenter);
                 s14gle->setStyleSheet("background-color: #ffaaaa;");
                 s14ble->setStyleSheet("background-color: #ffaaaa;");
                 s14cle->setStyleSheet("background-color: #ffaaaa;");
             }
-if(derssayisi>=14){
-    layout->addWidget(new QLabel("<font size=1>14. Ders</font>"),47,0,1,1,Qt::AlignHCenter);
-    layout->addWidget(s14gle, 47,1,1,1);
-    layout->addWidget(s14ble, 47,2,1,1);
-    layout->addWidget(s14cle, 47,3,1,1);
+
+            if(derssayisi>=14){
+                layout->addWidget(new QLabel("<font size=1>14. Ders</font>"),46,0,1,1,Qt::AlignHCenter);
+                layout->addWidget(s14gle, 46,1,1,1);
+                layout->addWidget(s14ble, 46,2,1,1);
+                layout->addWidget(s14cle, 46,3,1,1);
+            }
+            if(ogleArasi==14)
+            {
+                layout->addWidget(new QLabel("<font size=1>*************** Mola ***************</font>"),47,1,1,3,Qt::AlignHCenter);
+                layout->addWidget(MolaSonrasiSaatUyarlaButton,47,1,1,3,Qt::AlignHCenter);
+                s15gle->setStyleSheet("background-color: #ffaaaa;");
+                s15ble->setStyleSheet("background-color: #ffaaaa;");
+                s15cle->setStyleSheet("background-color: #ffaaaa;");
+            }
+            if(derssayisi>=15){
+                layout->addWidget(new QLabel("<font size=1>15. Ders</font>"),48,0,1,1,Qt::AlignHCenter);
+                layout->addWidget(s15gle, 48,1,1,1);
+                layout->addWidget(s15ble, 48,2,1,1);
+                layout->addWidget(s15cle, 48,3,1,1);
+            }
+            if(ogleArasi==15)
+            {
+                layout->addWidget(new QLabel("<font size=1>*************** Mola ***************</font>"),49,1,1,3,Qt::AlignHCenter);
+                layout->addWidget(MolaSonrasiSaatUyarlaButton,49,1,1,3,Qt::AlignHCenter);
+                s16gle->setStyleSheet("background-color: #ffaaaa;");
+                s16ble->setStyleSheet("background-color: #ffaaaa;");
+                s16cle->setStyleSheet("background-color: #ffaaaa;");
+            }
+if(derssayisi>=16){
+    layout->addWidget(new QLabel("<font size=1>16. Ders</font>"),50,0,1,1,Qt::AlignHCenter);
+    layout->addWidget(s16gle, 50,1,1,1);
+    layout->addWidget(s16ble, 50,2,1,1);
+    layout->addWidget(s16cle, 50,3,1,1);
 }
  //   layout->addWidget(new QLabel("<font size=1>Ayarları Kaydet</font>"),30,1,1,1,Qt::AlignHCenter);
      // layout->setColumnStretch(6, 255);

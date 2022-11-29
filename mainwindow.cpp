@@ -47,7 +47,6 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
  {
-
       localDir="/usr/share/e-zil/";
    // wl=new QWidgetAction(this);
     timer1.setSingleShot(true);
@@ -82,8 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
       //this->resize(500,650);
       setFixedWidth(500);
-      setFixedHeight(630);
-      setWindowTitle("e-zil 2.6");
+      setFixedHeight(640);
+      setWindowTitle("e-zil 2.7");
       QRect screenGeometry = QApplication::desktop()->screenGeometry();
       int x = (screenGeometry.width()/2 - this->width()/2);
       int y = (screenGeometry.height() - this->height()) / 2;
@@ -864,7 +863,8 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
 {
   switch (reason_) {
   case QSystemTrayIcon::Trigger:
-    this->trayIcon->showMessage("E-Zil", "Okul Zil Sistemi!");
+   // this->trayIcon->showMessage("E-Zil", "Okul Zil Sistemi!");
+      widgetShow();
     break;
   default:
     ;
