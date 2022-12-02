@@ -785,7 +785,7 @@ if(guncb->checkState()==Qt::Unchecked)
     layout->addWidget(molaPcKapatTimeEdit, 41,1,1,2);
 
 
-    layout->addWidget(new QLabel("Komut"), 43,0,1,1);
+    layout->addWidget(new QLabel("Kapatma Komutu"), 43,0,1,1);
     layout->addWidget(kapatKomutEdit, 43,1,1,4);
     //layout->addWidget(,37,0,1,1);
   //  layout->addWidget(hsPcKapatTimeEdit, 37,1,1,1);
