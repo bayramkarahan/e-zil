@@ -1,11 +1,13 @@
 # e-zil
 Debian Tabanlı Sistemlerde Kullanılmak Üzere Kodlanmış Okul Zil Yazılımı
 <br/>
-![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil0.png)<br/>
-![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil1.png)
-![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil2.png)
-![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil3.png)
-![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/e-zil4.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/0-uygulama-e-zil.svg)<br/>
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/1-uygulama-e-zil.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/2-uygulama-e-zil.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/3-uygulama-e-zil.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/4-uygulama-e-zil.png)
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/5-uygulama-e-zil.png)
+
 <br/>
 Uygulama Qt ortamında c++ ile yazılmıştır..
 <br/>

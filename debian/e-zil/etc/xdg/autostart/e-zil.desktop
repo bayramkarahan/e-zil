@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=E-Zil Application
+Name[tr]=E-Zil Uygulaması
+Type=Application
+Comment=Simple Qt based E-Zil Application
+Comment[tr]=Basit Qt tabanlı E-Zil Uygulaması
+Terminal=false
+Exec=/usr/bin/e-zil-tray
+Icon=e-zil
+Categories=Qt;Utility;
+Keywords=zil;ezil;e-zil;bell;
+GenericName=E-Zil
+GenericName[tr]=E-Zil

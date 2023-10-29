@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>icons/bell.svg</file>
-        <file>icons/pardus.svg</file>
-        <file>icons/gizle.png</file>
-        <file>icons/goster.png</file>
-    </qresource>
-</RCC>
