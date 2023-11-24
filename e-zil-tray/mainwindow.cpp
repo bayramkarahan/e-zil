@@ -43,7 +43,16 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
  {
+#ifdef Q_OS_LINUX
+   // qDebug()<< "Linux version";
       localDir="/usr/share/e-zil/";
+#endif
+
+#ifdef Q_OS_WIN
+   // qDebug()<< "Windows version";
+      localDir="";
+#endif
+
    // wl=new QWidgetAction(this);
     timer1.setSingleShot(true);
     connect(&timer1, SIGNAL(timeout()), &loop, SLOT(quit()));
@@ -759,7 +768,20 @@ void  MainWindow::widgetShow()
       qDebug()<<"ekranı göster";
     QFont ff( "Arial", 7.5, QFont::Normal);
         // this->showNormal();
+
+#ifdef Q_OS_LINUX
+   // qDebug()<< "Linux version";
     system("sh -c \"pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY e-zil-gui\"");
+#endif
+
+#ifdef Q_OS_WIN
+   // qDebug()<< "Windows version";
+      localDir="";
+     // system("e-zil-gui");
+      const QString pathToApp = "e-zil-gui";
+      QProcess::startDetached(pathToApp);
+#endif
+
 
  }
 QMenu* MainWindow::createMenu()

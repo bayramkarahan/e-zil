@@ -47,7 +47,21 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
  {
+
+#ifdef Q_OS_LINUX
+   // qDebug()<< "Linux version";
       localDir="/usr/share/e-zil/";
+#endif
+
+#ifdef Q_OS_WIN
+   // qDebug()<< "Windows version";
+      localDir="";
+#endif
+
+
+
+
+
    // wl=new QWidgetAction(this);
     timer1.setSingleShot(true);
     connect(&timer1, SIGNAL(timeout()), &loop, SLOT(quit()));
