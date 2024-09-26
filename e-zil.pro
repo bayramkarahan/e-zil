@@ -34,16 +34,11 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     filecrud.h \
-    menu.h \
     ayar.h \
     saatpzrts.h \
-    saatsl.h \
-    saatcm.h \
-    saatcrsmb.h \
-    saatprsmb.h \
-    saatpzr.h \
-    saatcmrts.h \
-    singleinstance.h
+    singleinstance.h \
+    giris.h \
+    hakkinda.h
 
 
 RESOURCES += \
@@ -63,7 +58,13 @@ icon.path = /usr/share/e-zil
 music_files.files = musics/
 music_files.path = /tmp/
 
+conf_files.files = e-zil.conf
+conf_files.path = /tmp/
+
 auto_start.files = e-zil.desktop
 auto_start.path = /etc/xdg/autostart/
 
-INSTALLS += target desktop_file icon music_files auto_start
+INSTALLS += target desktop_file icon music_files auto_start conf_files
+
+DISTFILES += \
+    e-zil.conf

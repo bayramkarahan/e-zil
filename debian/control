@@ -24,6 +24,5 @@ Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends},
      libqt5multimedia5-plugins,
      libqt5multimediawidgets5,
-     libqt5xml5,
-     libqt5multimedia5-plugins
+     libqt5xml5
 Description: E-Zil uygulaması

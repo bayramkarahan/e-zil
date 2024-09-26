@@ -26,35 +26,17 @@ class FileCrud
 {
   public:
      QString dosya;//FileCrud *fc=new FileCrud();
-     //fc->dosya="test.txt";
-     /*fc->fileWrite("bayram=1");
-     fc->fileWrite("ahmet=6");
-     fc->fileWrite("mehmet=3");
-     fc->fileWrite("sabri=2");
-     fc->fileWrite("fatih=5");
- */
-   //qDebug()<<fc->fileSearch("mehmet");
-     // fc->fileEdit(fc->fileSearch("mehmet"),"mehmet=88\n");
-      //fc->fileDelete("sabri\n");
-     //fc->fileRead();
-     /*fc->fileWrite("bayram=1");
-     fc->fileWrite("ahmet=6");
-     fc->fileWrite("mehmet=3");
-     fc->fileWrite("sabri=2");
-     fc->fileWrite("fatih=5");
- */
-     //qDebug()<<fc->fileexists();
 
     void fileRemove()
 {
-        QFile file(QDir::homePath()+"/"+dosya);
+        QFile file(dosya);
 //const QString yol=QDir::homePath()+"/"+dosya;
     //bool snc=QDir::remove(yol);
         file.remove();
        }
     bool fileExists()
     {
-        QFile file(QDir::homePath()+"/"+dosya);
+        QFile file(dosya);
 
 //        QFile file(dosya);
         if(file.exists()) return true; else return false;
@@ -62,8 +44,8 @@ class FileCrud
     }
     void fileWrite(QString veri)
     {
-        QFile data(QDir::homePath()+"/"+dosya);
-        QFile newData(QDir::homePath()+"/"+dosya);
+        QFile data(dosya);
+        QFile newData(dosya);
         data.open(QIODevice::Text | QIODevice::ReadWrite);
         QString dataText = data.readAll();
         dataText.append(veri+"\n");
@@ -76,7 +58,7 @@ class FileCrud
     }
     void fileRead()
     {
-        QFile file(QDir::homePath()+"/"+dosya);
+        QFile file(dosya);
         /*
          * If file not exit it will create
          * */
@@ -94,7 +76,7 @@ class FileCrud
     }
     int fileCount()
     {
-        QFile file(QDir::homePath()+"/"+dosya);
+        QFile file(dosya);
         /*
          * If file not exit it will create
          * */
@@ -117,7 +99,7 @@ return sayi;
     void fileDelete(QString data)
     {
       QRegularExpression re(data);
-      QFile f(QDir::homePath()+"/"+dosya);
+      QFile f(dosya);
       if(f.open(QIODevice::ReadWrite | QIODevice::Text))
       {
           QString s;
@@ -182,7 +164,7 @@ return sayi;
     QString fileSearch(QString data)
     {
         QString rdata;
-        QFile file(QDir::homePath()+"/"+dosya);
+        QFile file(dosya);
         /*
          * If file not exit it will create
          * */
@@ -203,7 +185,7 @@ return rdata;
     QString fileGetLine(int recordLineNumber)
     {
         QString rdata;
-        QFile file(QDir::homePath()+"/"+dosya);
+        QFile file(dosya);
         /*
          * If file not exit it will create
          * */
@@ -226,8 +208,8 @@ return rdata;
     void fileDeletet(QString delveri)
     {
         //   qDebug()<<"selamf";
-         QFile data(QDir::homePath()+"/"+dosya);
-           QFile newData(QDir::homePath()+"/"+dosya);
+         QFile data(dosya);
+           QFile newData(dosya);
            data.open(QIODevice::Text | QIODevice::ReadOnly);
            QString dataText = data.readAll();
            QRegularExpression re(delveri);
@@ -243,9 +225,9 @@ return rdata;
     }
     void fileEdit(QString oldveri,QString newveri)
     {
-        //   qDebug()<<"selamf";
-           QFile data(QDir::homePath()+"/"+dosya);
-           QFile newData(QDir::homePath()+"/"+dosya);
+
+           QFile data(dosya);
+           QFile newData(dosya);
            data.open(QIODevice::Text | QIODevice::ReadOnly);
            QString dataText = data.readAll();
            QRegularExpression re(oldveri);

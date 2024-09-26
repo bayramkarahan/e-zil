@@ -35,22 +35,33 @@
 #include<QMessageBox>
 #include<ayar.h>
 #include<saatpzrts.h>
-#include<saatsl.h>
-#include<saatcrsmb.h>
-#include<saatprsmb.h>
-#include<saatcm.h>
-#include<saatcmrts.h>
-#include<saatpzr.h>
+#include<giris.h>
+#include<hakkinda.h>
 #include<QApplication>
 #include<QDesktopWidget>
 #include<QMenu>
 #include<QCloseEvent>
+
+#include <iostream>
+#include <fstream>
+#include <QThread>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
  {
+    /**************raspberry pi  ayarları********************/
+    //echo "24" > /sys/class/gpio/export
+    QStringList lst1;lst1<<"24";listToFile(lst1,"export","/sys/class/gpio");
+    //echo "in" > /sys/class/gpio/gpio24/direction
+    QStringList lst2;lst2<<"in";listToFile(lst2,"direction","/sys/class/gpio/gpio24");
+    ///if (( "$(cat /sys/class/gpio/gpio24/value)" == "1" ))
+    /********************************************************/
+    sistem=2; //linux aplay
+   // sistem=1;//windows multimedya
+
+   // wl=new QWidgetAction(this);
 
     trayIcon=new QSystemTrayIcon(this);
-    init();
+    init();// Başlangıç ayarları yapıldı
 
     //*******************tray***********************************/
       // Tray icon menu
@@ -69,188 +80,356 @@ MainWindow::MainWindow(QWidget *parent) :
       connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
      // gizle();
 
+
+      /**********************form ayarları yapıldı***********************/
+      //this->resize(500,650);
+      setFixedWidth(500);
+      setFixedHeight(600);
+      setWindowTitle("E-Zil 2.0");
+      QRect screenGeometry = QApplication::desktop()->screenGeometry();
+      int x = (screenGeometry.width()/2 - this->width()/2);
+      int y = (screenGeometry.height() - this->height()) / 2;
+      this->move(x, y);
+      this->setStyleSheet("background-color: #dfdfdf;");
+
+      tw=new QTabWidget(this);
+      tw->resize(this->width(),this->height());
+    /***********************Tab Ayarları Yapıldı********************/
+      QFont ff( "Arial", 7.5, QFont::Normal);
+      tw->setFont(ff);
+
+     tw->addTab(giris(),"Giriş");
+      tw->addTab(ayar(),"Ayarlar");
+      tw->addTab(saatpzrts(1),"Pzrts");
+      tw->addTab(saatpzrts(2),"Salı");
+      tw->addTab(saatpzrts(3),"Çrşmb");
+      tw->addTab(saatpzrts(4),"Prşmb");
+      tw->addTab(saatpzrts(5),"Cuma");
+      tw->addTab(saatpzrts(6),"Cmrts");
+      tw->addTab(saatpzrts(7),"Pazar");
+      tw->addTab(hakkinda(),"Hakkında");
+      /*********************************************************************************/
+
       timergizle = new QTimer(this);
       connect(timergizle, SIGNAL(timeout()), this, SLOT(gizle()));
       timergizle->start(1);
-     //Qt::WindowMaximizeButtonHint();
 
+
+
+      timerZil = new QTimer(this);
+     // timerZil->start(3000);
+      //connect(timerZil, SIGNAL(timeout()), this, SLOT(zilKontrol()));
+
+      timerZilBaslama = new QTimer(this);
+      connect(timerZilBaslama, SIGNAL(timeout()), this, SLOT(zilBaslatma()));
+      timerZilBaslama->start(1000);
+
+      player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
+      player->setVolume(70);
 }
 void MainWindow::init()
 {
-    this->resize(500,650);
-    setFixedWidth(500);
-    setFixedHeight(650);
-    setWindowTitle("E-Zil 1.0");
-    player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
-    player->setVolume(70);
-    ayarlst=fileToList("e-zil.conf");
-   /***************************************************/
+    qDebug()<<"Ayarlar Güncellendi...";
+
+    const QDate dt = QDate::currentDate();
+    QStringList listconf=fileToList("e-zil.conf",QDir::homePath());
+    // qDebug()<<dt.dayOfWeek();
+    gun=QString::number(dt.dayOfWeek())+"s";
+    trn=QString::number(dt.dayOfWeek())+"st";
+    saatlist=listGetList(listconf, gun,0);//0 sütun bilgisi olan güne göre listconf listesinden filitreleniyor
+    ayarlist=listGetList(listconf, "ayar",0);//0 sütun bilgisi olan güne göre listconf listesinden filitreleniyor
+    /******************Player ve Playlist ayarları yapılıyor***********/
+
     QDir klasorpath;
-    if (listGetLine(ayarlst,"muzikklasor")!="")
-        klasorpath=listGetLine(ayarlst,"muzikklasor").split("|")[1];
+    if (listGetLine(ayarlist,"muzikklasor")!="")
+        klasorpath=listGetLine(ayarlist,"muzikklasor").split("|")[2];
     playlist = new QMediaPlaylist;
     klasorpath.setNameFilters({"*.wav" , "*.mp3"});
     for(const QFileInfo & finfo: klasorpath.entryInfoList()){
+
         playlist->addMedia(QUrl::fromLocalFile(finfo.absoluteFilePath()));
-        //  qDebug()<<QUrl::fromLocalFile(finfo.absoluteFilePath());
-        //);
+        muziklist.append(QUrl::fromLocalFile(finfo.absoluteFilePath()).toString().remove(0,7)).append(" ");
+
+       // qDebug()<<QUrl::fromLocalFile(finfo.absoluteFilePath()).toString();
     }
-    player->setMedia(playlist);
-    /****************************************************************/
-    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = (screenGeometry.width()/2 - this->width()/2);
-    int y = (screenGeometry.height() - this->height()) / 2;
-    this->move(x, y);
-    this->setStyleSheet("background-color: #dfdfdf;");
 
-    QTabWidget *tw=new QTabWidget(this);
-    tw->resize(this->width(),this->height());
-  /************************************************************/
-    tw->addTab(ayar(),"Ayarlar");
-    tw->addTab(saatpzrts(),"Pzrts");
-    tw->addTab(saatsl(),"Salı");
-    tw->addTab(saatcrsmb(),"Çrşmb");
-    tw->addTab(saatprsmb(),"Prşmb");
-    tw->addTab(saatcm(),"Cuma");
-    tw->addTab(saatcmrts(),"Cmrts");
-    tw->addTab(saatpzr(),"Pazar");
-
-    timerZil = new QTimer(this);
-    timerZil->start(1000);
-    connect(timerZil, SIGNAL(timeout()), this, SLOT(zilKontrol()));
-    timerZilBaslama = new QTimer(this);
-    connect(timerZilBaslama, SIGNAL(timeout()), this, SLOT(zilBaslatma()));
 }
 void MainWindow::zilBaslatma()
 {
-    qDebug()<<"Kontol Devreye Girdi..";
-    timerZil->start(1000);
-    timerZilBaslama->stop();
+     zilKontrol();
 }
 void MainWindow::zilKontrol()
 {
-
-   const QDate dt = QDate::currentDate();
-   // qDebug()<<dt.dayOfWeek();
-   QStringList saatlist;
-    if(dt.dayOfWeek()==7)
-        saatlist=fileToList("e-zil-saatpzr.conf");
-    else if(dt.dayOfWeek()==6)
-        saatlist=fileToList("e-zil-saatcmrts.conf");
-    else if(dt.dayOfWeek()==5)
-        saatlist=fileToList("e-zil-saatcm.conf");
-    else if(dt.dayOfWeek()==4)
-        saatlist=fileToList("e-zil-saatprsmb.conf");
-    else if(dt.dayOfWeek()==3)
-        saatlist=fileToList("e-zil-saatcrsmb.conf");
-    else if(dt.dayOfWeek()==2)
-        saatlist=fileToList("e-zil-saatsl.conf");
-    else
-        saatlist=fileToList("e-zil-saatpzrts.conf");
-
-    //QString girissaat=listGetLine(saatlist,"");
-   // qDebug()<< QTime::currentTime().hour();
-   // qDebug()<< QTime::currentTime().minute();
-    QString saat=QTime::currentTime().toString("hh:mm:ss").split(":")[0];
-    QString dakika=QTime::currentTime().toString("hh:mm:ss").split(":")[1];
-    QString currentsaat=saat+":"+(dakika);
-    /**********************Bilgisayar Kontrol kontrol******************************/
-        if(listGetLine(ayarlst,currentsaat)!="")
-       {
-            QString line=listGetLine(ayarlst,currentsaat);
-
-            if(line.split("|")[0]=="hipckapat")
-            {
-               system("init 0");
-                qDebug()<<"denemehi";
-            }
-            if(line.split("|")[0]=="hspckapat")
-            {
-                qDebug()<<"denemehs";
-                system("init 0");
-            }
-        }
-        /************************************************/
-
-/**********************Müzik Yayın kontrol******************************/
-    if(listGetLine(ayarlst,currentsaat)!="")
-   {
-        QString line=listGetLine(ayarlst,currentsaat);
-
-        if(line.split("|")[0]=="muzikbaslama")
+    /********************raspberry pi 24 pin in=1 in=0 ************/
+    //if (( "$(cat /sys/class/gpio/gpio24/value)" == "1" ))
+    string myText;
+    ifstream myFile("/sys/class/gpio/gpio24/value");
+    //ifstream myFile("/home/by/value");
+    getline (myFile, myText);
+    myFile.close();
+          if(myText=="1"&&remoteMuzikState==false)
         {
-            system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false");
-            system("sleep 1");
+            remoteMuzikState=true;
+            myText="0";
+            //ofstream MyReadFile("/sys/class/gpio/gpio24/value");
+             //  ofstream MyFile("/home/by/value");  // Create and open a text file
+             //MyFile << "0";                      // Write to the file
+             //MyFile.close();                     // Close the file
 
-            system("pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo 80000");
+            QString istiklaldosya;
+            if (listGetLine(ayarlist,"istiklalzil")!="")
+                istiklaldosya=listGetLine(ayarlist,"istiklalzil").split("|")[2];
 
-            player->play();
+            QStringList arguments;
+            QString kmt=QString("aplay "+istiklaldosya);
+            arguments << "-c" << kmt;
+            process.start("/bin/bash",arguments);
+            // system("sleep 2000");
+            QThread::msleep(4000);
+            //qDebug()<<"kumanda On Click"<<istiklaldosya;
         }
-        if(line.split("|")[0]=="muzikson")
+          if(myText=="1"&&remoteMuzikState==true)
         {
-//            system("pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo 80000");
+              //ofstream MyReadFile("/sys/class/gpio/gpio24/value");
+              //   ofstream MyFile("/home/by/value");  // Create and open a text file
+               // MyFile << "0";                      // Write to the file
+               // MyFile.close();                     // Close the file
+              process.terminate();
+              remoteMuzikState=false;
+  QThread::msleep(4000);
+              // qDebug()<<"kumanda Off Click";
+          }
 
-            player->stop();
-        }
-    }
-    /************************************************/
-    if(listGetLine(saatlist,currentsaat)!="")
+
+    /**************************************************************/
+    currentsaat=QTime::currentTime().toString("hh:mm:ss");
+    QString line=listGetLine(saatlist,currentsaat);
+    if(line!="")
    {
-        system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false");
-        system("sleep 1");
-
-        system("pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo 80000");
-
-       qDebug()<<"Çalıyor....."<<listGetLine(saatlist,currentsaat);
-       qDebug()<<currentsaat;
-       timerZil->stop();
-       timerZilBaslama->start(70000);
-
-     if(listGetLine(saatlist,currentsaat).split("|")[1]==currentsaat)
-       {
-
-            if(listGetLine(ayarlst,"ogrencizil")!="")
+       //qDebug()<<">>"<<QTime::currentTime().toString("hh:mm:ss")<<trn<<gun<<currentsaat<<tenefusYayin<<line.left(3)<<line.left(2);
+        if(line.left(3)==trn)
+        {
+            playState=true;
+            if(listGetLine(ayarlist,"torenzil")!="")
             {
-                QString filepath=listGetLine(ayarlst,"ogrencizil").split("|")[1];
+                if(sistem==1)
+                {
+                system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false"); ///system("sleep 1");
+                QString deger=listGetLine(ayarlist,"torenzilseviye").split("|")[2];
+                QString kmt22="pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo "+deger+"000";
+                system(kmt22.toStdString().c_str());
+
+                QString filepath=listGetLine(ayarlist,"torenzil").split("|")[2];
                 QFile* file = new QFile(filepath);
                 if (file->open(QFile::ReadOnly)) {
-                    qDebug()<<"Öğrenci Zili Çalıyor....."<<listGetLine(saatlist,currentsaat);
                     player->setMedia(QMediaContent(), file);
                     file->seek(0);
                     player->play();
                 }
+                }else{
+                    QStringList arguments;
+                    QString kmt=QString("aplay "+listGetLine(ayarlist,"torenzil").split("|")[2]);
+                    arguments << "-c" << kmt;
+                    process.start("/bin/bash",arguments);
+
+                }
+                qDebug()<<"Tören Zili Çalıyor....."<<listGetLine(saatlist,currentsaat)<<currentsaat;
+
             }
-       }
-         if(listGetLine(saatlist,currentsaat).split("|")[2]==currentsaat)
-       {
-           if(listGetLine(ayarlst,"ogretmenzil")!="")
-           {
-               QString filepath=listGetLine(ayarlst,"ogretmenzil").split("|")[1];
-               QFile* file = new QFile(filepath);
-               if (file->open(QFile::ReadOnly)) {
-                   qDebug()<<"Öğretmen Zili Çalıyor....."<<listGetLine(saatlist,currentsaat);
-                   player->setMedia(QMediaContent(), file);
-                   file->seek(0);
-                   player->play();
-               }
-           }
-       }
-       if(listGetLine(saatlist,currentsaat).split("|")[3]==currentsaat)
-       {
 
-           if(listGetLine(ayarlst,"cikiszil")!="")
-           {
-               QString filepath=listGetLine(ayarlst,"cikiszil").split("|")[1];
-               QFile* file = new QFile(filepath);
-               if (file->open(QFile::ReadOnly)) {
-                   qDebug()<<"Çıkış Zili Çalıyor....."<<listGetLine(saatlist,currentsaat);
-                   player->setMedia(QMediaContent(), file);
-                   file->seek(0);
-                   player->play();
-               }
-           }
-       }
+        }
+        if(playState){playState=false; return;}
+        if(line.left(2)==gun&&line.split("|")[1]==currentsaat)
+        {
 
+            if(listGetLine(ayarlist,"ogrencizil")!="")
+            {
+                if(sistem==1)
+                {
+                    system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false"); ///system("sleep 1");
+                    QString deger=listGetLine(ayarlist,"ogrencizilseviye").split("|")[2];
+                    QString kmt22="pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo "+deger+"000";
+                    system(kmt22.toStdString().c_str());
+
+                    QString filepath=listGetLine(ayarlist,"ogrencizil").split("|")[2];
+                    QFile* file = new QFile(filepath);
+                    if (file->open(QFile::ReadOnly)) {
+                        player->setMedia(QMediaContent(), file);
+                        file->seek(0);
+                        player->play();
+                    }
+                }else{
+                    QStringList arguments;
+                    QString kmt=QString("aplay "+listGetLine(ayarlist,"ogrencizil").split("|")[2]);
+                    arguments << "-c" << kmt;
+                    process.start("/bin/bash",arguments);
+
+                }
+                qDebug()<<"Öğrenci Zili Çalıyor....."<<listGetLine(saatlist,currentsaat)<<currentsaat;
+            }
+        }
+        if(line.left(2)==gun&&line.split("|")[2]==currentsaat)
+        {
+            if(listGetLine(ayarlist,"ogretmenzil")!="")
+            {
+                if(sistem==1)
+                {
+                    system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false"); ///system("sleep 1");
+                    QString deger=listGetLine(ayarlist,"ogretmenzilseviye").split("|")[2];
+                    QString kmt22="pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo "+deger+"000";
+                    system(kmt22.toStdString().c_str());
+
+                    QString filepath=listGetLine(ayarlist,"ogretmenzil").split("|")[2];
+                    QFile* file = new QFile(filepath);
+                    if (file->open(QFile::ReadOnly)) {
+                        player->setMedia(QMediaContent(), file);
+                        file->seek(0);
+                        player->play();
+                    }
+                }else{
+                    QStringList arguments;
+                    QString kmt=QString("aplay "+listGetLine(ayarlist,"ogretmenzil").split("|")[2]);
+                    arguments << "-c" << kmt;
+                    process.start("/bin/bash",arguments);
+                }
+                qDebug()<<"Öğretmen Zili Çalıyor....."<<listGetLine(saatlist,currentsaat)<<currentsaat;
+            }
+        }
+        if(line.left(2)==gun&&line.split("|")[3]==currentsaat)
+        {
+            if(sistem==1)
+            {
+                if(listGetLine(ayarlist,"cikiszil")!="")
+                {
+                    system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false"); ///system("sleep 1");
+                    QString deger=listGetLine(ayarlist,"cikiszilseviye").split("|")[2];
+                    QString kmt22="pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo "+deger+"000";
+                    system(kmt22.toStdString().c_str());
+
+                    QString filepath=listGetLine(ayarlist,"cikiszil").split("|")[2];
+                    QFile* file = new QFile(filepath);
+                    if (file->open(QFile::ReadOnly)) {
+                        qDebug()<<"Çıkış Zili Çalıyor....."<<listGetLine(saatlist,currentsaat)<<currentsaat;
+                        player->setMedia(QMediaContent(), file);
+                        file->seek(0);
+                        player->play();
+                    }
+                }
+                else{
+                    QStringList arguments;
+                    QString kmt=QString("aplay "+listGetLine(ayarlist,"cikiszil").split("|")[2]);
+                    arguments << "-c" << kmt;
+                    process.start("/bin/bash",arguments);
+                }
+                qDebug()<<"Çıkış Zili Çalıyor....."<<listGetLine(saatlist,currentsaat)<<currentsaat;
+            }
+        }
+        if(line.left(2)==gun&&line.split("|")[4]==currentsaat)
+        {
+            if(sistem==1)
+            {
+                if (listGetLine(ayarlist,"muzikklasor")!="")
+                {
+                    player->setMedia(playlist);
+                    system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false"); ///system("sleep 1");
+                    QString deger=listGetLine(ayarlist,"muzikyayinseviye").split("|")[2];
+                    QString kmt22="pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo "+deger+"000";
+                    system(kmt22.toStdString().c_str());
+                    player->play();
+                    tenefusYayin=true;
+                }}else{
+                QStringList arguments;
+                QString kmt=QString("aplay "+muziklist);
+                arguments << "-c" << kmt;
+                process.start("/bin/bash",arguments);
+
+            }
+            qDebug()<<"Tenefüs Müzik Yayını Başladı..";
+        }
+        if(line.left(2)==gun&&line.split("|")[5]==currentsaat)
+        {
+            if(sistem==1)
+            {
+                player->stop();
+                qDebug()<<"Tenefüs Müzik Yayını Durdu..";
+                tenefusYayin=false;
+            }else{
+                process.terminate();
+                qDebug()<<"Tenefüs Müzik Yayını Durdu..";
+                tenefusYayin=false;
+
+            }
+        }
+
+    }
+    QString lineayar=listGetLine(ayarlist,currentsaat);
+    if(lineayar!="")
+   {
+     //  qDebug()<<">>"<<QTime::currentTime().toString("hh:mm:ss")<<trn<<gun<<currentsaat<<tenefusYayin<<lineayar.left(3)<<lineayar.left(2);
+
+        if(lineayar.split("|")[0]=="muzikbaslama")
+        {
+            if (listGetLine(ayarlist,"muzikklasor")!="")
+            {
+                if(tenefusMuzikYayinState)
+                {if(sistem==1)
+                    {
+                        system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false"); ///system("sleep 1");
+                        QString deger=listGetLine(ayarlist,"muzikyayinseviye").split("|")[2];
+                        QString kmt22="pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo "+deger+"000";
+                        system(kmt22.toStdString().c_str());
+                        player->setMedia(playlist);
+                        player->play();
+                    }else{
+                        QStringList arguments;
+                        QString kmt=QString("aplay "+muziklist);
+                        arguments << "-c" << kmt;
+                        process.start("/bin/bash",arguments);
+
+                    }
+                }
+
+
+                if(oglenMuzikYayinState)
+                {
+                    if(sistem==1)
+                    {
+                        system("pacmd set-sink-mute alsa_output.pci-0000_00_05.0.analog-stereo false"); ///system("sleep 1");
+                        QString deger=listGetLine(ayarlist,"muzikyayinseviye").split("|")[2];
+                        QString kmt22="pacmd set-sink-volume alsa_output.pci-0000_00_05.0.analog-stereo "+deger+"000";
+                        system(kmt22.toStdString().c_str());
+                        player->setMedia(playlist);
+                        player->play();
+                    }else{
+                        QStringList arguments;
+                        QString kmt=QString("aplay "+muziklist);
+                        arguments << "-c" << kmt;
+                        process.start("/bin/bash",arguments);
+
+                    }
+
+                }
+
+                }
+        }
+        if(lineayar.split("|")[0]=="muzikson")
+        {if(sistem==1)
+            {
+                player->stop();
+            }else{
+                process.terminate();
+
+            }
+        }
+        if(lineayar.split("|")[0]=="hipckapat")
+        {
+            system("init 0");
+        }
+        if(lineayar.split("|")[0]=="hspckapat")
+        {
+            system("init 0");
+
+        }
    }
 
 }
@@ -259,30 +438,89 @@ MainWindow::~MainWindow()
   //  delete ui;
 }
 
+QStringList MainWindow::listMerge(QStringList list1, QStringList list2, int dataIndex)
+{
+    for(int i=0;i<list1.count();i++)
+    {
+        QString line=list1[i];
+        if(line!="")
+        {
+
+            QStringList lst=line.split("|");
+            list2=listRemove(list2,lst[dataIndex]);
+        }
+    }
+    for(int i=0;i<list1.count();i++)
+    {
+       list2.append(list1[i]);
+    }
+    return list2;
+}
+QStringList MainWindow::listReplace(QStringList list, QString oldData, QString newData, int index)
+ {
+    QStringList liste;
+         QRegularExpression re(oldData);
+     for(int i=0;i<list.count();i++)
+     {
+         if(list[i].contains(re))
+         {
+             QStringList lst=list[i].split("|");
+             lst[index].replace(oldData, newData);
+            // qDebug()<<lst;
+
+             QString ln="";
+             if(lst.count()>0)ln.append(lst[0]);
+             if(lst.count()>1)ln.append("|").append(lst[1]);
+             if(lst.count()>2)ln.append("|").append(lst[2]);
+             if(lst.count()>3)ln.append("|").append(lst[3]);
+             if(lst.count()>4)ln.append("|").append(lst[4]);
+             if(lst.count()>5)ln.append("|").append(lst[5]);
+             if(lst.count()>6)ln.append("|").append(lst[4]);
+             if(lst.count()>7)ln.append("|").append(lst[7]);
+             if(lst.count()>8)ln.append("|").append(lst[8]);
+             if(lst.count()>9)ln.append("|").append(lst[9]);
+            // list.removeAt(i);
+             liste.append(ln);
+         }
+     }
+    // qDebug()<<list;
+     return liste;
+ }
+
+QStringList MainWindow::listGetList(QStringList list, QString data,int index)
+ {
+    QStringList liste;
+    QRegularExpression re(data);
+     for(int i=0;i<list.count();i++)
+     {
+         if(list[i].contains(re))
+         {
+            liste.append(list[i]);
+
+         }
+     }
+    // qDebug()<<list;
+     return liste;
+ }
 QStringList MainWindow::listRemove(QStringList list,QString data)
  {
-    // qDebug()<<"deneme-ddd"<<data;
-    // QStringList list;
-     //  qDebug()<<list;
-     //list << "bayram|sun" << "cloud" << "sun|elif" << "firi|rain";
-     QRegularExpression re(data);
+         QRegularExpression re(data);
      for(int i=0;i<list.count();i++)if(list[i].contains(re)) list.removeAt(i);
     // qDebug()<<list;
      return list;
  }
 QString MainWindow::listGetLine(QStringList list,QString data)
  {
-     //QStringList list;
-     //list << "bayram|sun" << "cloud" << "sun|elif" << "firi|rain";
-     QRegularExpression re(data);
+         QRegularExpression re(data);
      for(int i=0;i<list.count();i++) if(list[i].contains(re)) return list[i];
      //qDebug()<<list;
      return "";
  }
-QStringList MainWindow::fileToList(QString filename)
+QStringList MainWindow::fileToList(QString filename,QString path)
  {
     FileCrud *fcc=new FileCrud();
-    fcc->dosya=filename;
+    fcc->dosya=path+"/"+filename;
+    //qDebug()<<"dosya:"<<fcc->dosya;
     QStringList list;
     for(int i=1;i<=fcc->fileCount();i++)
     {
@@ -309,18 +547,13 @@ QStringList MainWindow::fileToList(QString filename)
 
          }
     }
-     //QStringList list;
-     //list << "bayram|sun" << "cloud" << "sun|elf" << "firi|rain";
-    // QRegularExpression re(data);
-     //for(int i=0;i<list.count();i++)if(list[i].contains(re)) list.removeAt(i);
-     //qDebug()<<list;
-     return list;
+        return list;
  }
-void MainWindow::listToFile(QStringList list, QString filename)
+void MainWindow::listToFile(QStringList list, QString filename, QString path)
  {
   //  qDebug()<<"selam listtofile";
     FileCrud *fcc=new FileCrud();
-    fcc->dosya=filename;
+    fcc->dosya=path+"/"+filename;
     //QStringList list;
     fcc->fileRemove();
     for(int i=0;i<list.count();i++)
