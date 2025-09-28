@@ -771,7 +771,19 @@ void  MainWindow::widgetShow()
 
 #ifdef Q_OS_LINUX
    // qDebug()<< "Linux version";
-    system("sh -c \"pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY e-zil-gui\"");
+   //system("sh -c \"pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY e-zil-gui\"");
+    // pkexec komutunu çalıştır
+    int result = system("sh -c \"pkexec ls\"");
+
+    // Dönüş değerini kontrol et
+    if (result == 0) {
+        //QMessageBox::information(nullptr, "Başarılı", "pkexec doğrulaması başarılı, uygulama root yetkisiyle çalışıyor.");
+        system("sh -c \"/usr/bin/e-zil-gui\"");
+    } else if (result == 126 || result == 127) {
+        QMessageBox::critical(nullptr, "Hata", "pkexec doğrulaması başarısız: Yetkilendirme reddedildi veya komut bulunamadı.");
+    } /*else {
+        QMessageBox::critical(nullptr, "Hata", QString("pkexec bilinmeyen bir hata verdi: %1").arg(result));
+    }*/
 #endif
 
 #ifdef Q_OS_WIN

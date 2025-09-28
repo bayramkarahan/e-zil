@@ -61,8 +61,7 @@ conf.path = /usr/share/e-zil
 music_files.files = e-zil-ses/
 music_files.path = /usr/share/e-zil/
 
-INSTALLS += target desktop_file icon music_files conf
+INSTALLS += target icon music_files conf
 
 DISTFILES += \
-    e-zil.conf\
-    e-zil.desktop
+    e-zil.conf
