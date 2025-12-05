@@ -688,7 +688,7 @@ void  MainWindow::widgetShow()
     // Dönüş değerini kontrol et
     if (result == 0) {
         //QMessageBox::information(nullptr, "Başarılı", "pkexec doğrulaması başarılı, uygulama root yetkisiyle çalışıyor.");
-        system("sh -c \"/usr/bin/e-zil-gui\"");
+        system("sh -c \"pkexec /usr/bin/e-zil-gui\"");
     } else if (result == 126 || result == 127) {
         QMessageBox::critical(nullptr, "Hata", "pkexec doğrulaması başarısız: Yetkilendirme reddedildi veya komut bulunamadı.");
     } /*else {
@@ -698,7 +698,7 @@ void  MainWindow::widgetShow()
 
 #ifdef Q_OS_WIN
    // qDebug()<< "Windows version";
-      localDir="";
+      //localDir="";
      // system("e-zil-gui");
       const QString pathToApp = "e-zil-gui";
       QProcess::startDetached(pathToApp);

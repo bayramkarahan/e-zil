@@ -53,13 +53,15 @@ desktop_file.path = /usr/share/applications/
 icon.files = icons/e-zil.svg
 icon.path = /usr/share/icons/
 
-conf.files = e-zil.conf
-conf.path = /usr/share/e-zil
-
 music_files.files = e-zil-ses/
 music_files.path = /usr/share/e-zil/
 
-INSTALLS += target icon music_files conf
+polkit_policy.files = e-ag.policy
+polkit_policy.path = /usr/share/polkit-1/actions/
+polkit_rules.files = e-ag.rules
+polkit_rules.path = /usr/share/polkit-1/rules.d/
+
+INSTALLS += target icon music_files polkit_policy polkit_rules
 
 DISTFILES += \
     e-zil.conf
