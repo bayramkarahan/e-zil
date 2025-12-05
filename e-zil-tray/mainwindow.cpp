@@ -44,12 +44,12 @@ MainWindow::MainWindow(QWidget *parent) :
  {
 #ifdef Q_OS_LINUX
    // qDebug()<< "Linux version";
-      localDir="/home/etapadmin/";
+    localDir="/usr/share/e-zil/";
 #endif
 
 #ifdef Q_OS_WIN
    // qDebug()<< "Windows version";
-      localDir="";
+      localDir = QCoreApplication::applicationDirPath() + "/";
 #endif
       clientConfWather.addPath(localDir+"e-zil.json");
       connect(&clientConfWather, &QFileSystemWatcher::fileChanged, this,
@@ -128,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
       player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
       player->setVolume(70);
+          //yayinTenefusMuzik();
 }
 void MainWindow::init()
 {
@@ -150,12 +151,13 @@ void MainWindow::init()
 
     playlist = new QMediaPlaylist;
     klasorpath.setNameFilters({"*.wav" , "*.mp3"});
+    //qDebug()<<"klasorpath:"<<klasorpath;
     for(const QFileInfo & finfo: klasorpath.entryInfoList()){
 
         playlist->addMedia(QUrl::fromLocalFile(finfo.absoluteFilePath()));
         muziklist.append(QUrl::fromLocalFile(finfo.absoluteFilePath()).toString().remove(0,7)).append(" ");
 
-       // qDebug()<<QUrl::fromLocalFile(finfo.absoluteFilePath()).toString();
+        //qDebug()<<"ilk liste"<<QUrl::fromLocalFile(finfo.absoluteFilePath()).toString();
     }
 
 
@@ -337,8 +339,11 @@ void MainWindow::zilKontrol()
                 cikisMuzikPlayStatus=true;
                 //if(zilzamani+60>currentsaniye)
                 cikisMuzik();
-                yayinTenefusMuzik();
-                tenefusMuzikYayinPlayStatus=true;
+                if(zildersno!=oglearasiderssayisi&&zildersno!=derssayisi)
+                {
+                    yayinTenefusMuzik();
+                    tenefusMuzikYayinPlayStatus=true;
+                }
             }
             widget->zamanGostergesiDurum->setText("TNF");
         }
@@ -381,15 +386,16 @@ void MainWindow::zilKontrol()
         qDebug()<<"ilk öğrenci girişi";
     }
     if (currentsaniye >(sonDersCikisSaati+tolerans)) {
-          if(cikisMuzikPlayStatus==false){
-            qDebug()<<"ders bitti";
+
+            ///qDebug()<<"ders bitti";
             widget->zamanGostergesiDurum->setText("A");
-            resetStatus();
+             /*if(cikisMuzikPlayStatus==false){
+                resetStatus();
             cikisMuzikPlayStatus=true;
             /*if(qAbs(currentsaniye -sonDersCikisSaati+10)<=tolerans)
                 cikisMuzik();*/
 
-        }
+       // }
     }
 
     if (qAbs(currentsaniye - muzikbaslama) <= tolerans) {
@@ -587,7 +593,7 @@ void MainWindow::yayinTenefusMuzik()
         int deger=0;
         if (ayarlar.contains("muzikyayinseviye"))
             deger=ayarlar["muzikyayinseviye"].toString().toInt();
-        qDebug()<<"15sn sonra Tenefüs Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
+        //qDebug()<<"15sn sonra Tenefüs Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
         timer1.start(20000);
         loop.exec();
 
@@ -598,6 +604,11 @@ void MainWindow::yayinTenefusMuzik()
 
         if (muzikklasor!="")
         {
+            //qDebug()<<"listeler sayısı" << playlist->mediaCount();
+            /*for (int i = 0; i < playlist->mediaCount(); i++) {
+                qDebug()<<"listeler" << playlist->media(i).canonicalUrl().fileName();
+            }*/
+
             player->setMedia(playlist);
             player->play();
             tenefusYayin=true;

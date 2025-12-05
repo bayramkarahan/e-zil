@@ -50,12 +50,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #ifdef Q_OS_LINUX
    // qDebug()<< "Linux version";
-      localDir="/home/etapadmin/";
+      localDir="/usr/share/e-zil/";
 #endif
 
 #ifdef Q_OS_WIN
    // qDebug()<< "Windows version";
-      localDir="";
+     localDir = QCoreApplication::applicationDirPath() + "/";
 #endif
 
 
