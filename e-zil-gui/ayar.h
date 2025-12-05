@@ -23,13 +23,14 @@
 #include<QCheckBox>
 #include<QMessageBox>
 
+#include <QFile>
+
+
 bool MainWindow::dosyaVarmi(QString dosya)
 {
-    FileCrud *filecdr=new FileCrud();
-    filecdr->dosya=localDir+dosya;
+    QString path = localDir+dosya;
+    if (!QFile::exists(path)) {
 
-    if (!filecdr->fileExists())
-    {
         QMessageBox msgError;
         msgError.setText("Ayarları Kaydetmeden İşlem Yapamazsınız..!");
         msgError.setIcon(QMessageBox::Critical);
@@ -41,16 +42,20 @@ bool MainWindow::dosyaVarmi(QString dosya)
 }
 QWidget *MainWindow::ayar()
 {
- //   qDebug()<<"ayar";
+    DatabaseHelper *db=new DatabaseHelper(localDir+"e-zil.json");
+    QJsonArray liste = db->Ara("recordtype", "settings");
+    QJsonObject obj;
+
+    if (!liste.isEmpty()) {
+        obj = liste.first().toObject();
+    }
+   // qDebug()<<"ayar"<<obj;
  //   init();
 //burada ayarlar bölümü düzenleniyor yeni3
     QWidget *ayarPage=new QWidget();
     ayarPage->setFixedWidth(500);
     ayarPage->setFixedHeight(600);
-    /*******************************************************/
-    //QStringList ayarlst=listGetList(fileToList("e-zil.conf"), "ayar",0);//0 sütun bilgisi olan güne göre listconf listesinden filitreleniyor
-   // player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
-    /**********************Tören Giriş**********************************/
+   /**********************Tören Giriş**********************************/
 
     QToolButton *torenZilButton= new QToolButton;
    // torenZilButton->setFixedSize(170, 30);
@@ -61,20 +66,20 @@ QWidget *MainWindow::ayar()
 
     QLineEdit *torenZilLineEdit=new QLineEdit(ayarPage);
     //torenZilLineEdit->resize(500,25);
-    if(listGetLine(ayarlist,"torenzil")!="")
-        torenZilLineEdit->setText(listGetLine(ayarlist,"torenzil").split("|")[2]);
+    if (obj.contains("torenzil"))
+        torenZilLineEdit->setText(obj["torenzil"].toString());
+
 
     QLineEdit *torenZilSeviyeLineEdit=new QLineEdit(ayarPage);
     torenZilSeviyeLineEdit->setFixedWidth(30);
     torenZilSeviyeLineEdit->setText("80");
-    if(listGetLine(ayarlist,"torenzilseviye")!="")
-        torenZilSeviyeLineEdit->setText(listGetLine(ayarlist,"torenzilseviye").split("|")[2]);
+    if (obj.contains("torenzilseviye"))
+        torenZilSeviyeLineEdit->setText(obj["torenzilseviye"].toString());
 
 
     connect(torenZilButton, &QPushButton::clicked, [=]() {
-        if(!dosyaVarmi("e-zil.conf")) return;
-
-        QString deger=listGetLine(ayarlist,"torenzilseviye").split("|")[2];
+        if(!dosyaVarmi("e-zil.json")) return;
+        QString deger=torenZilSeviyeLineEdit->text();
        player->setVolume(deger.toInt());
         QFile* file = new QFile(torenZilLineEdit->text());
         qDebug()<<"Tören zili çalınıyor.."<<torenZilLineEdit->text();
@@ -108,20 +113,20 @@ QWidget *MainWindow::ayar()
     //ogrenciZilButton->setFlat(true);
     QLineEdit *ogrenciZilLineEdit=new QLineEdit(ayarPage);
    // ogrenciZilLineEdit->resize(500,25);
-    if(listGetLine(ayarlist,"ogrencizil")!="")
-        ogrenciZilLineEdit->setText(listGetLine(ayarlist,"ogrencizil").split("|")[2]);
+    if (obj.contains("ogrencizil"))
+        ogrenciZilLineEdit->setText(obj["ogrencizil"].toString());
 
     QLineEdit *ogrenciZilSeviyeLineEdit=new QLineEdit(ayarPage);
      ogrenciZilSeviyeLineEdit->setFixedWidth(30);
     ogrenciZilSeviyeLineEdit->setText("80");
-    if(listGetLine(ayarlist,"ogrencizilseviye")!="")
-        ogrenciZilSeviyeLineEdit->setText(listGetLine(ayarlist,"ogrencizilseviye").split("|")[2]);
+     if (obj.contains("ogrencizilseviye"))
+        ogrenciZilSeviyeLineEdit->setText(obj["ogrencizilseviye"].toString());
 
     connect(ogrenciZilButton, &QPushButton::clicked, [=]() {
 
         if(!dosyaVarmi("e-zil.conf")) return;
 
-         QString deger=listGetLine(ayarlist,"ogrencizilseviye").split("|")[2];
+         QString deger=ogrenciZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
         QFile* file = new QFile(ogrenciZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
@@ -155,18 +160,18 @@ QWidget *MainWindow::ayar()
   //  ogretmenZilButton->setFlat(true);
    // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *ogretmenZilLineEdit=new QLineEdit;
-     if(listGetLine(ayarlist,"ogretmenzil")!="")
-        ogretmenZilLineEdit->setText(listGetLine(ayarlist,"ogretmenzil").split("|")[2]);
+    if (obj.contains("ogretmenzil"))
+        ogretmenZilLineEdit->setText(obj["ogretmenzil"].toString());
 
      QLineEdit *ogretmenZilSeviyeLineEdit=new QLineEdit;
      ogretmenZilSeviyeLineEdit->setFixedWidth(30);
      ogretmenZilSeviyeLineEdit->setText("80");
-      if(listGetLine(ayarlist,"ogretmenzilseviye")!="")
-         ogretmenZilSeviyeLineEdit->setText(listGetLine(ayarlist,"ogretmenzilseviye").split("|")[2]);
+     if (obj.contains("ogretmenzilseviye"))
+         ogretmenZilSeviyeLineEdit->setText(obj["ogretmenzilseviye"].toString());
 
       connect(ogretmenZilButton, &QPushButton::clicked, [=]() {
           if(!dosyaVarmi("e-zil.conf")) return;
-          QString deger=listGetLine(ayarlist,"ogretmenzilseviye").split("|")[2];
+          QString deger=ogretmenZilSeviyeLineEdit->text();
           player->setVolume(deger.toInt());
           QFile* file = new QFile(ogretmenZilLineEdit->text());
           if (file->open(QFile::ReadOnly)) {
@@ -197,18 +202,18 @@ QWidget *MainWindow::ayar()
   //  cikisZilButton->setFlat(true);
    // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *cikisZilLineEdit=new QLineEdit;
-    if(listGetLine(ayarlist,"cikiszil")!="")
-       cikisZilLineEdit->setText(listGetLine(ayarlist,"cikiszil").split("|")[2]);
+    if (obj.contains("cikiszil"))
+        cikisZilLineEdit->setText(obj["cikiszil"].toString());
 
     QLineEdit *cikisZilSeviyeLineEdit=new QLineEdit;
     cikisZilSeviyeLineEdit->setFixedWidth(30);
     cikisZilSeviyeLineEdit->setText("80");
-    if(listGetLine(ayarlist,"cikiszilseviye")!="")
-       cikisZilSeviyeLineEdit->setText(listGetLine(ayarlist,"cikiszilseviye").split("|")[2]);
+    if (obj.contains("cikiszilseviye"))
+        cikisZilSeviyeLineEdit->setText(obj["cikiszilseviye"].toString());
 
     connect(cikisZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.conf")) return;
-        QString deger=listGetLine(ayarlist,"cikiszilseviye").split("|")[2];
+        QString deger=cikisZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
         QFile* file = new QFile(cikisZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
@@ -241,18 +246,18 @@ QWidget *MainWindow::ayar()
    // istiklalZilButton->setFlat(true);
    // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *istiklalZilLineEdit=new QLineEdit;
-    if(listGetLine(ayarlist,"istiklalzil")!="")
-        istiklalZilLineEdit->setText(listGetLine(ayarlist,"istiklalzil").split("|")[2]);
+    if (obj.contains("istiklalzil"))
+        istiklalZilLineEdit->setText(obj["istiklalzil"].toString());
 
     QLineEdit *istiklalZilSeviyeLineEdit=new QLineEdit;
     istiklalZilSeviyeLineEdit->setFixedWidth(30);
     istiklalZilSeviyeLineEdit->setText("80");
-    if(listGetLine(ayarlist,"istiklalzilseviye")!="")
-        istiklalZilSeviyeLineEdit->setText(listGetLine(ayarlist,"istiklalzilseviye").split("|")[2]);
+    if (obj.contains("istiklalzilseviye"))
+        istiklalZilSeviyeLineEdit->setText(obj["istiklalzilseviye"].toString());
 
     connect(istiklalZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.conf")) return;
-        QString deger=listGetLine(ayarlist,"istiklalzilseviye").split("|")[2];
+        QString deger=istiklalZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
 
         QFile* file = new QFile(istiklalZilLineEdit->text());
@@ -283,18 +288,18 @@ QWidget *MainWindow::ayar()
     //saygiIstiklalZilButton->setFlat(true);
    // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *saygiIstiklalZilLineEdit=new QLineEdit;
-    if(listGetLine(ayarlist,"istiklalsaygizil")!="")
-        saygiIstiklalZilLineEdit->setText(listGetLine(ayarlist,"istiklalsaygizil").split("|")[2]);
+     if (obj.contains("istiklalsaygizil"))
+        saygiIstiklalZilLineEdit->setText(obj["istiklalsaygizil"].toString());
 
     QLineEdit *saygiIstiklalZilSeviyeLineEdit=new QLineEdit;
     saygiIstiklalZilSeviyeLineEdit->setFixedWidth(30);
     saygiIstiklalZilSeviyeLineEdit->setText("80");
-    if(listGetLine(ayarlist,"istiklalsaygizilseviye")!="")
-        saygiIstiklalZilSeviyeLineEdit->setText(listGetLine(ayarlist,"istiklalsaygizilseviye").split("|")[2]);
+     if (obj.contains("istiklalsaygizilseviye"))
+        saygiIstiklalZilSeviyeLineEdit->setText(obj["istiklalsaygizilseviye"].toString());
 
     connect(saygiIstiklalZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.conf")) return;
-        QString deger=listGetLine(ayarlist,"istiklalsaygizilseviye").split("|")[2];
+        QString deger=saygiIstiklalZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
         QFile* file = new QFile(saygiIstiklalZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
@@ -325,18 +330,19 @@ QWidget *MainWindow::ayar()
    // sirenZilButton->setFlat(true);
    // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *sirenZilLineEdit=new QLineEdit;
-    if(listGetLine(ayarlist,"sirenzil")!="")
-        sirenZilLineEdit->setText(listGetLine(ayarlist,"sirenzil").split("|")[2]);
+
+    if (obj.contains("sirenzil"))
+        sirenZilLineEdit->setText(obj["sirenzil"].toString());
 
     QLineEdit *sirenZilSeviyeLineEdit=new QLineEdit;
     sirenZilSeviyeLineEdit->setFixedWidth(30);
     sirenZilSeviyeLineEdit->setText("80");
-    if(listGetLine(ayarlist,"sirenzilseviye")!="")
-        sirenZilSeviyeLineEdit->setText(listGetLine(ayarlist,"sirenzilseviye").split("|")[2]);
+    if (obj.contains("sirenzilseviye"))
+        sirenZilSeviyeLineEdit->setText(obj["sirenzilseviye"].toString());
 
     connect(sirenZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.conf")) return;
-    QString deger=listGetLine(ayarlist,"sirenzilseviye").split("|")[2];
+        QString deger=sirenZilSeviyeLineEdit->text();
     player->setVolume(deger.toInt());
 
         QFile* file = new QFile(sirenZilLineEdit->text());
@@ -368,8 +374,8 @@ QWidget *MainWindow::ayar()
        // dersSonuPcKapatButton->setFlat(true);
        // dersSonuPcKapatButton->setIcon(QIcon(":icons/saveprofile.png"));
         QTimeEdit *dersSonuPcKapatTimeEdit=new QTimeEdit;
-        if(listGetLine(ayarlist,"derssonupckapat")!="")
-           dersSonuPcKapatTimeEdit->setTime(saniyeToSaat(listGetLine(ayarlist,"derssonupckapat").split("|")[2]));
+        if (obj.contains("derssonupckapat"))
+            dersSonuPcKapatTimeEdit->setTime(saniyeToSaat(obj["derssonupckapat"].toString()));
 
         connect(dersSonuPcKapatButton, &QPushButton::clicked, [=]() {
            /* player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
@@ -391,8 +397,8 @@ molaPcKapatButton->setStyleSheet("Text-align:center");
 // molaPcKapatButton->setFlat(true);
 // molaPcKapatButton->setIcon(QIcon(":icons/saveprofile.png"));
 QTimeEdit *molaPcKapatTimeEdit=new QTimeEdit;
- if(listGetLine(ayarlist,"molapckapat")!="")
-    molaPcKapatTimeEdit->setTime(saniyeToSaat(listGetLine(ayarlist,"molapckapat").split("|")[2]));
+if (obj.contains("molapckapat"))
+     molaPcKapatTimeEdit->setTime(saniyeToSaat(obj["molapckapat"].toString()));
 
 connect(molaPcKapatButton, &QPushButton::clicked, [=]() {
    /* player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
@@ -411,15 +417,18 @@ QLineEdit *kapatKomutEdit=new QLineEdit;
 
     kapatKomutEdit->setText("/sbin/poweroff");
 
-if(listGetLine(ayarlist,"kapatKomut")!="")
-    if(listGetLine(ayarlist,"kapatKomut").split("|")[2]!="")kapatKomutEdit->setText(listGetLine(ayarlist,"kapatKomut").split("|")[2]);
+
+if (obj.contains("kapatKomut"))
+    kapatKomutEdit->setText(obj["kapatKomut"].toString());
+
 
 /************************************************************************/
 
 
 QLineEdit *muzikLineEdit=new QLineEdit;
-if(listGetLine(ayarlist,"muzikklasor")!="")
-muzikLineEdit->setText(listGetLine(ayarlist,"muzikklasor").split("|")[2]);
+if (obj.contains("muzikklasor"))
+    muzikLineEdit->setText(obj["muzikklasor"].toString());
+
 /************************************************************************/
 QPushButton *muzikFileSelectButton= new QPushButton;
 //muzikFileSelectButton->setFixedSize(20, 30);
@@ -436,19 +445,20 @@ connect(muzikFileSelectButton, &QPushButton::clicked, [=]() {
 });
 /************************************************************************/
 QTimeEdit *muzikBaslamaTimeEdit=new QTimeEdit;
- if(listGetLine(ayarlist,"muzikbaslama")!="")
-    muzikBaslamaTimeEdit->setTime(saniyeToSaat(listGetLine(ayarlist,"muzikbaslama").split("|")[2]));
+if (obj.contains("muzikbaslama"))
+     muzikBaslamaTimeEdit->setTime(saniyeToSaat(obj["muzikbaslama"].toString()));
 
  QTimeEdit *muzikSonTimeEdit=new QTimeEdit;
  ///muzikSonTimeEdit->setFixedSize(65, 30);
-  if(listGetLine(ayarlist,"muzikson")!="")
-    muzikSonTimeEdit->setTime(saniyeToSaat(listGetLine(ayarlist,"muzikson").split("|")[2]));
+ if (obj.contains("muzikson"))
+      muzikSonTimeEdit->setTime(saniyeToSaat(obj["muzikson"].toString()));
 
   QLineEdit *muzikYayinZilSeviyeLineEdit=new QLineEdit;
   muzikYayinZilSeviyeLineEdit->setFixedWidth(30);
   muzikYayinZilSeviyeLineEdit->setText("80");
-   if(listGetLine(ayarlist,"muzikyayinseviye")!="")
-      muzikYayinZilSeviyeLineEdit->setText(listGetLine(ayarlist,"muzikyayinseviye").split("|")[2]);
+   if (obj.contains("muzikyayinseviye"))
+       muzikYayinZilSeviyeLineEdit->setText(obj["muzikyayinseviye"].toString());
+
 /**********************************************************************/
    QPushButton *muzikYayinZilButton= new QPushButton;
 //   muzikYayinZilButton->setFixedSize(170, 30);
@@ -461,16 +471,16 @@ QTimeEdit *muzikBaslamaTimeEdit=new QTimeEdit;
   // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
    connect(muzikYayinZilButton, &QPushButton::clicked, [=]() {
        if(!dosyaVarmi("e-zil.conf")) return;
-       QString deger=listGetLine(ayarlist,"muzikyayinseviye").split("|")[2];
+       QString deger=muzikYayinZilSeviyeLineEdit->text();
        player->setVolume(deger.toInt());
 
-          if (listGetLine(ayarlist,"muzikklasor")!="")
+       if (obj.contains("muzikklasor"))
            {
            qDebug()<<"Müzik Yayını Başladı...";
 
               QDir klasorpath;
-              if (listGetLine(ayarlist,"muzikklasor")!="")
-                  klasorpath=listGetLine(ayarlist,"muzikklasor").split("|")[2];
+            if (obj.contains("muzikklasor"))
+                  klasorpath=obj["muzikklasor"].toString();
               playlist = new QMediaPlaylist;
               klasorpath.setNameFilters({"*.wav" , "*.mp3"});
               for(const QFileInfo & finfo: klasorpath.entryInfoList()){
@@ -490,18 +500,20 @@ QTimeEdit *muzikBaslamaTimeEdit=new QTimeEdit;
         /************************************************************************/
    QTimeEdit *molaSuresiTimeEdit=new QTimeEdit;
     molaSuresiTimeEdit->setTime(QTime::fromString("01:00"));
-    if(listGetLine(ayarlist,"molasuresi")!="")
-       molaSuresiTimeEdit->setTime(saniyeToSaat(listGetLine(ayarlist,"molasuresi").split("|")[2]));
+    if (obj.contains("molasuresi"))
+        molaSuresiTimeEdit->setTime(saniyeToSaat(obj["molasuresi"].toString()));
 
     QLineEdit *molaDersSaatiLineEdit=new QLineEdit;
     molaDersSaatiLineEdit->setText("4");
-     if(listGetLine(ayarlist,"moladerssaati")!="")
-        molaDersSaatiLineEdit->setText(listGetLine(ayarlist,"moladerssaati").split("|")[2]);
+     if (obj.contains("moladerssaati"))
+         molaDersSaatiLineEdit->setText(obj["moladerssaati"].toString());
 
      QLineEdit *dersSayisiLineEdit=new QLineEdit;
      dersSayisiLineEdit->setText("7");
-      if(listGetLine(ayarlist,"derssayisi")!="")
-         dersSayisiLineEdit->setText(listGetLine(ayarlist,"derssayisi").split("|")[2]);
+
+      if (obj.contains("derssayisi"))
+          dersSayisiLineEdit->setText(obj["derssayisi"].toString());
+
   /*************************************************************************************/
 
     QPushButton *durZilButton= new QPushButton;
@@ -542,47 +554,50 @@ QTimeEdit *muzikBaslamaTimeEdit=new QTimeEdit;
     connect(ayarKaydetButton, &QPushButton::clicked, [=]() {
      //   if(player->mediaStatus()==QMediaPlayer::PlayingState)
            player->stop();
-        QStringList _ayarlist;
-        _ayarlist.append("ayar|torenzil|"+torenZilLineEdit->text());
-        _ayarlist.append("ayar|ogrencizil|"+ogrenciZilLineEdit->text());
-        _ayarlist.append("ayar|ogretmenzil|"+ogretmenZilLineEdit->text());
-        _ayarlist.append("ayar|cikiszil|"+cikisZilLineEdit->text());
-        _ayarlist.append("ayar|istiklalzil|"+istiklalZilLineEdit->text());
-        _ayarlist.append("ayar|istiklalsaygizil|"+saygiIstiklalZilLineEdit->text());
-        _ayarlist.append("ayar|sirenzil|"+sirenZilLineEdit->text());
-        _ayarlist.append("ayar|derssonupckapat|"+saatToSaniye(dersSonuPcKapatTimeEdit->time()));
-        _ayarlist.append("ayar|molapckapat|"+saatToSaniye(molaPcKapatTimeEdit->time()));
-        _ayarlist.append("ayar|kapatKomut|"+kapatKomutEdit->text());
+     // Widget listelerini oluştur
+      db->Sil("recordtype","settings");
+     // Döngü ile tüm dersleri ekle
+         QJsonObject obj;
+         obj["recordtype"] = "settings";
+         obj["torenzil"] = torenZilLineEdit->text();
+         obj["ogrencizil"] = ogrenciZilLineEdit->text();
+         obj["ogretmenzil"] = ogretmenZilLineEdit->text();
+         obj["cikiszil"] = cikisZilLineEdit->text();
+         obj["istiklalzil"] = istiklalZilLineEdit->text();
+         obj["istiklalsaygizil"] = saygiIstiklalZilLineEdit->text();
+         obj["sirenzil"] =    sirenZilLineEdit->text();
+         obj["derssonupckapat"] =    saatToSaniye(dersSonuPcKapatTimeEdit->time());
+         obj["molapckapat"] =    saatToSaniye(molaPcKapatTimeEdit->time());
+         obj["kapatKomut"] =    kapatKomutEdit->text();
+         obj["muzikbaslama"] =    saatToSaniye(muzikBaslamaTimeEdit->time());
+         obj["muzikson"] =    saatToSaniye(muzikSonTimeEdit->time());
 
-        _ayarlist.append("ayar|muzikbaslama|"+saatToSaniye(muzikBaslamaTimeEdit->time()));
-        _ayarlist.append("ayar|muzikson|"+saatToSaniye(muzikSonTimeEdit->time()));
-        _ayarlist.append("ayar|torenzilseviye|"+torenZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|ogrencizilseviye|"+ogrenciZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|ogretmenzilseviye|"+ogretmenZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|cikiszilseviye|"+cikisZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|istiklalzilseviye|"+istiklalZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|istiklalsaygizilseviye|"+saygiIstiklalZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|sirenzilseviye|"+sirenZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|muzikyayinseviye|"+muzikYayinZilSeviyeLineEdit->text());
-        _ayarlist.append("ayar|tenefusMuzikYayinState|"+QString::number(tenefusMuzikYayinState));
-        _ayarlist.append("ayar|oglenMuzikYayinState|"+QString::number(oglenMuzikYayinState));
-        _ayarlist.append("ayar|SZSState|"+QString::number(SZSState));
-        _ayarlist.append("ayar|ekilitState|"+QString::number(ekilitState));
-        _ayarlist.append("ayar|gunState|"+QString::number(gunState));
+         obj["torenzilseviye"] =    torenZilSeviyeLineEdit->text();
+         obj["ogrencizilseviye"] =    ogrenciZilSeviyeLineEdit->text();
+         obj["ogretmenzilseviye"] =    ogretmenZilSeviyeLineEdit->text();
+         obj["cikiszilseviye"] =    cikisZilSeviyeLineEdit->text();
 
-        _ayarlist.append("ayar|muzikklasor|"+muzikLineEdit->text());
-        _ayarlist.append("ayar|molasuresi|"+saatToSaniye(molaSuresiTimeEdit->time()));
-        _ayarlist.append("ayar|moladerssaati|"+molaDersSaatiLineEdit->text());
-         _ayarlist.append("ayar|derssayisi|"+dersSayisiLineEdit->text());
-        /// listToFile(_ayarlist,"e-zil.conf");
-        //MainWindow(QWidget *parent);
+         obj["istiklalzilseviye"] =    istiklalZilSeviyeLineEdit->text();
+         obj["istiklalsaygizilseviye"] =    saygiIstiklalZilSeviyeLineEdit->text();
+         obj["sirenzilseviye"] =    sirenZilSeviyeLineEdit->text();
+         obj["muzikyayinseviye"] =    muzikYayinZilSeviyeLineEdit->text();
 
-        QStringList listconf=fileToList("e-zil.conf");
-        listconf=listMerge(_ayarlist,listconf,0);
-        listToFile(listconf,"e-zil.conf");
+         obj["tenefusMuzikYayinState"] =   tenefusMuzikYayinState;
+         obj["oglenMuzikYayinState"] =    oglenMuzikYayinState;
+        qDebug()<<SZSState;
+         obj["SZSState"] =   SZSState;
+         obj["ekilitState"] =    ekilitState;
+         obj["gunState"] =    gunState;
 
-        ayarlist=listGetList(fileToList("e-zil.conf"), "ayar",0);//0 sütun bilgisi olan güne göre list
-        init();
+         obj["muzikklasor"] =    muzikLineEdit->text();
+         obj["molasuresi"] =    saatToSaniye(molaSuresiTimeEdit->time());
+         obj["moladerssaati"] =    molaDersSaatiLineEdit->text();
+         obj["derssayisi"] =    dersSayisiLineEdit->text();
+
+               db->Ekle(obj);
+
+
+        ////init();
         tw->widget(1)->deleteLater();
         tw->widget(2)->deleteLater();
         tw->widget(3)->deleteLater();
@@ -608,8 +623,9 @@ QTimeEdit *muzikBaslamaTimeEdit=new QTimeEdit;
     QCheckBox *tenefusMuzikYayincb = new QCheckBox("Tenefüste Müzik Yayını Yapılsın!",ayarPage);
 //QFont ff( "Arial", 8, QFont::Normal);
 //tenefusMuzikYayincb->setFont(ff);
-if(listGetLine(ayarlist,"tenefusMuzikYayinState")!="")
-    tenefusMuzikYayinState=listGetLine(ayarlist,"tenefusMuzikYayinState").split("|")[2].toInt();
+if (obj.contains("tenefusMuzikYayinState"))
+    tenefusMuzikYayinState=obj["tenefusMuzikYayinState"].toBool();
+
 
 tenefusMuzikYayincb->setChecked(tenefusMuzikYayinState);
 connect(tenefusMuzikYayincb, &QCheckBox::clicked, [=]() {
@@ -629,8 +645,8 @@ QCheckBox *oglenMuzikYayincb = new QCheckBox("Müzik Yayını Yapılsın!",ayarP
 //QFont ff( "Arial", 8, QFont::Normal);
 //tenefusMuzikYayincb->setFont(ff);
 
-if(listGetLine(ayarlist,"oglenMuzikYayinState")!="")
-    oglenMuzikYayinState=listGetLine(ayarlist,"oglenMuzikYayinState").split("|")[2].toInt();
+if (obj.contains("oglenMuzikYayinState"))
+   oglenMuzikYayinState=obj["oglenMuzikYayinState"].toBool();
 
 oglenMuzikYayincb->setChecked(oglenMuzikYayinState);
 connect(oglenMuzikYayincb, &QCheckBox::clicked, [=]() {
@@ -648,8 +664,9 @@ if(oglenMuzikYayincb->checkState()==Qt::Unchecked)
 /*********************Sessiz zil gösteri ayarı************************************/
 QCheckBox *SZScb = new QCheckBox("Sessiz Zil Sistemi Gözüksün Mü?",ayarPage);
 
-if(listGetLine(ayarlist,"SZSState")!="")
-    SZSState=listGetLine(ayarlist,"SZSState").split("|")[2].toInt();
+if (obj.contains("SZSState"))
+    SZSState=obj["SZSState"].toBool();
+
 if(SZSState)
 {
    // qDebug()<<"SZSState"<<SZSState;
@@ -665,21 +682,24 @@ connect(SZScb, &QCheckBox::clicked, [=]() {
 if(SZScb->checkState()==Qt::Checked)
 {
     SZSState=true;
-    SZSgoster();
+    //SZSgoster();
+    qDebug()<<SZSState;
 
 }
 if(SZScb->checkState()==Qt::Unchecked)
 {
    SZSState=false;
-   SZSgizle();
+    qDebug()<<SZSState;
+   //SZSgizle();
 }
 
 });
 /********************* zil e-kilit entegrasyon ayarı************************************/
 QCheckBox *ekilitcb = new QCheckBox("e-kilit ile e-zil Uygulaması Etkileşime Girsin Mi?",ayarPage);
 
-if(listGetLine(ayarlist,"ekilitState")!="")
-    ekilitState=listGetLine(ayarlist,"ekilitState").split("|")[2].toInt();
+if (obj.contains("ekilitState"))
+    ekilitState=obj["ekilitState"].toBool();
+
 if(ekilitState)
 {
    // qDebug()<<"ekilitState"<<ekilitState;
@@ -708,8 +728,11 @@ if(ekilitcb->checkState()==Qt::Unchecked)
 /********************* önemli gün ayarı************************************/
 QCheckBox *guncb = new QCheckBox("Önemli Günler Gösterilsin Mi?",ayarPage);
 
-if(listGetLine(ayarlist,"gunState")!="")
-    gunState=listGetLine(ayarlist,"gunState").split("|")[2].toInt();
+
+if (obj.contains("gunState"))
+    gunState=(obj["gunState"].toBool());
+
+
 if(gunState)
 {
    // qDebug()<<"ekilitState"<<ekilitState;
@@ -725,13 +748,13 @@ connect(guncb, &QCheckBox::clicked, [=]() {
 if(guncb->checkState()==Qt::Checked)
 {
     gunState=true;
-    ///SZSgoster();
+    SZSgoster();
 
 }
 if(guncb->checkState()==Qt::Unchecked)
 {
    gunState=false;
-  /// SZSgizle();
+   SZSgizle();
 }
 
 });

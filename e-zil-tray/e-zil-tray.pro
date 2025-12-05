@@ -18,9 +18,7 @@ TEMPLATE = app
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-contains(QT_VERSION, ^5\\..*) {
-  PKGCONFIG += Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 Qt5GLib-2.0
-  }
+
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -34,8 +32,8 @@ SOURCES += \
     singleinstance.cpp
 
 HEADERS += \
+    Database.h \
         mainwindow.h \
-    filecrud.h \
     singleinstance.h \
     widget.h
 

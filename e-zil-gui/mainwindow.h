@@ -33,6 +33,8 @@
 #include<QSize>
 #include<QScreen>
 #include<QTableWidget>
+#include<Database.h>
+#include<QTimeEdit>
 namespace Ui {
 class MainWindow;
 }
@@ -42,24 +44,22 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    struct DersSaatleri {
+        QTimeEdit *toren;
+        QTimeEdit *giris;
+        QTimeEdit *baslangic;
+        QTimeEdit *cikis;
+        QTimeEdit *teneffus;
+    };
 
 public slots:
 
-    void listToFile(QStringList list, QString filename);
-    QStringList fileToList(QString filename);
-    QString listGetLine(QStringList list,QString data);
-    QStringList listRemove(QStringList list,QString data);
-    QStringList listReplace(QStringList list,QString oldData,QString newData,int index);
-    QStringList listMerge(QStringList list1, QStringList list2,int dataIndex);
-    QStringList listGetList(QStringList list, QString data,int index);
     bool dosyaVarmi(QString dosya);
-    void init();
 
     void SZSgizle();
      void SZSgoster();
       void about();
       void  widgetShow();
-
     void onemliGunSlot();
     void webTableCellDoubleClicked(int iRow, int iColumn);
     void resetStatus()

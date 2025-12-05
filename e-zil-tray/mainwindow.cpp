@@ -27,7 +27,6 @@
 #include<QFile>
 #include<QFileDialog>
 #include<QRegularExpression>
-#include<filecrud.h>
 #include<QTimeEdit>
 #include<QDate>
 #include<QTimer>
@@ -45,13 +44,19 @@ MainWindow::MainWindow(QWidget *parent) :
  {
 #ifdef Q_OS_LINUX
    // qDebug()<< "Linux version";
-      localDir="/usr/share/e-zil/";
+      localDir="/home/etapadmin/";
 #endif
 
 #ifdef Q_OS_WIN
    // qDebug()<< "Windows version";
       localDir="";
 #endif
+      clientConfWather.addPath(localDir+"e-zil.json");
+      connect(&clientConfWather, &QFileSystemWatcher::fileChanged, this,
+              [this](){
+                  init();   // burada tekrar addPath() çağırılacak
+              });
+
 
    // wl=new QWidgetAction(this);
     timer1.setSingleShot(true);
@@ -123,27 +128,26 @@ MainWindow::MainWindow(QWidget *parent) :
 
       player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
       player->setVolume(70);
-
-
-
-
 }
 void MainWindow::init()
 {
- ///  qDebug()<<"init...";
-
+   qDebug()<<"init...";
     const QDate dt = QDate::currentDate();
-    QStringList listconf=fileToList("e-zil.conf");
-    // qDebug()<<dt.dayOfWeek();
     gun=QString::number(dt.dayOfWeek())+"s";
-    trn=QString::number(dt.dayOfWeek())+"storen";
-    saatlist=listGetList(listconf, gun,0);//0 sütun bilgisi olan güne göre listconf listesinden filitreleniyor
-    ayarlist=listGetList(listconf, "ayar",0);//0 sütun bilgisi olan güne göre listconf listesinden filitreleniyor
+
+    DatabaseHelper *db=new DatabaseHelper(localDir+"e-zil.json");
+    QJsonArray settings = db->Ara("recordtype", "settings");
+    if (!settings.isEmpty()) {
+        ayarlar = settings.first().toObject();
+    }
+    //DatabaseHelper *db=new DatabaseHelper(localDir+"e-zil.json");
+     liste = db->Ara("gun", gun);
     /******************Player ve Playlist ayarları yapılıyor***********/
 
     QDir klasorpath;
-    if (listGetLine(ayarlist,"muzikklasor")!="")
-        klasorpath=listGetLine(ayarlist,"muzikklasor").split("|")[2];
+     if (ayarlar.contains("muzikklasor"))
+         klasorpath=ayarlar["muzikklasor"].toString();
+
     playlist = new QMediaPlaylist;
     klasorpath.setNameFilters({"*.wav" , "*.mp3"});
     for(const QFileInfo & finfo: klasorpath.entryInfoList()){
@@ -155,9 +159,9 @@ void MainWindow::init()
     }
 
 
+    if (ayarlar.contains("SZSState"))
+        SZSState=ayarlar["SZSState"].toBool();
     /*****************************************************/
-    if(listGetLine(ayarlist,"SZSState")!="")
-        SZSState=listGetLine(ayarlist,"SZSState").split("|")[2].toInt();
 
     if(SZSState==true&&SZSShowState==false) {
         SZSShowState=true;
@@ -170,10 +174,6 @@ void MainWindow::init()
       widget->hide();
         SZSShowState=false;
     }
-
- //qDebug()<<"-------------"<<SZSState<<SZSShowState;
-
-
 }
 
 void MainWindow::widgetAktif()
@@ -216,187 +216,232 @@ void MainWindow::widgetAktif()
 
 void MainWindow::zilKontrol()
 {
-    init();//ayarların yüklendiği yer
     currentsaat=QTime::currentTime().toString("hh:mm");
+    currentsaniye=QTime::currentTime().hour()*60*60+QTime::currentTime().minute()*60+QTime::currentTime().second();
 
-    int currentsaniye=QTime::currentTime().hour()*60*60+QTime::currentTime().minute()*60+QTime::currentTime().second();
+    //qDebug()<<">>"<<gun<<currentsaat<<currentsaniye;
+    ///qDebug()<<"ayar"<<ayarlar;
+    int molaBaslamaSaati=0;
+    int molaBitisSaati=0;
+    int torenBaslamaSaati=0;
+    int ilkOgrenciGirisSaati=0;
+    int sonDersCikisSaati=0;
+    int derssayisi=0;
+    int oglearasiderssayisi=0;
+    int molasuresi=0;
+    int muzikbaslama=0;
+    int muzikson=0;
+    int derssonupckapat=0;
+    int molapckapat=0;
+    if (ayarlar.contains("derssayisi"))
+        derssayisi=ayarlar["derssayisi"].toString().toInt();
+    if (ayarlar.contains("moladerssaati"))
+        oglearasiderssayisi=ayarlar["moladerssaati"].toString().toInt();
+    if (ayarlar.contains("molasuresi"))
+        molasuresi=ayarlar["molasuresi"].toString().toInt();
+    if (ayarlar.contains("muzikson"))
+        muzikson=ayarlar["muzikson"].toString().toInt();
+    if (ayarlar.contains("muzikbaslama"))
+        muzikbaslama=ayarlar["muzikbaslama"].toString().toInt();
+    if (ayarlar.contains("derssonupckapat"))
+        derssonupckapat=ayarlar["derssonupckapat"].toString().toInt();
+    if (ayarlar.contains("molapckapat"))
+        molapckapat=ayarlar["molapckapat"].toString().toInt();
 
+    /**************************************************************/
 
-  // qDebug()<<">>"<<QTime::currentTime().toString("hh:mm")<<trn<<gun<<currentsaat<<tenefusYayin;
-
-int tb=0,ogrenciGirisSaati=0,dersBaslamaSaati=0,cikisSaati=0,sorakiCikisSaati=0;
-const QDate dt = QDate::currentDate();
-
-int derssayisi=0;
-if(listGetLine(ayarlist,"derssayisi")!="")
- derssayisi=listGetLine(ayarlist,"derssayisi").split("|")[2].toInt();
-
-int torenBaslamaSaati=0;
-if(listGetLine(saatlist,QString::number(dt.dayOfWeek())+"storen")!="")
- torenBaslamaSaati=listGetLine(saatlist,QString::number(dt.dayOfWeek())+"storen").split("|")[1].toInt();
-
-int ilkOgrenciGirisSaati=0;
-if(listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s1")!="")
-ilkOgrenciGirisSaati=listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s1").split("|")[1].toInt();
-
-int sonDersCikisSaati=0;
-if(listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s"+QString::number(derssayisi))!="")
-sonDersCikisSaati=listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s"+QString::number(derssayisi)).split("|")[3].toInt();
-
-int moladerssaatisayisi=0;
-if(listGetLine(ayarlist,"moladerssaati")!="")
- moladerssaatisayisi=listGetLine(ayarlist,"moladerssaati").split("|")[2].toInt();
-
-int molaBaslamaSaati=0;
-if(listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s"+QString::number(moladerssaatisayisi))!="")
-molaBaslamaSaati=listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s"+QString::number(moladerssaatisayisi)).split("|")[3].toInt();
-
-int molaBitisSaati=0;
-if(listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s"+QString::number(moladerssaatisayisi+1))!="")
-molaBitisSaati=listGetLine(saatlist,QString::number(dt.dayOfWeek())+"s"+QString::number(moladerssaatisayisi+1)).split("|")[1].toInt();
-
-
-//qDebug()<<"saatlist sayısı:"<<saatlist.count();
-   for(int i=0;i<saatlist.count();i++)
+    bool bulundu = false;
+    int tolerans = 2;   // 10 saniye
+    QString zilturu="";
+    int zildersno=0;
+    int zilzamani=0;
+    if(liste.count()>0)
     {
-        //qDebug()<<"zam"<<saatlist[i]<<currentsaniye<<cikisSaati<<molaBaslamaSaati<<molaBitisSaati;
 
-        if(saatlist[i].split("|").count()>2)
-        {
-           // qDebug()<<i<<saatlist[i].split("|")[1]<<saatlist[i].split("|")[2]<<saatlist[i].split("|")[3];
-            ogrenciGirisSaati=saatlist[i].split("|")[1].toInt();
-            dersBaslamaSaati=saatlist[i].split("|")[2].toInt();
-            cikisSaati=saatlist[i].split("|")[3].toInt();
-          //  sorakiCikisSaati=saatlist[i+1].split("|")[3].toInt();
-           // qDebug()<<"zam"<<saatlist[i]<<currentsaniye<<cikisSaati<<molaBaslamaSaati<<molaBitisSaati;
+        for (const QJsonValue &item : liste) {
+            QJsonObject veri = item.toObject();
+            // tören saati
+            if(veri["ders"].toInt()==1)
+                torenBaslamaSaati=veri["toren"].toString().toInt();
+            // mola başlama
+            if(veri["ders"].toInt()==oglearasiderssayisi)
+                molaBaslamaSaati=veri["cikis"].toString().toInt();
+            // ilk öğreci giriş saati
+            if(veri["ders"].toInt()==1)
+                ilkOgrenciGirisSaati=veri["giris"].toString().toInt();
+            // ders bitiş saati
+            if(veri["ders"].toInt()==derssayisi)
+                sonDersCikisSaati=veri["cikis"].toString().toInt();
+            // mola bitiş saati
+            if(veri["giris"].toString()==veri["baslangic"].toString())
+                molaBitisSaati=molasuresi+molaBaslamaSaati;
+            else
+            {
+                int gbfark=veri["baslangic"].toString().toInt()-veri["giris"].toString().toInt();
+                molaBitisSaati=molasuresi+molaBaslamaSaati-gbfark;
+            }
 
-            if(currentsaniye<torenBaslamaSaati)
-            {
-                //qDebug()<<"sabah"<<saatlist[i]<<currentsaniye;
-                widget->zamanGostergesiDurum->setText("S");break;
-            }
-            else if(currentsaniye>torenBaslamaSaati&&currentsaniye<ilkOgrenciGirisSaati)
-            {
-               // qDebug()<<"tören"<<tb<<saatlist[i]<<currentsaniye;
+            // Kontrol edilecek alanlar
+            QStringList alanlar = {"baslangic", "giris", "cikis", "toren"};
 
-                if(torenMuzikPlayStatus==false){resetStatus();
-                   if(torenBaslamaSaati+60>currentsaniye) torenMuzik();
-                    torenMuzikPlayStatus=true;}
-                widget->zamanGostergesiDurum->setText("TRN");break;
-            }
-            else if(currentsaniye>=ogrenciGirisSaati&&currentsaniye<dersBaslamaSaati){
-               // qDebug()<<"T>>D"<<saatlist[i]<<currentsaniye;
-                 if(ogrenciMuzikPlayStatus==false){resetStatus();
-                     if(ogrenciGirisSaati+60>currentsaniye) ogrenciMuzik();
-                     ogrenciMuzikPlayStatus=true;}
-                 widget->zamanGostergesiDurum->setText("TND");break;
-            }
-            else if(currentsaniye>=dersBaslamaSaati&&currentsaniye<cikisSaati){
-                //qDebug()<<"D"<<saatlist[i]<<currentsaniye;
-                if(ogretmenMuzikPlayStatus==false){resetStatus();
-                    if(dersBaslamaSaati+60>currentsaniye) ogretmenMuzik();
-                    ogretmenMuzikPlayStatus=true;}
-                widget->zamanGostergesiDurum->setText("D");break;
-            }
-            else if(currentsaniye>=cikisSaati&&(currentsaniye>molaBaslamaSaati&&currentsaniye<molaBitisSaati))
-            {
-                //qDebug()<<"Mola"<<saatlist[i]<<currentsaniye;
-               if(cikisMuzikPlayStatus==false){
-                    resetStatus();
-                     if(cikisSaati+60>currentsaniye) cikisMuzik();
-                    cikisMuzikPlayStatus=true;
-                    yayinMolaMuzik();
-                    molaMuzikYayinPlayStatus=true;
-                }
-                widget->zamanGostergesiDurum->setText("ML");break;
-            }
-            else if(currentsaniye>=cikisSaati&&!(currentsaniye>molaBaslamaSaati&&currentsaniye<molaBitisSaati)&&currentsaniye>=sonDersCikisSaati)
-            {
-               // qDebug()<<"Akşam"<<saatlist[i]<<cikisSaati<<currentsaniye;
-                widget->zamanGostergesiDurum->setText("A");
-                if(cikisMuzikPlayStatus==false){ resetStatus();cikisMuzikPlayStatus=true;
-                  if(cikisSaati+60>currentsaniye)  cikisMuzik();
-                }
-               break;
-            }
-            else if(currentsaniye>=cikisSaati&&!(currentsaniye>molaBaslamaSaati&&currentsaniye<molaBitisSaati))
-            {
-               if(i<saatlist.count()-1&&(saatlist[i+1].split("|").count()>2))
-                {
-                    if(currentsaniye<saatlist[i+1].split("|")[1].toInt())
-                    {
-                       // qDebug()<<"TNF"<<saatlist[i]<<currentsaniye;
+            for (const QString &alan : alanlar) {
 
-                        if(cikisMuzikPlayStatus==false){
-                            resetStatus();
-                            cikisMuzikPlayStatus=true;
-                            if(cikisSaati+60>currentsaniye) cikisMuzik();
-                            yayinTenefusMuzik();
-                            tenefusMuzikYayinPlayStatus=true;
-                        }
-                        widget->zamanGostergesiDurum->setText("TNF");break;
-                    }
+                if (!veri.contains(alan)) continue;
+
+                int deger = veri.value(alan).toString().toInt();
+
+                // Toleranslı karşılaştırma
+                if (qAbs(currentsaniye - deger) <= tolerans) {
+                    /*qDebug()
+                    << "EŞLEŞME BULUNDU => Ders:"
+                    << veri.value("ders").toInt()
+                    << " Alan:" << alan
+                    << " AlanDeğeri:" << deger
+                    << " Current:" << currentsaniye;*/
+                    zilturu=alan;
+                    zildersno=veri.value("ders").toInt();
+                    zilzamani=deger;
+                    bulundu = true;
                 }
             }
+           /// if(bulundu) break;
+        }
+    }
+    if(bulundu){
+        qDebug()
+            << "zil:"
+            <<zildersno
+            <<zilturu
+            <<zilzamani;
+        if(zilturu=="giris"){
+            if(ogrenciMuzikPlayStatus==false){
+                resetStatus();
+                //if(zilzamani+60>currentsaniye)
+                ogrenciMuzik();
+                ogrenciMuzikPlayStatus=true;
+            }
+            widget->zamanGostergesiDurum->setText("TND");
+        }
+        if(zilturu=="baslangic"){
+            if(ogretmenMuzikPlayStatus==false){
+                resetStatus();
+                ///if(zilzamani+60>currentsaniye)
+                ogretmenMuzik();
+                ogretmenMuzikPlayStatus=true;
+            }
+                widget->zamanGostergesiDurum->setText("D");
+        }
+        if(zilturu=="cikis"){
+            if(cikisMuzikPlayStatus==false){
+                resetStatus();
+                cikisMuzikPlayStatus=true;
+                //if(zilzamani+60>currentsaniye)
+                cikisMuzik();
+                yayinTenefusMuzik();
+                tenefusMuzikYayinPlayStatus=true;
+            }
+            widget->zamanGostergesiDurum->setText("TNF");
+        }
+    }
 
+    if (qAbs(currentsaniye - molaBaslamaSaati) <= tolerans) {
+        qDebug()<<"öğle arası başladı"<<molaBaslamaSaati;
+        if(cikisMuzikPlayStatus==false){
+            resetStatus();
+            //if(molaBaslamaSaati+60>currentsaniye)
+            cikisMuzik();
+            cikisMuzikPlayStatus=true;
+            yayinMolaMuzik();
+            molaMuzikYayinPlayStatus=true;
+        }
+        widget->zamanGostergesiDurum->setText("ML");
+    }
+    if (qAbs(currentsaniye - molaBitisSaati) <= tolerans) {
+        qDebug()<<"öğle arası bitti"<<molaBitisSaati;
+    }
+    if(currentsaniye<torenBaslamaSaati)
+    {
+        //qDebug()<<"sabah"<<saatlist[i]<<currentsaniye;
+        widget->zamanGostergesiDurum->setText("S");
+    }
 
+    if (qAbs(currentsaniye - torenBaslamaSaati) <= tolerans) {
 
+        if(torenMuzikPlayStatus==false){
+            qDebug()<<"tören başladı";
+            resetStatus();
+            //if(torenBaslamaSaati+60>currentsaniye)
+            torenMuzik();
+            torenMuzikPlayStatus=true;
+            widget->zamanGostergesiDurum->setText("TRN");
         }
 
     }
-/**************************************************************************************/
+    if (qAbs(currentsaniye - ilkOgrenciGirisSaati) <= tolerans) {
+        qDebug()<<"ilk öğrenci girişi";
+    }
+    if (currentsaniye >(sonDersCikisSaati+tolerans)) {
+          if(cikisMuzikPlayStatus==false){
+            qDebug()<<"ders bitti";
+            widget->zamanGostergesiDurum->setText("A");
+            resetStatus();
+            cikisMuzikPlayStatus=true;
+            /*if(qAbs(currentsaniye -sonDersCikisSaati+10)<=tolerans)
+                cikisMuzik();*/
 
-int currentsaatsaniye=QTime::currentTime().hour()*60*60+QTime::currentTime().minute()*60;
-    QString lineayar=listGetLine(ayarlist,QString::number(currentsaatsaniye));
-    if(lineayar!="")
-   {
- qDebug()<<"ayar..:"<<lineayar;
-      if(lineayar.split("|")[1]=="muzikbaslama"&&
-              listGetLine(ayarlist,"oglenMuzikYayinState")=="ayar|oglenMuzikYayinState|1"&&
-               molaMuzikYayinState==false)
+        }
+    }
+
+    if (qAbs(currentsaniye - muzikbaslama) <= tolerans) {
+
+        if(molaMuzikYayinState==false)
         {
-          widget->zamanGostergesiDurum->setText("M");
+            qDebug()<<"mola muzikbaslama";
+            widget->zamanGostergesiDurum->setText("M");
             qDebug()<<"15sn sonra Mola Müzik Yayını Başlayacak..";
             timer1.start(15000);
             loop.exec();
-
-            if (listGetLine(ayarlist,"muzikklasor")!="")
+            QString muzikklasor;
+            if (ayarlar.contains("muzikklasor"))
+                muzikklasor=ayarlar["muzikklasor"].toString().toInt();
+            if (muzikklasor!="")
             {
                 player->setMedia(playlist);
                 player->play();
                 molaMuzikYayinState=true;
-
             }
-
-      }
-
-
-
-        if(lineayar.split("|")[1]=="muzikson"&&
-                listGetLine(ayarlist,"oglenMuzikYayinState")=="ayar|oglenMuzikYayinState|1"&&
-                 molaMuzikYayinState)
-        { player->stop();
-
-             molaMuzikYayinState=false;
         }
+    }
 
-        if(lineayar.split("|")[1]=="derssonupckapat")
-        {
-          //  qDebug()<<"derssonupckapat";
-             QString kmt=QString(listGetLine(ayarlist,"kapatKomut").split("|")[2]);
-                    system(kmt.toStdString().c_str());
-        }
-        if(lineayar.split("|")[1]=="molapckapat")
-        {
-           // qDebug()<<"molapckapat";
-            QString kmt=QString(listGetLine(ayarlist,"kapatKomut").split("|")[2]);
-                   system(kmt.toStdString().c_str());
-        }
-   }
-/***********************************************************/
-    // const QDate dt = QDate::QDate::toString();
-    // qDebug()<<"tarih:"<<QDate::currentDate().toString("dd.MM.yyyy");
+    if (qAbs(currentsaniye - muzikson) <= tolerans) {
+        qDebug()<<"mola muzikson bitti";
+           if(molaMuzikYayinState)
+            {
+                player->stop();
+                molaMuzikYayinState=false;
+            }
+    }
 
+    if (qAbs(currentsaniye - derssonupckapat) <= tolerans) {
+        qDebug()<<"kapatKomut";
+        QString kmt="";
+        if (ayarlar.contains("kapatKomut"))
+            kmt=ayarlar["molapckapat"].toString().toInt();
+        system(kmt.toStdString().c_str());
+    }
+
+    if (qAbs(currentsaniye - molapckapat) <= tolerans) {
+        qDebug()<<"molapckapati";
+        QString kmt="";
+        if (ayarlar.contains("kapatKomut"))
+            kmt=ayarlar["molapckapat"].toString().toInt();
+        system(kmt.toStdString().c_str());
+    }
+
+    return;
+
+
+/*
    if(listGetLine(ayarlist,"gunState")=="ayar|gunState|1")
    {
         QString path=localDir+"gunlist";
@@ -431,121 +476,127 @@ MainWindow::~MainWindow()
 }
 void MainWindow::torenMuzik()
 {
-//qDebug()<<"Tören müzik...";
-    if(listGetLine(ayarlist,"torenzil")!="")
-    {
-       // widget->zamanGostergesiDurum->setText("TR");
-        QString deger=listGetLine(ayarlist,"torenzilseviye").split("|")[2];
-        player->setVolume(deger.toInt());
-        playStateToren=true;
-        QString filepath=listGetLine(ayarlist,"torenzil").split("|")[2];
-        QFile* file = new QFile(filepath);
-        if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();
-            tempCurrentsaat=currentsaat;
-            qDebug()<<"Tören Zili Çalıyor....."<<QDateTime::currentDateTime();
-        }
+    qDebug()<<"Tören müzik...";
+    int deger=0;
+    if (ayarlar.contains("torenzilseviye"))
+        deger=ayarlar["torenzilseviye"].toString().toInt();
+    QString filepath;
+    if (ayarlar.contains("torenzil"))
+        filepath=ayarlar["torenzil"].toString();
+
+    qDebug()<<filepath;
+    player->setVolume(deger);
+    QFile* file = new QFile(filepath);
+    if (file->open(QFile::ReadOnly)) {
+        player->setMedia(QMediaContent(), file);
+        file->seek(0);
+        player->play();
+        tempCurrentsaat=currentsaat;
+        qDebug()<<"Tören Zili Çalıyor....."<<QDateTime::currentDateTime();
     }
+
 }
 void MainWindow::ogrenciMuzik()
 {
-    //qDebug()<<"ogrenci müzik...";
-    if(listGetLine(ayarlist,"ogrencizil")!="")
-    {
-        if(tenefusYayin) {
-            //qDebug()<<"ogrenci süresi:"<< player->duration();
-            player->stop();
-            qDebug()<<"Tenefüs Müzik Yayını Durdu.."<<QDateTime::currentDateTime();
-            tenefusYayin=false;
-            qDebug()<<"10sn sonra Öğrenci Zili Çalacak.."<<QDateTime::currentDateTime();
-            timer1.start(10000);
-            loop.exec();
-        }
-        widget->zamanGostergesiDurum->setText("TND");
-        QString deger=listGetLine(ayarlist,"ogrencizilseviye").split("|")[2];
-        player->setVolume(deger.toInt());
-        QString filepath=listGetLine(ayarlist,"ogrencizil").split("|")[2];
-        QFile* file = new QFile(filepath);
-        if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();
-            tempCurrentsaat=currentsaat;
-            qDebug()<<"Öğrenci Zili Çalıyor....."<<QDateTime::currentDateTime();
-        }
+    qDebug()<<"ogrenci müzik...";
+    int deger=0;
+    if (ayarlar.contains("ogrencizilseviye"))
+        deger=ayarlar["ogrencizilseviye"].toString().toInt();
+    QString filepath;
+    if (ayarlar.contains("ogrencizil"))
+        filepath=ayarlar["ogrencizil"].toString();
+
+
+    if(tenefusYayin) {
+        //qDebug()<<"ogrenci süresi:"<< player->duration();
+        player->stop();
+        qDebug()<<"Tenefüs Müzik Yayını Durdu.."<<QDateTime::currentDateTime();
+        tenefusYayin=false;
+        qDebug()<<"10sn sonra Öğrenci Zili Çalacak.."<<QDateTime::currentDateTime();
+        timer1.start(10000);
+        loop.exec();
     }
+    widget->zamanGostergesiDurum->setText("TND");
+    player->setVolume(deger);
+    QFile* file = new QFile(filepath);
+    if (file->open(QFile::ReadOnly)) {
+        player->setMedia(QMediaContent(), file);
+        file->seek(0);
+        player->play();
+        tempCurrentsaat=currentsaat;
+        qDebug()<<"Öğrenci Zili Çalıyor....."<<QDateTime::currentDateTime();
+    }
+
 }
 void MainWindow::ogretmenMuzik()
 {
-    if(listGetLine(ayarlist,"ekilitState")!="")
-        ekilitState=listGetLine(ayarlist,"ekilitState").split("|")[2].toInt();
-    if(ekilitState)
-    {
-        system("nohup pkill e-kilit&");
-    }
+    qDebug()<<"ogretmen müzik...";
+    int deger=0;
+    if (ayarlar.contains("ogretmenzilseviye"))
+        deger=ayarlar["ogretmenzilseviye"].toString().toInt();
+    QString filepath;
+    if (ayarlar.contains("ogretmenzil"))
+        filepath=ayarlar["ogretmenzil"].toString();
 
-           // qDebug()<<"ogretmen müzik...";
-    if(listGetLine(ayarlist,"ogretmenzil")!="")
-    {
-        widget->zamanGostergesiDurum->setText("D");
-        QString deger=listGetLine(ayarlist,"ogretmenzilseviye").split("|")[2];
-        player->setVolume(deger.toInt());
 
-        QString filepath=listGetLine(ayarlist,"ogretmenzil").split("|")[2];
-        QFile* file = new QFile(filepath);
+    widget->zamanGostergesiDurum->setText("D");
 
-        if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();
-            tempCurrentsaat=currentsaat;
-            qDebug()<<"Öğretmen Zili Çalıyor....."<<QDateTime::currentDateTime();
-        }
+    player->setVolume(deger);
+
+    QFile* file = new QFile(filepath);
+
+    if (file->open(QFile::ReadOnly)) {
+        player->setMedia(QMediaContent(), file);
+        file->seek(0);
+        player->play();
+        tempCurrentsaat=currentsaat;
+        qDebug()<<"Öğretmen Zili Çalıyor....."<<QDateTime::currentDateTime();
     }
 }
 void MainWindow::cikisMuzik()
 {
-    if(listGetLine(ayarlist,"ekilitState")!="")
-        ekilitState=listGetLine(ayarlist,"ekilitState").split("|")[2].toInt();
-    if(ekilitState)
-    {
-       system("nohup /usr/bin/e-kilit&");
-    }
+    qDebug()<<"çıkış müzik...";
+    int deger=0;
+    if (ayarlar.contains("cikiszilseviye"))
+        deger=ayarlar["cikiszilseviye"].toString().toInt();
+    QString filepath;
+    if (ayarlar.contains("cikiszil"))
+        filepath=ayarlar["cikiszil"].toString();
 
-    // qDebug()<<"çıkış müzik...";
-    if(listGetLine(ayarlist,"cikiszil")!="")
-    {
-
-        widget->zamanGostergesiDurum->setText("TN");
-        QString deger=listGetLine(ayarlist,"cikiszilseviye").split("|")[2];
-        player->setVolume(deger.toInt());
-
-        QString filepath=listGetLine(ayarlist,"cikiszil").split("|")[2];
-        QFile* file = new QFile(filepath);
-        if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();
-            tempCurrentsaat=currentsaat;
-            qDebug()<<"Çıkış Zili Çalıyor....."<<QDateTime::currentDateTime();
-        }
-
+    widget->zamanGostergesiDurum->setText("TN");
+    player->setVolume(deger);
+    QFile* file = new QFile(filepath);
+    if (file->open(QFile::ReadOnly)) {
+        player->setMedia(QMediaContent(), file);
+        file->seek(0);
+        player->play();
+        tempCurrentsaat=currentsaat;
+        qDebug()<<"Çıkış Zili Çalıyor....."<<QDateTime::currentDateTime();
     }
 }
 void MainWindow::yayinTenefusMuzik()
 {
-     //qDebug()<<"yayin müzik...";
-    if(listGetLine(ayarlist,"tenefusMuzikYayinState")=="ayar|tenefusMuzikYayinState|1")// &&line.split("|")[0].right(1)!=QString::number(ogleArasi))
+    qDebug()<<"yayin müzik...";
+
+    bool tenefusMuzikYayinState=false;
+    if (ayarlar.contains("tenefusMuzikYayinState"))
+        tenefusMuzikYayinState=ayarlar["tenefusMuzikYayinState"].toBool();
+
+    if(tenefusMuzikYayinState)
     {
+        int deger=0;
+        if (ayarlar.contains("muzikyayinseviye"))
+            deger=ayarlar["muzikyayinseviye"].toString().toInt();
         qDebug()<<"15sn sonra Tenefüs Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
         timer1.start(20000);
         loop.exec();
-        QString deger=listGetLine(ayarlist,"muzikyayinseviye").split("|")[2];
-        player->setVolume(deger.toInt());
 
-        if (listGetLine(ayarlist,"muzikklasor")!="")
+        player->setVolume(deger);
+        QString muzikklasor;
+        if (ayarlar.contains("muzikklasor"))
+            muzikklasor=ayarlar["muzikklasor"].toString();
+
+        if (muzikklasor!="")
         {
             player->setMedia(playlist);
             player->play();
@@ -559,16 +610,26 @@ void MainWindow::yayinTenefusMuzik()
 }
 void MainWindow::yayinMolaMuzik()
 {
-     //qDebug()<<"yayin müzik...";
-    if(listGetLine(ayarlist,"oglenMuzikYayinState")=="ayar|oglenMuzikYayinState|1")// &&line.split("|")[0].right(1)!=QString::number(ogleArasi))
+    qDebug()<<"yayin müzik...";
+
+    bool oglenMuzikYayinState;
+    if (ayarlar.contains("oglenMuzikYayinState"))
+        oglenMuzikYayinState=ayarlar["oglenMuzikYayinState"].toBool();
+
+    if(oglenMuzikYayinState)
     {
         qDebug()<<"15sn sonra Mola Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
         timer1.start(20000);
         loop.exec();
-        QString deger=listGetLine(ayarlist,"muzikyayinseviye").split("|")[2];
-        player->setVolume(deger.toInt());
+        int deger=0;
+        if (ayarlar.contains("muzikyayinseviye"))
+            deger=ayarlar["muzikyayinseviye"].toString().toInt();
+        player->setVolume(deger);
+        QString muzikklasor;
+        if (ayarlar.contains("muzikklasor"))
+            muzikklasor=ayarlar["muzikklasor"].toString().toInt();
 
-        if (listGetLine(ayarlist,"muzikklasor")!="")
+        if (muzikklasor!="")
         {
             player->setMedia(playlist);
             player->play();
@@ -582,184 +643,22 @@ void MainWindow::yayinMolaMuzik()
 }
 QTime MainWindow::saniyeToSaat(QString _zaman)
 {
-     QTime zm(0,0,0);
-      zm=zm.addSecs(_zaman.toInt());
-      return zm;
+    QTime zm(0,0,0);
+    zm=zm.addSecs(_zaman.toInt());
+    return zm;
 }
 QString MainWindow::saatToSaniye(QTime _zaman)
 {
-   int zmm=_zaman.hour()*60*60+_zaman.minute()*60+_zaman.second();
-   return QString::number(zmm);
+    int zmm=_zaman.hour()*60*60+_zaman.minute()*60+_zaman.second();
+    return QString::number(zmm);
 }
 
-QStringList MainWindow::listMerge(QStringList list1, QStringList list2, int dataIndex)
-{
-    for(int i=0;i<list1.count();i++)
-    {
-        QString line=list1[i];
-        if(line!="")
-        {
-
-            QStringList lst=line.split("|");
-            list2=listRemove(list2,lst[dataIndex]);
-        }
-    }
-    for(int i=0;i<list1.count();i++)
-    {
-       list2.append(list1[i]);
-    }
-    return list2;
-}
-QStringList MainWindow::listReplace(QStringList list, QString oldData, QString newData, int index)
- {
-    QStringList liste;
-         QRegularExpression re(oldData);
-     for(int i=0;i<list.count();i++)
-     {
-         if(list[i].contains(re))
-         {
-             QStringList lst=list[i].split("|");
-             lst[index].replace(oldData, newData);
-            // qDebug()<<lst;
-
-             QString ln="";
-             if(lst.count()>0)ln.append(lst[0]);
-             if(lst.count()>1)ln.append("|").append(lst[1]);
-             if(lst.count()>2)ln.append("|").append(lst[2]);
-             if(lst.count()>3)ln.append("|").append(lst[3]);
-             if(lst.count()>4)ln.append("|").append(lst[4]);
-             if(lst.count()>5)ln.append("|").append(lst[5]);
-             if(lst.count()>6)ln.append("|").append(lst[4]);
-             if(lst.count()>7)ln.append("|").append(lst[7]);
-             if(lst.count()>8)ln.append("|").append(lst[8]);
-             if(lst.count()>9)ln.append("|").append(lst[9]);
-            // list.removeAt(i);
-             liste.append(ln);
-         }
-     }
-    // qDebug()<<list;
-     return liste;
- }
-QStringList MainWindow::listGetList(QStringList list, QString data,int index)
- {
-    QStringList liste;
-    QRegularExpression re(data);
-     for(int i=0;i<list.count();i++)
-     {
-         if(list[i].contains(re))
-         {
-            liste.append(list[i]);
-
-         }
-     }
-    // qDebug()<<list;
-     return liste;
- }
-QStringList MainWindow::listRemove(QStringList list,QString data)
- {
-         QRegularExpression re(data);
-     for(int i=0;i<list.count();i++)if(list[i].contains(data)) list.removeAt(i);
-    // qDebug()<<list;
-     return list;
- }
-QString MainWindow::listGetLine(QStringList list,QString data)
- {
-         QRegularExpression re(data);
-     for(int i=0;i<list.count();i++) if(list[i].contains(re)) return list[i];
-     //qDebug()<<list;
-     return "";
- }
-QStringList MainWindow::fileToList(QString filename)
- {
-    FileCrud *fcc=new FileCrud();
-    fcc->dosya=localDir+filename;
-    QStringList list;
-    for(int i=1;i<=fcc->fileCount();i++)
-    {
-         QString line=fcc->fileGetLine(i);
-         if(line!="")
-         {
-             line.chop(1);
-             QStringList lst=line.split("|");
-             QString ln="";
-             if(lst.count()>0)ln.append(lst[0]);
-             if(lst.count()>1)ln.append("|").append(lst[1]);
-             if(lst.count()>2)ln.append("|").append(lst[2]);
-             if(lst.count()>3)ln.append("|").append(lst[3]);
-             if(lst.count()>4)ln.append("|").append(lst[4]);
-             if(lst.count()>5)ln.append("|").append(lst[5]);
-             if(lst.count()>6)ln.append("|").append(lst[4]);
-             if(lst.count()>7)ln.append("|").append(lst[7]);
-             if(lst.count()>8)ln.append("|").append(lst[8]);
-             if(lst.count()>9)ln.append("|").append(lst[9]);
-
-             list <<ln;
-            // qDebug()<<ln;
-             // list <<lst[0]+"|"+lst[1]+"|"+lst[2]+"|"+lst[3]+"|"+lst[4]+"|"+lst[5];
-
-         }
-    }
-        return list;
- }
-void MainWindow::listToFile(QStringList list, QString filename)
- {
-  //  qDebug()<<" listtofile";
-    FileCrud *fcc=new FileCrud();
-    fcc->dosya=localDir+filename;
-    //QStringList list;
-    fcc->fileRemove();
-    for(int i=0;i<list.count();i++)
-    {
-         QString line=list[i];
-         if(line!="")
-         {
-             //line.chop(1);
-             QStringList lst=line.split("|");
-             //qDebug()<<line;
-             QString ln="";
-             if(lst.count()>0)ln.append(lst[0]);
-             if(lst.count()>1)ln.append("|").append(lst[1]);
-             if(lst.count()>2)ln.append("|").append(lst[2]);
-             if(lst.count()>3)ln.append("|").append(lst[3]);
-             if(lst.count()>4)ln.append("|").append(lst[4]);
-             if(lst.count()>5)ln.append("|").append(lst[5]);
-             if(lst.count()>6)ln.append("|").append(lst[4]);
-             if(lst.count()>7)ln.append("|").append(lst[7]);
-             if(lst.count()>8)ln.append("|").append(lst[8]);
-             if(lst.count()>9)ln.append("|").append(lst[9]);
-
-             //qDebug()<<ln;
-             fcc->fileWrite(ln);
-            // fcc->fileWrite(lst[0]+"|"+lst[1]+"|"+lst[2]+"|"+lst[3]+"|"+lst[4]+"|"+lst[5]);
-
-         }
-
-    }
-/********************file permission*************************/
-   QFile file(localDir+filename);
-    if (file.open(QFile::ReadWrite)){
-            if(!file.setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser|QFileDevice::ExeUser|
-                                    QFileDevice::WriteOwner | QFileDevice::ReadOwner|QFileDevice::ExeOwner|
-                                    QFileDevice::WriteGroup | QFileDevice::ReadGroup|QFileDevice::ExeGroup|
-                                    QFileDevice::WriteOther | QFileDevice::ReadOther|QFileDevice::ExeOther)){
-                qDebug()<< "Error in permissions";
-             }
-            file.close();
-    }
-/***********************************************/
- }
 void  MainWindow::gizle()
 {
     //hide();
    // qDebug()<<"deded";
     QWidget::hide();
     timergizle->stop();
-  //  if(socket->waitForConnected())//bağlantı varsa
-    //{
-   // if (timeoutsecond!="")    timer->start(timeoutsecond.toInt());
-    //else timer->start(3000);
-  //  qDebug()<<"Paket Gönderme Başladı..";
-    //}//else qDebug()<<"Paket Gönderilemiyor..";
 }
 
 
@@ -871,7 +770,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 }
 void MainWindow::onemliGunSlot()
-{
+{/*
    // qDebug()<<"ayar click";
     QString font="12";
     QDialog * d = new QDialog();
@@ -918,7 +817,7 @@ void MainWindow::onemliGunSlot()
 });
 
     /***********************************************************************/
-   twl=new QTableWidget;
+  /* twl=new QTableWidget;
     twl->setFixedSize(QSize(en*20,en*20));
     twl->setColumnCount(2);
     //twl->setRowCount(0);
@@ -975,18 +874,18 @@ void MainWindow::onemliGunSlot()
     d->setLayout(vbox);
 
     int result = d->exec();
-
+*/
 }
 
 void MainWindow::webTableCellDoubleClicked(int iRow, int iColumn)
 {
-     QString webadres= twl->item(iRow, 0)->text();
+   /*  QString webadres= twl->item(iRow, 0)->text();
      QStringList list=fileToList("gunlist");
 /******************************************************************/
     //QMessageBox::StandardButton reply;
     // reply = QMessageBox::question(this, "Uyarı", "Bilgisayar Silinecek! Emin misiniz?",
       //                             QMessageBox::Yes|tr(QMessageBox::No);
-     QMessageBox messageBox(this);
+    /* QMessageBox messageBox(this);
      messageBox.setText("Uyarı");
      messageBox.setInformativeText("Gun İçin İşlem Seçiniz!");
      QAbstractButton *evetButton =messageBox.addButton(tr("Sil"), QMessageBox::ActionRole);
@@ -1010,5 +909,5 @@ void MainWindow::webTableCellDoubleClicked(int iRow, int iColumn)
                  //qDebug()<<"hayır basıldı";
              }
 
-
+*/
 }

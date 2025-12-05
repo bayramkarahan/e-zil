@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #ifdef Q_OS_LINUX
    // qDebug()<< "Linux version";
-      localDir="/usr/share/e-zil/";
+      localDir="/home/etapadmin/";
 #endif
 
 #ifdef Q_OS_WIN
@@ -91,48 +91,10 @@ MainWindow::MainWindow(QWidget *parent) :
       tw=new QTabWidget(this);
       tw->resize(this->width(),this->height());
       /*************************SZS ekranı*******************************************/
-
-      init();// Başlangıç ayarları yapıldı
-
-    /***********************Tab Ayarları Yapıldı********************/
-
-      /*********************************************************************************/
-        player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
+      player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
       player->setVolume(70);
 
 widgetShow();
-
-
-}
-void MainWindow::init()
-{
- ///  qDebug()<<"init...";
-
-    const QDate dt = QDate::currentDate();
-    QStringList listconf=fileToList("e-zil.conf");
-    // qDebug()<<dt.dayOfWeek();
-    gun=QString::number(dt.dayOfWeek())+"s";
-    trn=QString::number(dt.dayOfWeek())+"storen";
-    saatlist=listGetList(listconf, gun,0);//0 sütun bilgisi olan güne göre listconf listesinden filitreleniyor
-    ayarlist=listGetList(listconf, "ayar",0);//0 sütun bilgisi olan güne göre listconf listesinden filitreleniyor
-    /******************Player ve Playlist ayarları yapılıyor***********/
-
-    QDir klasorpath;
-    if (listGetLine(ayarlist,"muzikklasor")!="")
-        klasorpath=QDir::homePath()+"/"+listGetLine(ayarlist,"muzikklasor").split("|")[2];
-    playlist = new QMediaPlaylist;
-    klasorpath.setNameFilters({"*.wav" , "*.mp3"});
-    for(const QFileInfo & finfo: klasorpath.entryInfoList()){
-
-        playlist->addMedia(QUrl::fromLocalFile(finfo.absoluteFilePath()));
-        muziklist.append(QUrl::fromLocalFile(finfo.absoluteFilePath()).toString().remove(0,7)).append(" ");
-
-       // qDebug()<<QUrl::fromLocalFile(finfo.absoluteFilePath()).toString();
-    }
-
-
-
- //qDebug()<<"-------------"<<SZSState<<SZSShowState;
 
 
 }
@@ -153,186 +115,38 @@ QString MainWindow::saatToSaniye(QTime _zaman)
    return QString::number(zmm);
 }
 
-QStringList MainWindow::listMerge(QStringList list1, QStringList list2, int dataIndex)
-{
-    for(int i=0;i<list1.count();i++)
-    {
-        QString line=list1[i];
-        if(line!="")
-        {
-
-            QStringList lst=line.split("|");
-            list2=listRemove(list2,lst[dataIndex]);
-        }
-    }
-    for(int i=0;i<list1.count();i++)
-    {
-       list2.append(list1[i]);
-    }
-    return list2;
-}
-QStringList MainWindow::listReplace(QStringList list, QString oldData, QString newData, int index)
- {
-    QStringList liste;
-         QRegularExpression re(oldData);
-     for(int i=0;i<list.count();i++)
-     {
-         if(list[i].contains(re))
-         {
-             QStringList lst=list[i].split("|");
-             lst[index].replace(oldData, newData);
-            // qDebug()<<lst;
-
-             QString ln="";
-             if(lst.count()>0)ln.append(lst[0]);
-             if(lst.count()>1)ln.append("|").append(lst[1]);
-             if(lst.count()>2)ln.append("|").append(lst[2]);
-             if(lst.count()>3)ln.append("|").append(lst[3]);
-             if(lst.count()>4)ln.append("|").append(lst[4]);
-             if(lst.count()>5)ln.append("|").append(lst[5]);
-             if(lst.count()>6)ln.append("|").append(lst[4]);
-             if(lst.count()>7)ln.append("|").append(lst[7]);
-             if(lst.count()>8)ln.append("|").append(lst[8]);
-             if(lst.count()>9)ln.append("|").append(lst[9]);
-            // list.removeAt(i);
-             liste.append(ln);
-         }
-     }
-    // qDebug()<<list;
-     return liste;
- }
-QStringList MainWindow::listGetList(QStringList list, QString data,int index)
- {
-    QStringList liste;
-    QRegularExpression re(data);
-     for(int i=0;i<list.count();i++)
-     {
-         if(list[i].contains(re))
-         {
-            liste.append(list[i]);
-
-         }
-     }
-    // qDebug()<<list;
-     return liste;
- }
-QStringList MainWindow::listRemove(QStringList list,QString data)
- {
-         QRegularExpression re(data);
-     for(int i=0;i<list.count();i++)if(list[i].contains(data)) list.removeAt(i);
-    // qDebug()<<list;
-     return list;
- }
-QString MainWindow::listGetLine(QStringList list,QString data)
- {
-         QRegularExpression re(data);
-     for(int i=0;i<list.count();i++) if(list[i].contains(re)) return list[i];
-     //qDebug()<<list;
-     return "";
- }
-QStringList MainWindow::fileToList(QString filename)
- {
-    FileCrud *fcc=new FileCrud();
-    fcc->dosya=localDir+filename;
-    QStringList list;
-    for(int i=1;i<=fcc->fileCount();i++)
-    {
-         QString line=fcc->fileGetLine(i);
-         if(line!="")
-         {
-             line.chop(1);
-             QStringList lst=line.split("|");
-             QString ln="";
-             if(lst.count()>0)ln.append(lst[0]);
-             if(lst.count()>1)ln.append("|").append(lst[1]);
-             if(lst.count()>2)ln.append("|").append(lst[2]);
-             if(lst.count()>3)ln.append("|").append(lst[3]);
-             if(lst.count()>4)ln.append("|").append(lst[4]);
-             if(lst.count()>5)ln.append("|").append(lst[5]);
-             if(lst.count()>6)ln.append("|").append(lst[4]);
-             if(lst.count()>7)ln.append("|").append(lst[7]);
-             if(lst.count()>8)ln.append("|").append(lst[8]);
-             if(lst.count()>9)ln.append("|").append(lst[9]);
-
-             list <<ln;
-            // qDebug()<<ln;
-             // list <<lst[0]+"|"+lst[1]+"|"+lst[2]+"|"+lst[3]+"|"+lst[4]+"|"+lst[5];
-
-         }
-    }
-        return list;
- }
-void MainWindow::listToFile(QStringList list, QString filename)
- {
-  //  qDebug()<<" listtofile";
-    FileCrud *fcc=new FileCrud();
-    fcc->dosya=localDir+filename;
-    //QStringList list;
-    fcc->fileRemove();
-    for(int i=0;i<list.count();i++)
-    {
-         QString line=list[i];
-         if(line!="")
-         {
-             //line.chop(1);
-             QStringList lst=line.split("|");
-             //qDebug()<<line;
-             QString ln="";
-             if(lst.count()>0)ln.append(lst[0]);
-             if(lst.count()>1)ln.append("|").append(lst[1]);
-             if(lst.count()>2)ln.append("|").append(lst[2]);
-             if(lst.count()>3)ln.append("|").append(lst[3]);
-             if(lst.count()>4)ln.append("|").append(lst[4]);
-             if(lst.count()>5)ln.append("|").append(lst[5]);
-             if(lst.count()>6)ln.append("|").append(lst[4]);
-             if(lst.count()>7)ln.append("|").append(lst[7]);
-             if(lst.count()>8)ln.append("|").append(lst[8]);
-             if(lst.count()>9)ln.append("|").append(lst[9]);
-
-             //qDebug()<<ln;
-             fcc->fileWrite(ln);
-            // fcc->fileWrite(lst[0]+"|"+lst[1]+"|"+lst[2]+"|"+lst[3]+"|"+lst[4]+"|"+lst[5]);
-
-         }
-
-    }
-/********************file permission*************************/
-   QFile file(localDir+filename);
-    if (file.open(QFile::ReadWrite)){
-            if(!file.setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser|QFileDevice::ExeUser|
-                                    QFileDevice::WriteOwner | QFileDevice::ReadOwner|QFileDevice::ExeOwner|
-                                    QFileDevice::WriteGroup | QFileDevice::ReadGroup|QFileDevice::ExeGroup|
-                                    QFileDevice::WriteOther | QFileDevice::ReadOther|QFileDevice::ExeOther)){
-                qDebug()<< "Error in permissions";
-             }
-            file.close();
-    }
-/***********************************************/
- }
-
 void  MainWindow::SZSgizle()
 {
-    //widget->close();
-
-    qDebug()<<"widget gizle..";
-
+     qDebug()<<"widget gizle..";
     SZSState=false;
-    QStringList listconf=fileToList("e-zil.conf");
-    listconf=listRemove(listconf,"ayar|SZSState|");
-    listconf.append("ayar|SZSState|"+QString::number(SZSState));
-    listToFile(listconf,"e-zil.conf");
+     DatabaseHelper *db=new DatabaseHelper(localDir+"e-zil.json");
+     QJsonArray ayarlarliste = db->Ara("recordtype", "settings");
+     QJsonObject ayarlar;
 
+     if (!ayarlarliste.isEmpty()) {
+         ayarlar = ayarlarliste.first().toObject();
+     }
+     if (ayarlar.contains("SZSState"))
+         SZSState=ayarlar["SZSState"].toBool();
+     ayarlar["SZSState"]=false;
+     db->Ekle(ayarlar);
 }
 void  MainWindow::SZSgoster()
 {
 //widget->show();
-qDebug()<<"widget göster..";
-SZSState=true;
- QStringList listconf=fileToList("e-zil.conf");
- listconf=listRemove(listconf,"ayar|SZSState|");
-listconf.append("ayar|SZSState|"+QString::number(SZSState));
-listToFile(listconf,"e-zil.conf");
+    qDebug()<<"widget göster..";
+    SZSState=true;
+    DatabaseHelper *db=new DatabaseHelper(localDir+"e-zil.json");
+    QJsonArray ayarlarliste = db->Ara("recordtype", "settings");
+    QJsonObject ayarlar;
 
+    if (!ayarlarliste.isEmpty()) {
+        ayarlar = ayarlarliste.first().toObject();
+    }
+    if (ayarlar.contains("SZSState"))
+        SZSState=ayarlar["SZSState"].toBool();
+    ayarlar["SZSState"]=true;
+    db->Ekle(ayarlar);
 }
 void  MainWindow::about()
 {
@@ -349,7 +163,7 @@ void  MainWindow::about()
 }
 void  MainWindow::widgetShow()
 {
-    init();
+
     qDebug()<<"ekranı göster";
     QFont ff( "Arial", 7.5, QFont::Normal);
     tw->setFont(ff);
@@ -371,6 +185,7 @@ void  MainWindow::widgetShow()
 
 void MainWindow::onemliGunSlot()
 {
+    /*
    // qDebug()<<"ayar click";
     QString font="12";
     QDialog * d = new QDialog();
@@ -417,7 +232,7 @@ void MainWindow::onemliGunSlot()
 });
 
     /***********************************************************************/
-   twl=new QTableWidget;
+   /*twl=new QTableWidget;
     twl->setFixedSize(QSize(en*20,en*20));
     twl->setColumnCount(2);
     //twl->setRowCount(0);
@@ -474,18 +289,18 @@ void MainWindow::onemliGunSlot()
     d->setLayout(vbox);
 
     int result = d->exec();
-
+*/
 }
 
 void MainWindow::webTableCellDoubleClicked(int iRow, int iColumn)
-{
+{/*
      QString webadres= twl->item(iRow, 0)->text();
      QStringList list=fileToList("gunlist");
 /******************************************************************/
     //QMessageBox::StandardButton reply;
     // reply = QMessageBox::question(this, "Uyarı", "Bilgisayar Silinecek! Emin misiniz?",
       //                             QMessageBox::Yes|tr(QMessageBox::No);
-     QMessageBox messageBox(this);
+   /*  QMessageBox messageBox(this);
      messageBox.setText("Uyarı");
      messageBox.setInformativeText("Gun İçin İşlem Seçiniz!");
      QAbstractButton *evetButton =messageBox.addButton(tr("Sil"), QMessageBox::ActionRole);
@@ -509,5 +324,5 @@ void MainWindow::webTableCellDoubleClicked(int iRow, int iColumn)
                  //qDebug()<<"hayır basıldı";
              }
 
-
+*/
 }

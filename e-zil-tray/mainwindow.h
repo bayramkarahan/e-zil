@@ -35,9 +35,8 @@
 #include<QScreen>
 #include<QTableWidget>
 #include<QToolButton>
-namespace Ui {
-class MainWindow;
-}
+#include<Database.h>
+#include<QFileSystemWatcher>
 
 class MainWindow : public QMainWindow
 {
@@ -49,13 +48,6 @@ virtual void closeEvent ( QCloseEvent * event );
 public slots:
    // QWidget ayar();
     void  WidgetClosed();
-    void listToFile(QStringList list, QString filename);
-    QStringList fileToList(QString filename);
-    QString listGetLine(QStringList list,QString data);
-    QStringList listRemove(QStringList list,QString data);
-    QStringList listReplace(QStringList list,QString oldData,QString newData,int index);
-    QStringList listMerge(QStringList list1, QStringList list2,int dataIndex);
-    QStringList listGetList(QStringList list, QString data,int index);
     void zilKontrol();
       void init();
     void iconActivated(QSystemTrayIcon::ActivationReason);
@@ -72,7 +64,7 @@ public slots:
         cikisMuzikPlayStatus=false;
         tenefusMuzikYayinPlayStatus=false;
         molaMuzikYayinPlayStatus=false;
-    };
+    }
     void torenMuzik();
     void ogrenciMuzik();
     void ogretmenMuzik();
@@ -134,6 +126,10 @@ private:
     QMenu* createMenu();
     Widget *widget;
     int en,boy;
+    QJsonObject ayarlar;
+    QJsonArray liste;
+    int currentsaniye;
+    QFileSystemWatcher clientConfWather;
 };
 
 #endif // MAINWINDOW_H
