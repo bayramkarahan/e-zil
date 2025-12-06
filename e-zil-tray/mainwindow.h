@@ -54,9 +54,7 @@ public slots:
     void gizle();
        void  widgetShow();
     void widgetAktif();
-    void onemliGunSlot();
-    void webTableCellDoubleClicked(int iRow, int iColumn);
-    void resetStatus()
+     void resetStatus()
     {
         torenMuzikPlayStatus=false;
         ogrenciMuzikPlayStatus=false;

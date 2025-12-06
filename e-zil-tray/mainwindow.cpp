@@ -444,37 +444,36 @@ void MainWindow::zilKontrol()
         system(kmt.toStdString().c_str());
     }
 
-    return;
+    bool gunState;
+    if (ayarlar.contains("gunState"))
+        gunState=ayarlar["gunState"].toBool();
+    if(gunState)
+    {
+        QDate date = QDate::currentDate();
+        int haftaSayisi=date.weekNumber();
+        //qDebug()<<"günlerr"<<haftaSayisi;
 
-
-/*
-   if(listGetLine(ayarlist,"gunState")=="ayar|gunState|1")
-   {
-        QString path=localDir+"gunlist";
-        QFile file(path);
-       // qDebug()<<path;
-
-        if(file.exists())
+        DatabaseHelper *db=new DatabaseHelper(localDir+"onemligun.json");
+        //db->Sil("tarih", tarih);
+        QJsonArray liste = db->Oku();
+        for (const QJsonValue &val : liste)
         {
-                   gunlist=fileToList("gunlist");
-                   // QString tarih=QDate::currentDate();//.toString("dd/MM/yyyy");
-                   // QDate date = QDate::fromString(tarih, "dd/MM/yyyy");
-                   QDate date = QDate::currentDate();
-                   int haftaSayisi=date.weekNumber();
-
-                   if(listGetLine(gunlist,"hafta"+QString::number(haftaSayisi))!="")
-                   {
-                        QString gun=QString(listGetLine(gunlist,"hafta"+QString::number(haftaSayisi)).split("|")[1]);
-                        // qDebug()<<"gun:"<<gun;
-                        widget->baslik->setText("H: "+gun);
-                   }else
-                   {
-                        widget->baslik->setText(" Sessiz Zil Sistemi");
-                   }
+            if (!val.isObject()) continue;
+            QJsonObject obj = val.toObject();
+            QString tarih = obj["tarih"].toString();
+            QString gun=obj["gun"].toString();
+            QString haftasy=obj["haftasayisi"].toString();
+            if(haftaSayisi==haftasy.toInt())
+            {
+                // qDebug()<<"gun:"<<gun;
+                widget->baslik->setText("H: "+gun);
+                break;
+            }else
+            {
+                widget->baslik->setText(" Sessiz Zil Sistemi");
+            }
         }
     }
-/***********************************************************/
-
 }
 MainWindow::~MainWindow()
 {
@@ -779,146 +778,4 @@ void MainWindow::closeEvent(QCloseEvent *event)
     emit WidgetClosed();
      event->ignore();
 
-}
-void MainWindow::onemliGunSlot()
-{/*
-   // qDebug()<<"ayar click";
-    QString font="12";
-    QDialog * d = new QDialog();
-    d->setStyleSheet("font-size:"+QString::number(font.toInt()-2)+"px;");
-    auto appIcon = QIcon(":/icons/e-zil.svg");
-    d->setWindowIcon(appIcon);
-    d->setWindowTitle("Önemli Gün Listesi");
-    d->setFixedSize(en*25,en*30);
-
-    QLineEdit * gun = new QLineEdit();
-    gun->setFixedSize(en*20,boy*2);
-
-    QLineEdit * tarih = new QLineEdit();
-    tarih->setFixedSize(en*20,boy*2);
-
-    QLabel *gunLabel=new QLabel("Önemli Gün");
-    QLabel *tarihLabel=new QLabel("Tarih (Her hafta için bir önemli gün giriniz,Örn: 17/10/2022)");
-    QToolButton *gunEkleButton= new QToolButton;
-    gunEkleButton->setFixedSize(QSize(en*20,boy*2));
-    gunEkleButton->setIconSize(QSize(en*20,boy));
-    gunEkleButton->setStyleSheet("Text-align:center");
-    //gunEkleButton->setAutoRaise(true);
-    gunEkleButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-     gunEkleButton->setText("Gün Ekle");
-
-    connect(gunEkleButton, &QPushButton::clicked, [=]() {
-        QStringList gunlist=fileToList("gunlist");
-         QDate date = QDate::fromString(tarih->text(), "dd/MM/yyyy");
-          int haftaSayisi=date.weekNumber();
-       // qDebug()<<"hatfa :"<<haftaSayisi<<date.year()<<date.month()<<date.day();
-            gunlist<<tarih->text()+"|"+gun->text()+"|hafta"+QString::number(haftaSayisi);
-
-        listToFile(gunlist,"gunlist");
-        for(int i=0;i<gunlist.count();i++)
-        {
-            QString line=gunlist[i];
-            QStringList lst=line.split("|");
-            twl->setRowCount(i+1);
-            twl->setItem(i, 0, new QTableWidgetItem(lst[0]));//tarih
-            twl->setItem(i, 1, new QTableWidgetItem(lst[1]));//gün
-
-        }
-
-});
-
-    /***********************************************************************/
-  /* twl=new QTableWidget;
-    twl->setFixedSize(QSize(en*20,en*20));
-    twl->setColumnCount(2);
-    //twl->setRowCount(0);
-    twl->setColumnWidth(0, en*7);
-    twl->setColumnWidth(1, en*12);
-
-    twl->setHorizontalHeaderItem(0, new QTableWidgetItem("Tarih"));
-    twl->setHorizontalHeaderItem(1, new QTableWidgetItem("Gün"));
-
-    twl->setSelectionBehavior(QAbstractItemView::SelectRows);
-    twl->setSelectionMode(QAbstractItemView::SingleSelection);
-    //connect(tw, &QTableWidget::cellClicked, this, cellClicked());
-    connect(twl, SIGNAL(cellDoubleClicked(int,int)),SLOT(webTableCellDoubleClicked(int,int)));
-    twl->setRowCount(0);
-    QStringList list=fileToList("gunlist");
-    for(int i=0;i<list.count();i++)
-    {
-        QString line=list[i];
-        QStringList lst=line.split("|");
-        twl->setRowCount(twl->rowCount()+1);
-        twl->setItem(i, 0, new QTableWidgetItem(lst[0]));//tarih
-        twl->setItem(i, 1, new QTableWidgetItem(lst[1]));//gun
-
-    }
-
-
-    QVBoxLayout * vbox = new QVBoxLayout();
-    QHBoxLayout * hbox1= new QHBoxLayout();
-    QHBoxLayout * hbox2= new QHBoxLayout();
-    QHBoxLayout * hbox3= new QHBoxLayout();
-    QHBoxLayout * hbox4= new QHBoxLayout();
-    QHBoxLayout * hbox5= new QHBoxLayout();
-    QHBoxLayout * hbox6= new QHBoxLayout();
-
-    hbox1->addWidget(tarihLabel);
-
-    hbox2->addWidget(tarih);
-    hbox3->addWidget(gunLabel);
-
-    hbox4->addWidget(gun);
-
-
-    hbox5->addWidget(gunEkleButton);
-
-    hbox6->addWidget(twl);
-
-   vbox->addLayout(hbox1);
-    vbox->addLayout(hbox2);
-    vbox->addLayout(hbox3);
-    vbox->addLayout(hbox4);
-    vbox->addLayout(hbox5);
-    vbox->addLayout(hbox6);
-
-    d->setLayout(vbox);
-
-    int result = d->exec();
-*/
-}
-
-void MainWindow::webTableCellDoubleClicked(int iRow, int iColumn)
-{
-   /*  QString webadres= twl->item(iRow, 0)->text();
-     QStringList list=fileToList("gunlist");
-/******************************************************************/
-    //QMessageBox::StandardButton reply;
-    // reply = QMessageBox::question(this, "Uyarı", "Bilgisayar Silinecek! Emin misiniz?",
-      //                             QMessageBox::Yes|tr(QMessageBox::No);
-    /* QMessageBox messageBox(this);
-     messageBox.setText("Uyarı");
-     messageBox.setInformativeText("Gun İçin İşlem Seçiniz!");
-     QAbstractButton *evetButton =messageBox.addButton(tr("Sil"), QMessageBox::ActionRole);
-     QAbstractButton *hayirButton =messageBox.addButton(tr("Düzenle"), QMessageBox::ActionRole);
-     messageBox.setIcon(QMessageBox::Question);
-             messageBox.exec();
-             if (messageBox.clickedButton() == evetButton) {
-                 // qDebug()<<"evet basıldı";
-                 list=listRemove(list,webadres);
-                 listToFile(list,"gunlist");
-                 if(list.count()==0) twl->setRowCount(0);
-                 for(int i=0;i<list.count();i++)
-                 {
-                     QString line=list[i];
-                     QStringList lst=line.split("|");
-                     twl->setRowCount(i+1);
-                     twl->setItem(i, 0, new QTableWidgetItem(lst[0]));//ip
-                 }
-             }
-             if (messageBox.clickedButton() == hayirButton) {
-                 //qDebug()<<"hayır basıldı";
-             }
-
-*/
 }

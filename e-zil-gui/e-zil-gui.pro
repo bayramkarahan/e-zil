@@ -56,9 +56,9 @@ icon.path = /usr/share/icons/
 music_files.files = e-zil-ses/
 music_files.path = /usr/share/e-zil/
 
-polkit_policy.files = e-ag.policy
+polkit_policy.files = e-zil-gui.policy
 polkit_policy.path = /usr/share/polkit-1/actions/
-polkit_rules.files = e-ag.rules
+polkit_rules.files = e-zil-gui.rules
 polkit_rules.path = /usr/share/polkit-1/rules.d/
 
 INSTALLS += target icon music_files polkit_policy polkit_rules

@@ -2,4 +2,4 @@
 
 #rm files from user home
 
-rm -rf /usr/share/e-zil
+#rm -rf /usr/share/e-zil

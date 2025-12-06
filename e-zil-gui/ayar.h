@@ -124,7 +124,7 @@ QWidget *MainWindow::ayar()
 
     connect(ogrenciZilButton, &QPushButton::clicked, [=]() {
 
-        if(!dosyaVarmi("e-zil.conf")) return;
+        if(!dosyaVarmi("e-zil.json")) return;
 
          QString deger=ogrenciZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
@@ -170,7 +170,7 @@ QWidget *MainWindow::ayar()
          ogretmenZilSeviyeLineEdit->setText(obj["ogretmenzilseviye"].toString());
 
       connect(ogretmenZilButton, &QPushButton::clicked, [=]() {
-          if(!dosyaVarmi("e-zil.conf")) return;
+          if(!dosyaVarmi("e-zil.json")) return;
           QString deger=ogretmenZilSeviyeLineEdit->text();
           player->setVolume(deger.toInt());
           QFile* file = new QFile(ogretmenZilLineEdit->text());
@@ -212,7 +212,7 @@ QWidget *MainWindow::ayar()
         cikisZilSeviyeLineEdit->setText(obj["cikiszilseviye"].toString());
 
     connect(cikisZilButton, &QPushButton::clicked, [=]() {
-        if(!dosyaVarmi("e-zil.conf")) return;
+        if(!dosyaVarmi("e-zil.json")) return;
         QString deger=cikisZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
         QFile* file = new QFile(cikisZilLineEdit->text());
@@ -256,7 +256,7 @@ QWidget *MainWindow::ayar()
         istiklalZilSeviyeLineEdit->setText(obj["istiklalzilseviye"].toString());
 
     connect(istiklalZilButton, &QPushButton::clicked, [=]() {
-        if(!dosyaVarmi("e-zil.conf")) return;
+        if(!dosyaVarmi("e-zil.json")) return;
         QString deger=istiklalZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
 
@@ -298,7 +298,7 @@ QWidget *MainWindow::ayar()
         saygiIstiklalZilSeviyeLineEdit->setText(obj["istiklalsaygizilseviye"].toString());
 
     connect(saygiIstiklalZilButton, &QPushButton::clicked, [=]() {
-        if(!dosyaVarmi("e-zil.conf")) return;
+        if(!dosyaVarmi("e-zil.json")) return;
         QString deger=saygiIstiklalZilSeviyeLineEdit->text();
         player->setVolume(deger.toInt());
         QFile* file = new QFile(saygiIstiklalZilLineEdit->text());
@@ -341,7 +341,7 @@ QWidget *MainWindow::ayar()
         sirenZilSeviyeLineEdit->setText(obj["sirenzilseviye"].toString());
 
     connect(sirenZilButton, &QPushButton::clicked, [=]() {
-        if(!dosyaVarmi("e-zil.conf")) return;
+        if(!dosyaVarmi("e-zil.json")) return;
         QString deger=sirenZilSeviyeLineEdit->text();
     player->setVolume(deger.toInt());
 
@@ -470,7 +470,7 @@ if (obj.contains("muzikbaslama"))
  //  durZilButton->setFlat(true);
   // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
    connect(muzikYayinZilButton, &QPushButton::clicked, [=]() {
-       if(!dosyaVarmi("e-zil.conf")) return;
+       if(!dosyaVarmi("e-zil.json")) return;
        QString deger=muzikYayinZilSeviyeLineEdit->text();
        player->setVolume(deger.toInt());
 
@@ -759,7 +759,7 @@ if(guncb->checkState()==Qt::Unchecked)
 
 });
     auto layout = new QGridLayout(ayarPage);
-    layout->setContentsMargins(0, 0, 0,0);
+    layout->setContentsMargins(0, 10, 0,0);
    // layout->setVerticalSpacing(5);
    // layout->setColumnMinimumWidth(0, 37);
     //layout->addWidget(adLabel, 2,0,1,2);

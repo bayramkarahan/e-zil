@@ -185,7 +185,8 @@ void  MainWindow::widgetShow()
 
 void MainWindow::onemliGunSlot()
 {
-    /*
+    DatabaseHelper *db=new DatabaseHelper(localDir+"onemligun.json");
+
    // qDebug()<<"ayar click";
     QString font="12";
     QDialog * d = new QDialog();
@@ -212,27 +213,33 @@ void MainWindow::onemliGunSlot()
      gunEkleButton->setText("Gün Ekle");
 
     connect(gunEkleButton, &QPushButton::clicked, [=]() {
-        QStringList gunlist=fileToList("gunlist");
          QDate date = QDate::fromString(tarih->text(), "dd/MM/yyyy");
           int haftaSayisi=date.weekNumber();
-       // qDebug()<<"hatfa :"<<haftaSayisi<<date.year()<<date.month()<<date.day();
-            gunlist<<tarih->text()+"|"+gun->text()+"|hafta"+QString::number(haftaSayisi);
+         QJsonObject obj;
+         obj["tarih"] = tarih->text();
+         obj["gun"] = gun->text();
+         obj["haftasayisi"]     = QString::number(haftaSayisi);
+         db->Ekle(obj);
 
-        listToFile(gunlist,"gunlist");
-        for(int i=0;i<gunlist.count();i++)
-        {
-            QString line=gunlist[i];
-            QStringList lst=line.split("|");
-            twl->setRowCount(i+1);
-            twl->setItem(i, 0, new QTableWidgetItem(lst[0]));//tarih
-            twl->setItem(i, 1, new QTableWidgetItem(lst[1]));//gün
+         int i=0;
+        QJsonArray liste = db->Oku();
+         for (const QJsonValue &val : liste)
+         {
+             if (!val.isObject()) continue;
+             QJsonObject obj = val.toObject();
+             QString tarih = obj["tarih"].toString();
+             QString gun=obj["gun"].toString();
+             twl->setRowCount(i+1);
+             twl->setItem(i, 0, new QTableWidgetItem(tarih));//tarih
+             twl->setItem(i, 1, new QTableWidgetItem(gun));//gun
+             i++;
+         }
 
-        }
 
 });
 
     /***********************************************************************/
-   /*twl=new QTableWidget;
+    twl=new QTableWidget;
     twl->setFixedSize(QSize(en*20,en*20));
     twl->setColumnCount(2);
     //twl->setRowCount(0);
@@ -247,18 +254,20 @@ void MainWindow::onemliGunSlot()
     //connect(tw, &QTableWidget::cellClicked, this, cellClicked());
     connect(twl, SIGNAL(cellDoubleClicked(int,int)),SLOT(webTableCellDoubleClicked(int,int)));
     twl->setRowCount(0);
-    QStringList list=fileToList("gunlist");
-    for(int i=0;i<list.count();i++)
+     QJsonArray liste = db->Oku();
+    //QJsonArray liste=db->Ara("gun",gn);
+    int i=0;
+    for (const QJsonValue &val : liste)
     {
-        QString line=list[i];
-        QStringList lst=line.split("|");
+        if (!val.isObject()) continue;
+        QJsonObject obj = val.toObject();
+        QString tarih = obj["tarih"].toString();
+        QString gun=obj["gun"].toString();
         twl->setRowCount(twl->rowCount()+1);
-        twl->setItem(i, 0, new QTableWidgetItem(lst[0]));//tarih
-        twl->setItem(i, 1, new QTableWidgetItem(lst[1]));//gun
-
-    }
-
-
+        twl->setItem(i, 0, new QTableWidgetItem(tarih));//tarih
+        twl->setItem(i, 1, new QTableWidgetItem(gun));//gun
+i++;
+     }
     QVBoxLayout * vbox = new QVBoxLayout();
     QHBoxLayout * hbox1= new QHBoxLayout();
     QHBoxLayout * hbox2= new QHBoxLayout();
@@ -289,40 +298,41 @@ void MainWindow::onemliGunSlot()
     d->setLayout(vbox);
 
     int result = d->exec();
-*/
+
 }
 
 void MainWindow::webTableCellDoubleClicked(int iRow, int iColumn)
-{/*
-     QString webadres= twl->item(iRow, 0)->text();
-     QStringList list=fileToList("gunlist");
+{
+     QString tarih= twl->item(iRow, 0)->text();
 /******************************************************************/
-    //QMessageBox::StandardButton reply;
-    // reply = QMessageBox::question(this, "Uyarı", "Bilgisayar Silinecek! Emin misiniz?",
-      //                             QMessageBox::Yes|tr(QMessageBox::No);
-   /*  QMessageBox messageBox(this);
+
+     QMessageBox messageBox(this);
      messageBox.setText("Uyarı");
      messageBox.setInformativeText("Gun İçin İşlem Seçiniz!");
      QAbstractButton *evetButton =messageBox.addButton(tr("Sil"), QMessageBox::ActionRole);
-     QAbstractButton *hayirButton =messageBox.addButton(tr("Düzenle"), QMessageBox::ActionRole);
+     QAbstractButton *hayirButton =messageBox.addButton(tr("Vazgeç"), QMessageBox::ActionRole);
      messageBox.setIcon(QMessageBox::Question);
              messageBox.exec();
              if (messageBox.clickedButton() == evetButton) {
                  // qDebug()<<"evet basıldı";
-                 list=listRemove(list,webadres);
-                 listToFile(list,"gunlist");
-                 if(list.count()==0) twl->setRowCount(0);
-                 for(int i=0;i<list.count();i++)
+                 DatabaseHelper *db=new DatabaseHelper(localDir+"onemligun.json");
+                db->Sil("tarih", tarih);
+                QJsonArray liste = db->Oku();
+                twl->setRowCount(0);
+                 int i=0;
+                 for (const QJsonValue &val : liste)
                  {
-                     QString line=list[i];
-                     QStringList lst=line.split("|");
-                     twl->setRowCount(i+1);
-                     twl->setItem(i, 0, new QTableWidgetItem(lst[0]));//ip
+                     if (!val.isObject()) continue;
+                     QJsonObject obj = val.toObject();
+                     QString tarih = obj["tarih"].toString();
+                     QString gun=obj["gun"].toString();
+                     twl->setRowCount(twl->rowCount()+1);
+                     twl->setItem(i, 0, new QTableWidgetItem(tarih));//tarih
+                     twl->setItem(i, 1, new QTableWidgetItem(gun));//gun
+                     i++;
                  }
              }
              if (messageBox.clickedButton() == hayirButton) {
                  //qDebug()<<"hayır basıldı";
              }
-
-*/
 }
