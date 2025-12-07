@@ -841,7 +841,7 @@ if(guncb->checkState()==Qt::Unchecked)
     layout->addWidget(oglenMuzikYayincb, 46,0,1,7);
     layout->addWidget(tenefusMuzikYayincb, 47,0,1,7);
     layout->addWidget(SZScb, 49,0,1,7);
-    layout->addWidget(ekilitcb, 50,0,1,7);
+   /// layout->addWidget(ekilitcb, 50,0,1,7);
     layout->addWidget(guncb, 51,0,1,7);
 
     layout->addWidget(durZilButton,52,0,1,1);

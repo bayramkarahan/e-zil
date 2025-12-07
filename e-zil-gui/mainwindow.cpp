@@ -69,6 +69,12 @@ MainWindow::MainWindow(QWidget *parent) :
         // App icon
       auto appIcon = QIcon(":/icons/e-zil.svg");
         this->setWindowIcon(appIcon);
+      QProcess process;
+      process.start("/bin/bash", {"-c", "dpkg -s e-zil | grep -i '^Version:' | awk '{print $2}'"});
+      process.waitForFinished();
+
+      QString version = QString::fromUtf8(process.readAll()).trimmed();
+      setWindowTitle("e-zil " + version);
 
 
 
@@ -81,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent) :
       //this->resize(500,650);
       setFixedWidth(500);
       setFixedHeight(640);
-      setWindowTitle("e-zil");
+
       QRect screenGeometry = QApplication::desktop()->screenGeometry();
       int x = (screenGeometry.width()/2 - this->width()/2);
       int y = (screenGeometry.height() - this->height()) / 2;
