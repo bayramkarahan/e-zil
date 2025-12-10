@@ -38,52 +38,7 @@ bool MainWindow::dosyaVarmi(QString dosya)
     }
     else return true;
 }
-/*
-void MainWindow::playMp3(const char* path)
-{
-    if (!engineInitialized) {
-        if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
-            qDebug() << "engine init error";
-            return;
-        }
-        engineInitialized = true;
-    }
 
-    // Eğer önceden ses varsa durdur
-    if (soundInitialized) {
-        ma_sound_uninit(&currentSound);
-    }
-
-    if (ma_sound_init_from_file(&engine, path, 0, NULL, NULL, &currentSound) != MA_SUCCESS) {
-        qDebug() << "sound init error";
-        return;
-    }
-
-    soundInitialized = true;
-
-    ma_sound_start(&currentSound);
-}
-
-
-void MainWindow::playMp3(const QString& path)
-{
-    playMp3(path.toUtf8().constData());
-}
-void MainWindow::setVolume(float volume)
-{
-    if (soundInitialized) {
-        ma_sound_set_volume(&currentSound, volume);
-    }
-}
-
-void MainWindow::stopMp3()
-{
-    if (soundInitialized) {
-        ma_sound_uninit(&currentSound);
-        soundInitialized = false;
-    }
-}
-*/
 QWidget *MainWindow::ayar()
 {
     DatabaseHelper *db=new DatabaseHelper(localDir+"e-zil.json");
@@ -98,7 +53,7 @@ QWidget *MainWindow::ayar()
 //burada ayarlar bölümü düzenleniyor yeni3
     QWidget *ayarPage=new QWidget();
     ayarPage->setFixedWidth(en*30);
-    ayarPage->setFixedHeight(en*24);
+    ayarPage->setFixedHeight(en*25);
    /**********************Tören Giriş**********************************/
 
     QToolButton *torenZilButton= new QToolButton;

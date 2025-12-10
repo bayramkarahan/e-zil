@@ -87,7 +87,7 @@ miniPlayer=new MiniAudioPlayer(this);
 
       //this->resize(500,650);
       setFixedWidth(en*30);
-      setFixedHeight(en*25);
+      setFixedHeight(en*27);
 
       QRect screenGeometry = QApplication::desktop()->screenGeometry();
       int x = (screenGeometry.width()/2 - this->width()/2);

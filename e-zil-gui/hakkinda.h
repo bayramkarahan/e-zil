@@ -30,7 +30,7 @@ QWidget *MainWindow::hakkinda()
     QWidget *hakkindaPage=new QWidget();
     /*******************************************************/
     hakkindaPage->setFixedWidth(en*30);
-    hakkindaPage->setFixedHeight(en*24);
+    hakkindaPage->setFixedHeight(en*25);
 
    auto *hak=new QLabel(hakkindaPage);
 

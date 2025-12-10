@@ -128,7 +128,6 @@ miniPlayer=new MiniAudioPlayer(this);
 
       //player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
       //player->setVolume(70);
-          //yayinTenefusMuzik();
 }
 void MainWindow::init()
 {
@@ -315,55 +314,21 @@ void MainWindow::zilKontrol()
             <<zildersno
             <<zilturu
             <<zilzamani;
-        if(zilturu=="giris"){
-            if(ogrenciMuzikPlayStatus==false){
-                resetStatus();
-                //if(zilzamani+60>currentsaniye)
-                ogrenciMuzik();
-                ogrenciMuzikPlayStatus=true;
-            }
-            widget->zamanGostergesiDurum->setText("TND");
-        }
-        if(zilturu=="baslangic"){
-            if(ogretmenMuzikPlayStatus==false){
-                resetStatus();
-                ///if(zilzamani+60>currentsaniye)
-                ogretmenMuzik();
-                ogretmenMuzikPlayStatus=true;
-            }
-                widget->zamanGostergesiDurum->setText("D");
-        }
-        if(zilturu=="cikis"){
-            if(cikisMuzikPlayStatus==false){
-                resetStatus();
-                cikisMuzikPlayStatus=true;
-                //if(zilzamani+60>currentsaniye)
-                cikisMuzik();
-                if(zildersno!=oglearasiderssayisi&&zildersno!=derssayisi)
-                {
-                    yayinTenefusMuzik();
-                    tenefusMuzikYayinPlayStatus=true;
-                }
-            }
-            widget->zamanGostergesiDurum->setText("TNF");
-        }
+        if(zilturu=="giris")    ogrenciMuzik();
+        if(zilturu=="baslangic") ogretmenMuzik();
+        if(zilturu=="cikis") cikisMuzik();
+        if(zilturu=="toren") torenMuzik();
     }
 
     if (qAbs(currentsaniye - molaBaslamaSaati) <= tolerans) {
-        qDebug()<<"öğle arası başladı"<<molaBaslamaSaati;
-        if(cikisMuzikPlayStatus==false){
-            resetStatus();
-            //if(molaBaslamaSaati+60>currentsaniye)
-            cikisMuzik();
-            cikisMuzikPlayStatus=true;
-            yayinMolaMuzik();
-            molaMuzikYayinPlayStatus=true;
-        }
-        widget->zamanGostergesiDurum->setText("ML");
+        //qDebug()<<"öğle arası başladı"<<molaBaslamaSaati;
+         yayinMolaMuzik();
     }
+
     if (qAbs(currentsaniye - molaBitisSaati) <= tolerans) {
         qDebug()<<"öğle arası bitti"<<molaBitisSaati;
     }
+
     if(currentsaniye<torenBaslamaSaati)
     {
         //qDebug()<<"sabah"<<saatlist[i]<<currentsaniye;
@@ -371,46 +336,20 @@ void MainWindow::zilKontrol()
     }
 
     if (qAbs(currentsaniye - torenBaslamaSaati) <= tolerans) {
-
-        if(torenMuzikPlayStatus==false){
-            qDebug()<<"tören başladı";
-            resetStatus();
-            //if(torenBaslamaSaati+60>currentsaniye)
-            torenMuzik();
-            torenMuzikPlayStatus=true;
-            widget->zamanGostergesiDurum->setText("TRN");
-        }
-
+        torenMuzik();
     }
+
     if (qAbs(currentsaniye - ilkOgrenciGirisSaati) <= tolerans) {
         qDebug()<<"ilk öğrenci girişi";
     }
+
     if (currentsaniye >(sonDersCikisSaati+tolerans)) {
-
-            ///qDebug()<<"ders bitti";
-            widget->zamanGostergesiDurum->setText("A");
-             /*if(cikisMuzikPlayStatus==false){
-                resetStatus();
-            cikisMuzikPlayStatus=true;
-            /*if(qAbs(currentsaniye -sonDersCikisSaati+10)<=tolerans)
-                cikisMuzik();*/
-
-       // }
+        ///qDebug()<<"ders bitti";
+        widget->zamanGostergesiDurum->setText("A");
     }
 
     if (qAbs(currentsaniye - muzikbaslama) <= tolerans) {
-
-    if(molaMuzikYayinState==false)
-        {
-            qDebug()<<"mola muzikbaslama";
-            widget->zamanGostergesiDurum->setText("M");
-            qDebug()<<"15sn sonra Mola Müzik Yayını Başlayacak..";
-            timer1.start(15000);
-            loop.exec();
-            yayinMolaMuzik();
-            molaMuzikYayinState=true;
-
-        }
+        yayinMolaMuzik();
     }
 
     if (qAbs(currentsaniye - muzikson) <= tolerans) {
@@ -475,21 +414,19 @@ MainWindow::~MainWindow()
 }
 void MainWindow::torenMuzik()
 {
-    qDebug()<<"Tören müzik...";
+    //qDebug()<<"tören başladı";
+    if(torenMuzikPlayStatus) return;
+    resetStatus();
+    torenMuzikPlayStatus=true;
+    widget->zamanGostergesiDurum->setText("TRN");
     int deger=0;
     if (ayarlar.contains("torenzilseviye"))
         deger=ayarlar["torenzilseviye"].toString().toInt();
     QString filepath;
     if (ayarlar.contains("torenzil"))
         filepath=ayarlar["torenzil"].toString();
-
-    qDebug()<<filepath;
-  //  player->setVolume(deger);
     QFile* file = new QFile(filepath);
     if (file->open(QFile::ReadOnly)) {
-        /*player->setMedia(QMediaContent(), file);
-        file->seek(0);
-        player->play();*/
         float volume = deger / 100.0f;   // %50 → 0.50
         QStringList list;
         list <<filepath;
@@ -497,15 +434,18 @@ void MainWindow::torenMuzik()
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
         miniPlayer->play();
-
-        tempCurrentsaat=currentsaat;
         qDebug()<<"Tören Zili Çalıyor....."<<QDateTime::currentDateTime();
     }
 
 }
 void MainWindow::ogrenciMuzik()
 {
-    qDebug()<<"ogrenci müzik...";
+    //qDebug()<<"ogrenci müzik...";
+    if(ogrenciMuzikPlayStatus) return;
+    resetStatus();
+    ogrenciMuzikPlayStatus=true;
+    widget->zamanGostergesiDurum->setText("TND");
+
     int deger=0;
     if (ayarlar.contains("ogrencizilseviye"))
         deger=ayarlar["ogrencizilseviye"].toString().toInt();
@@ -513,18 +453,6 @@ void MainWindow::ogrenciMuzik()
     if (ayarlar.contains("ogrencizil"))
         filepath=ayarlar["ogrencizil"].toString();
 
-
-    if(tenefusYayin) {
-        //qDebug()<<"ogrenci süresi:"<< player->duration();
-        miniPlayer->stop();
-        qDebug()<<"Tenefüs Müzik Yayını Durdu.."<<QDateTime::currentDateTime();
-        tenefusYayin=false;
-        qDebug()<<"10sn sonra Öğrenci Zili Çalacak.."<<QDateTime::currentDateTime();
-        timer1.start(10000);
-        loop.exec();
-    }
-    widget->zamanGostergesiDurum->setText("TND");
-    //player->setVolume(deger);
     QFile* file = new QFile(filepath);
     if (file->open(QFile::ReadOnly)) {
        // player->setMedia(QMediaContent(), file);
@@ -544,18 +472,18 @@ void MainWindow::ogrenciMuzik()
 }
 void MainWindow::ogretmenMuzik()
 {
-    qDebug()<<"ogretmen müzik...";
+    ///qDebug()<<"ogretmen müzik...";
+    if(ogretmenMuzikPlayStatus) return;
+    resetStatus();
+    ogretmenMuzikPlayStatus=true;
+    widget->zamanGostergesiDurum->setText("D");
+
     int deger=0;
     if (ayarlar.contains("ogretmenzilseviye"))
         deger=ayarlar["ogretmenzilseviye"].toString().toInt();
     QString filepath;
     if (ayarlar.contains("ogretmenzil"))
         filepath=ayarlar["ogretmenzil"].toString();
-
-
-    widget->zamanGostergesiDurum->setText("D");
-
-    //player->setVolume(deger);
 
     QFile* file = new QFile(filepath);
 
@@ -576,16 +504,17 @@ void MainWindow::ogretmenMuzik()
 }
 void MainWindow::cikisMuzik()
 {
-    qDebug()<<"çıkış müzik...";
+   // qDebug()<<"çıkış müzik...";
+    if(cikisMuzikPlayStatus) return;
+    resetStatus();
+    cikisMuzikPlayStatus=true;
+    widget->zamanGostergesiDurum->setText("TNF");
     int deger=0;
     if (ayarlar.contains("cikiszilseviye"))
         deger=ayarlar["cikiszilseviye"].toString().toInt();
     QString filepath;
     if (ayarlar.contains("cikiszil"))
         filepath=ayarlar["cikiszil"].toString();
-
-    widget->zamanGostergesiDurum->setText("TN");
-    ///player->setVolume(deger);
     QFile* file = new QFile(filepath);
     if (file->open(QFile::ReadOnly)) {
        /* player->setMedia(QMediaContent(), file);
@@ -598,14 +527,13 @@ void MainWindow::cikisMuzik()
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
         miniPlayer->play();
-
-        tempCurrentsaat=currentsaat;
         qDebug()<<"Çıkış Zili Çalıyor....."<<QDateTime::currentDateTime();
     }
 }
+
 void MainWindow::yayinTenefusMuzik()
 {
-    qDebug()<<"yayin müzik...";
+    //qDebug()<<"yayin müzik...";
 
     bool tenefusMuzikYayinState=false;
     if (ayarlar.contains("tenefusMuzikYayinState"))
@@ -652,35 +580,28 @@ void MainWindow::yayinTenefusMuzik()
 }
 void MainWindow::yayinMolaMuzik()
 {
-    qDebug()<<"yayin müzik...";
-
+    //qDebug()<<"mola yayin müzik...";
     bool oglenMuzikYayinState;
     if (ayarlar.contains("oglenMuzikYayinState"))
         oglenMuzikYayinState=ayarlar["oglenMuzikYayinState"].toBool();
-
-    if(oglenMuzikYayinState)
-    {
-        qDebug()<<"15sn sonra Mola Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
-        timer1.start(20000);
-        loop.exec();
-        int deger=0;
-        if (ayarlar.contains("muzikyayinseviye"))
-            deger=ayarlar["muzikyayinseviye"].toString().toInt();
-        //player->setVolume(deger);
-
-
-        QDir klasorpath;
-        if (ayarlar.contains("muzikklasor"))
-            klasorpath=ayarlar["muzikklasor"].toString();
-        //playlist = new QMediaPlaylist;
-        QStringList miniPlayList;
-        klasorpath.setNameFilters({"*.wav" , "*.mp3"});
-        if (klasorpath.exists())
+    if(!oglenMuzikYayinState) return;
+    if(cikisMuzikPlayStatus) return;
+    resetStatus();
+    molaMuzikYayinPlayStatus=true;
+    widget->zamanGostergesiDurum->setText("ML");
+    int deger=0;
+    if (ayarlar.contains("muzikyayinseviye"))
+        deger=ayarlar["muzikyayinseviye"].toString().toInt();
+    QDir klasorpath;
+    if (ayarlar.contains("muzikklasor"))
+        klasorpath=ayarlar["muzikklasor"].toString();
+    QStringList miniPlayList;
+    klasorpath.setNameFilters({"*.wav" , "*.mp3"});
+    if (klasorpath.exists())
         {
             for(const QFileInfo & finfo: klasorpath.entryInfoList()){
                 miniPlayList << finfo.absoluteFilePath();
             }
-
             //player->setMedia(playlist);
             //player->play();
             float volume = deger / 100.0f;   // %50 → 0.50
@@ -692,11 +613,9 @@ void MainWindow::yayinMolaMuzik()
             miniPlayer->play();
             tenefusYayin=true;
             qDebug()<<"Mola Müzik Yayını Başladı.."<<QDateTime::currentDateTime();
-
         }
-
-    }
 }
+
 QTime MainWindow::saniyeToSaat(QString _zaman)
 {
     QTime zm(0,0,0);
