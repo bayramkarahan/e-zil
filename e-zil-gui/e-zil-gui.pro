@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT += widgets network core gui multimedia # multimediawidgets
+QT += widgets network core gui
+#multimedia # multimediawidgets
 #apt install libqt5multimedia5
 #sudo apt-get install qtmultimedia5-dev
 
@@ -28,11 +29,14 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        miniaudioplayer.cpp
 
 HEADERS += \
     Database.h \
         mainwindow.h \
+    miniaudio.h \
+    miniaudioplayer.h \
     saatpzrts.h \
     hakkinda.h \
     giris.h \

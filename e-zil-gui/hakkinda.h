@@ -29,8 +29,8 @@ QWidget *MainWindow::hakkinda()
  QString yil=QString::number( QDateTime::currentDateTime().date().year());
     QWidget *hakkindaPage=new QWidget();
     /*******************************************************/
-    hakkindaPage->setFixedWidth(500);
-    hakkindaPage->setFixedHeight(550);
+    hakkindaPage->setFixedWidth(en*30);
+    hakkindaPage->setFixedHeight(en*24);
 
    auto *hak=new QLabel(hakkindaPage);
 

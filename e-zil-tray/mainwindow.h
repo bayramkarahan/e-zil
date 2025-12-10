@@ -22,7 +22,7 @@
 #pragma once
 #include <QMainWindow>
 #include<QLineEdit>
-#include<QMediaPlayer>
+//#include<QMediaPlayer>
 #include<QSystemTrayIcon>
 #include<QProcess>
 #include<QTime>
@@ -37,6 +37,7 @@
 #include<QToolButton>
 #include<Database.h>
 #include<QFileSystemWatcher>
+#include<miniaudioplayer.h>
 
 class MainWindow : public QMainWindow
 {
@@ -109,14 +110,14 @@ private:
      bool playStateToren;
 
     QString currentsaatState;
-    QMediaPlayer* player;
+    //QMediaPlayer* player;
     QTimer *timerZil;
     QTimer *timerZilBaslama;
 
     QEventLoop loop;
     QTimer timer1;
 
-    QMediaPlaylist *playlist;
+    //QMediaPlaylist *playlist;
     QTimer *timergizle;
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
@@ -128,6 +129,7 @@ private:
     QJsonArray liste;
     int currentsaniye;
     QFileSystemWatcher clientConfWather;
+    MiniAudioPlayer *miniPlayer;
 };
 
 #endif // MAINWINDOW_H

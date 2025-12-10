@@ -22,8 +22,8 @@
 QWidget *MainWindow::giris()
 {
     QWidget *girisPage=new QWidget();
-    girisPage->setFixedWidth(500);
-   girisPage->setFixedHeight(550);
+    girisPage->setFixedWidth(en*30);
+   girisPage->setFixedHeight(en*24);
    auto  screenbtn = new QPushButton(girisPage);
     screenbtn->setFixedSize(QSize(250,250));
     screenbtn->setIconSize(QSize(250,250));

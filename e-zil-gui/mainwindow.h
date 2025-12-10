@@ -22,7 +22,7 @@
 #pragma once
 #include <QMainWindow>
 #include<QLineEdit>
-#include<QMediaPlayer>
+//#include<QMediaPlayer>
 #include<QSystemTrayIcon>
 #include<QProcess>
 #include<QTime>
@@ -35,9 +35,7 @@
 #include<QTableWidget>
 #include<Database.h>
 #include<QTimeEdit>
-namespace Ui {
-class MainWindow;
-}
+#include<miniaudioplayer.h>
 
 class MainWindow : public QMainWindow
 {
@@ -51,7 +49,12 @@ public:
         QTimeEdit *cikis;
         QTimeEdit *teneffus;
     };
-
+   /* void playMp3(const QString& path);
+    static ma_engine engine;
+    static bool engineInitialized;
+    void stopMp3();
+    void playMp3(const char* path);
+    void setVolume(float volume);*/
 public slots:
 
     bool dosyaVarmi(QString dosya);
@@ -110,7 +113,6 @@ private:
      QString tempCurrentsaat;
      bool playState;
      bool playStateToren;
-    Ui::MainWindow *ui;
      QTabWidget *tw;
     QWidget *giris();
     QWidget *hakkinda();
@@ -123,17 +125,21 @@ private:
     QWidget *saatcmrts();
     QWidget *saatpzr();
     QString currentsaatState;
-    QMediaPlayer* player;
+   // QMediaPlayer* player;
     QTimer *timerZil;
     QTimer *timerZilBaslama;
 
     QEventLoop loop;
     QTimer timer1;
 
-    QMediaPlaylist *playlist;
+   // QMediaPlaylist *playlist;
     QTimer *timergizle;
     bool tenefusYayin;
     int en,boy;
+  //  ma_sound currentSound;
+    //bool soundInitialized = false;
+    MiniAudioPlayer *miniPlayer;
+
 };
 
 #endif // MAINWINDOW_H

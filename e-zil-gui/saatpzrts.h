@@ -54,7 +54,7 @@ QWidget *MainWindow::saatpzrts(int guns)
     QString gn=QString::number(guns)+"s";
     QString tn=QString::number(guns)+"storen";
     QWidget *ayarPage=new QWidget();
-    ayarPage->setFixedWidth(500);
+    ayarPage->setFixedWidth(en*30);
     ayarPage->setFixedHeight(200+derssayisi*25);
     /*******************************************************/
      // 16 ders için 3 time edit: giriş - ders başlangıç - ders bitiş

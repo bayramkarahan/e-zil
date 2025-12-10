@@ -22,9 +22,7 @@
 #include<QToolButton>
 #include<QCheckBox>
 #include<QMessageBox>
-
-#include <QFile>
-
+//#include "miniaudio.h"
 
 bool MainWindow::dosyaVarmi(QString dosya)
 {
@@ -40,6 +38,52 @@ bool MainWindow::dosyaVarmi(QString dosya)
     }
     else return true;
 }
+/*
+void MainWindow::playMp3(const char* path)
+{
+    if (!engineInitialized) {
+        if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
+            qDebug() << "engine init error";
+            return;
+        }
+        engineInitialized = true;
+    }
+
+    // Eğer önceden ses varsa durdur
+    if (soundInitialized) {
+        ma_sound_uninit(&currentSound);
+    }
+
+    if (ma_sound_init_from_file(&engine, path, 0, NULL, NULL, &currentSound) != MA_SUCCESS) {
+        qDebug() << "sound init error";
+        return;
+    }
+
+    soundInitialized = true;
+
+    ma_sound_start(&currentSound);
+}
+
+
+void MainWindow::playMp3(const QString& path)
+{
+    playMp3(path.toUtf8().constData());
+}
+void MainWindow::setVolume(float volume)
+{
+    if (soundInitialized) {
+        ma_sound_set_volume(&currentSound, volume);
+    }
+}
+
+void MainWindow::stopMp3()
+{
+    if (soundInitialized) {
+        ma_sound_uninit(&currentSound);
+        soundInitialized = false;
+    }
+}
+*/
 QWidget *MainWindow::ayar()
 {
     DatabaseHelper *db=new DatabaseHelper(localDir+"e-zil.json");
@@ -53,8 +97,8 @@ QWidget *MainWindow::ayar()
  //   init();
 //burada ayarlar bölümü düzenleniyor yeni3
     QWidget *ayarPage=new QWidget();
-    ayarPage->setFixedWidth(500);
-    ayarPage->setFixedHeight(600);
+    ayarPage->setFixedWidth(en*30);
+    ayarPage->setFixedHeight(en*24);
    /**********************Tören Giriş**********************************/
 
     QToolButton *torenZilButton= new QToolButton;
@@ -80,14 +124,21 @@ QWidget *MainWindow::ayar()
     connect(torenZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
         QString deger=torenZilSeviyeLineEdit->text();
-       player->setVolume(deger.toInt());
+       //player->setVolume(deger.toInt());
         QFile* file = new QFile(torenZilLineEdit->text());
         qDebug()<<"Tören zili çalınıyor.."<<torenZilLineEdit->text();
         if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
-
-                file->seek(0);
-            player->play();
+            //player->setMedia(QMediaContent(), file);
+           //file->seek(0);
+           // player->play();
+            /****************************/
+            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            QStringList list;
+            list <<torenZilLineEdit->text();
+            miniPlayer->setPlaylist(list);
+            miniPlayer->setFadeDuration(400);   // ms
+            miniPlayer->setVolume(volume);
+            miniPlayer->play();
         }
 
     });
@@ -127,13 +178,20 @@ QWidget *MainWindow::ayar()
         if(!dosyaVarmi("e-zil.json")) return;
 
          QString deger=ogrenciZilSeviyeLineEdit->text();
-        player->setVolume(deger.toInt());
+        //player->setVolume(deger.toInt());
         QFile* file = new QFile(ogrenciZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
              qDebug()<<"Öğrenci zili çalınıyor..";
-             player->setMedia(QMediaContent(), file);
+             /*player->setMedia(QMediaContent(), file);
             file->seek(0);
-            player->play();
+            player->play();*/
+             float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+             QStringList list;
+             list <<ogrenciZilLineEdit->text();
+             miniPlayer->setPlaylist(list);
+             miniPlayer->setFadeDuration(400);   // ms
+             miniPlayer->setVolume(volume);
+             miniPlayer->play();
 
 
         }
@@ -172,12 +230,20 @@ QWidget *MainWindow::ayar()
       connect(ogretmenZilButton, &QPushButton::clicked, [=]() {
           if(!dosyaVarmi("e-zil.json")) return;
           QString deger=ogretmenZilSeviyeLineEdit->text();
-          player->setVolume(deger.toInt());
+         // player->setVolume(deger.toInt());
           QFile* file = new QFile(ogretmenZilLineEdit->text());
           if (file->open(QFile::ReadOnly)) {
-              player->setMedia(QMediaContent(), file);
+              /*player->setMedia(QMediaContent(), file);
               file->seek(0);
-              player->play();
+              player->play();*/
+              float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+              QStringList list;
+              list <<ogretmenZilLineEdit->text();
+              miniPlayer->setPlaylist(list);
+              miniPlayer->setFadeDuration(400);   // ms
+              miniPlayer->setVolume(volume);
+              miniPlayer->play();
+
           }
 
       });
@@ -214,12 +280,19 @@ QWidget *MainWindow::ayar()
     connect(cikisZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
         QString deger=cikisZilSeviyeLineEdit->text();
-        player->setVolume(deger.toInt());
+       // player->setVolume(deger.toInt());
         QFile* file = new QFile(cikisZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
+            /*player->setMedia(QMediaContent(), file);
             file->seek(0);
-            player->play();
+            player->play();*/
+            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            QStringList list;
+            list <<cikisZilLineEdit->text();
+            miniPlayer->setPlaylist(list);
+            miniPlayer->setFadeDuration(400);   // ms
+            miniPlayer->setVolume(volume);
+            miniPlayer->play();
 
         }
     });
@@ -258,13 +331,20 @@ QWidget *MainWindow::ayar()
     connect(istiklalZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
         QString deger=istiklalZilSeviyeLineEdit->text();
-        player->setVolume(deger.toInt());
+       // player->setVolume(deger.toInt());
 
         QFile* file = new QFile(istiklalZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
+            /*player->setMedia(QMediaContent(), file);
             file->seek(0);
-            player->play();
+            player->play();*/
+            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            QStringList list;
+            list <<istiklalZilLineEdit->text();
+            miniPlayer->setPlaylist(list);
+            miniPlayer->setFadeDuration(400);   // ms
+            miniPlayer->setVolume(volume);
+            miniPlayer->play();
         }
     });
     /************************************************************************/
@@ -300,12 +380,20 @@ QWidget *MainWindow::ayar()
     connect(saygiIstiklalZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
         QString deger=saygiIstiklalZilSeviyeLineEdit->text();
-        player->setVolume(deger.toInt());
+        //player->setVolume(deger.toInt());
         QFile* file = new QFile(saygiIstiklalZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
+           /* player->setMedia(QMediaContent(), file);
             file->seek(0);
-            player->play();
+            player->play();*/
+            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            QStringList list;
+            list <<saygiIstiklalZilLineEdit->text();
+            //qDebug()<<"isc"<<list<<volume;
+            miniPlayer->setPlaylist(list);
+            miniPlayer->setFadeDuration(400);   // ms
+            miniPlayer->setVolume(volume);
+            miniPlayer->play();
         }
 
     });
@@ -343,13 +431,20 @@ QWidget *MainWindow::ayar()
     connect(sirenZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
         QString deger=sirenZilSeviyeLineEdit->text();
-    player->setVolume(deger.toInt());
+        //player->setVolume(deger.toInt());
 
         QFile* file = new QFile(sirenZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-            player->setMedia(QMediaContent(), file);
+            /*player->setMedia(QMediaContent(), file);
             file->seek(0);
-            player->play();
+            player->play();*/
+            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            QStringList list;
+            list <<sirenZilLineEdit->text();
+            miniPlayer->setPlaylist(list);
+            miniPlayer->setFadeDuration(400);   // ms
+            miniPlayer->setVolume(volume);
+            miniPlayer->play();
         }
 
 
@@ -472,7 +567,7 @@ if (obj.contains("muzikbaslama"))
    connect(muzikYayinZilButton, &QPushButton::clicked, [=]() {
        if(!dosyaVarmi("e-zil.json")) return;
        QString deger=muzikYayinZilSeviyeLineEdit->text();
-       player->setVolume(deger.toInt());
+       //player->setVolume(deger.toInt());
 
        if (obj.contains("muzikklasor"))
            {
@@ -481,19 +576,26 @@ if (obj.contains("muzikbaslama"))
               QDir klasorpath;
             if (obj.contains("muzikklasor"))
                   klasorpath=obj["muzikklasor"].toString();
-              playlist = new QMediaPlaylist;
-              klasorpath.setNameFilters({"*.wav" , "*.mp3"});
-              for(const QFileInfo & finfo: klasorpath.entryInfoList()){
-
-                  playlist->addMedia(QUrl::fromLocalFile(finfo.absoluteFilePath()));
-                  muziklist.append(QUrl::fromLocalFile(finfo.absoluteFilePath()).toString().remove(0,7)).append(" ");
+              //playlist = new QMediaPlaylist;
+            QStringList miniPlayList;
+            klasorpath.setNameFilters({"*.wav" , "*.mp3"});
+            for(const QFileInfo & finfo: klasorpath.entryInfoList()){
+                //miniPlayList<<QUrl::fromLocalFile(finfo.absoluteFilePath());
+                miniPlayList << finfo.absoluteFilePath();
+                 // playlist->addMedia(QUrl::fromLocalFile(finfo.absoluteFilePath()));
+                 // muziklist.append(QUrl::fromLocalFile(finfo.absoluteFilePath()).toString().remove(0,7)).append(" ");
 
                   // qDebug()<<QUrl::fromLocalFile(finfo.absoluteFilePath()).toString();
               }
+              float volume = muzikYayinZilSeviyeLineEdit->text().toFloat() / 100.0f;   // %50 → 0.50
+              //qDebug()<<"Liste: "<<miniPlayList<<volume;
+              miniPlayer->setPlaylist(miniPlayList);
+              miniPlayer->setFadeDuration(400);   // ms
+              miniPlayer->setVolume(volume);
+              miniPlayer->play();
 
-
-              player->setMedia(playlist);
-              player->play();
+             // player->setMedia(playlist);
+             // player->play();
        }
 
    });
@@ -526,7 +628,8 @@ if (obj.contains("muzikbaslama"))
 
     connect(durZilButton, &QPushButton::clicked, [=]() {
 
-            player->stop();
+            //player->stop();
+          miniPlayer->stop();
        });
 
     QPushButton *onemligunButton= new QPushButton;
@@ -539,7 +642,8 @@ if (obj.contains("muzikbaslama"))
 
     connect(onemligunButton, &QPushButton::clicked, [=]() {
             onemliGunSlot();
-            player->stop();
+            //player->stop();
+            miniPlayer->stop();
        });
 
 
@@ -553,7 +657,8 @@ if (obj.contains("muzikbaslama"))
 
     connect(ayarKaydetButton, &QPushButton::clicked, [=]() {
      //   if(player->mediaStatus()==QMediaPlayer::PlayingState)
-           player->stop();
+
+        miniPlayer->stop();
      // Widget listelerini oluştur
       db->Sil("recordtype","settings");
      // Döngü ile tüm dersleri ekle
@@ -694,37 +799,7 @@ if(SZScb->checkState()==Qt::Unchecked)
 }
 
 });
-/********************* zil e-kilit entegrasyon ayarı************************************/
-QCheckBox *ekilitcb = new QCheckBox("e-kilit ile e-zil Uygulaması Etkileşime Girsin Mi?",ayarPage);
 
-if (obj.contains("ekilitState"))
-    ekilitState=obj["ekilitState"].toBool();
-
-if(ekilitState)
-{
-   // qDebug()<<"ekilitState"<<ekilitState;
-    ekilitcb->setChecked(Qt::Checked);
-}
-else
-{
-    // qDebug()<<"ekilitState"<<ekilitState;
-    ekilitcb->setChecked(Qt::Unchecked);
-}
-
-connect(ekilitcb, &QCheckBox::clicked, [=]() {
-if(ekilitcb->checkState()==Qt::Checked)
-{
-    ekilitState=true;
-    ///SZSgoster();
-
-}
-if(ekilitcb->checkState()==Qt::Unchecked)
-{
-   ekilitState=false;
-  /// SZSgizle();
-}
-
-});
 /********************* önemli gün ayarı************************************/
 QCheckBox *guncb = new QCheckBox("Önemli Günler Gösterilsin Mi?",ayarPage);
 

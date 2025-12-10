@@ -25,9 +25,17 @@ Widget(int _w,int _h)
    // this->setStyleSheet("background-color: #acacac;");
 
     Qt::WindowFlags flags = 0;
-    flags |= Qt::Dialog;
-    //flags |= Qt::WindowStaysOnTopHint;
-    flags |= Qt::X11BypassWindowManagerHint;
+   // flags |= Qt::Dialog;
+    #ifdef Q_OS_LINUX
+        flags |= Qt::WindowStaysOnTopHint;
+        flags |= Qt::X11BypassWindowManagerHint;
+    #endif
+
+    #ifdef Q_OS_WIN
+       // qDebug()<< "Windows version";
+        flags = Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
+    #endif
+
     this->setWindowFlags(flags);
     QLabel *zemin=new QLabel(this);
     zemin->setFixedSize(this->width(),this->height());

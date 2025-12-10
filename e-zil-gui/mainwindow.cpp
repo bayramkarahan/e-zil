@@ -22,8 +22,8 @@
 #include<QLabel>
 #include<QGridLayout>
 #include<QPushButton>
-#include<QMediaPlaylist>
-#include<QMediaPlayer>
+//#include<QMediaPlaylist>
+//#include<QMediaPlayer>
 #include<QFile>
 #include<QFileDialog>
 #include<QRegularExpression>
@@ -42,11 +42,12 @@
 #include<QMenu>
 #include<QCloseEvent>
 
-
-
+/*ma_engine MainWindow::engine;
+bool MainWindow::engineInitialized = false;*/
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
  {
+
 
 #ifdef Q_OS_LINUX
    // qDebug()<< "Linux version";
@@ -57,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
    // qDebug()<< "Windows version";
      localDir = QCoreApplication::applicationDirPath() + "/";
 #endif
-
+miniPlayer=new MiniAudioPlayer(this);
 
 
 
@@ -85,8 +86,8 @@ MainWindow::MainWindow(QWidget *parent) :
      en=boy;
 
       //this->resize(500,650);
-      setFixedWidth(500);
-      setFixedHeight(640);
+      setFixedWidth(en*30);
+      setFixedHeight(en*25);
 
       QRect screenGeometry = QApplication::desktop()->screenGeometry();
       int x = (screenGeometry.width()/2 - this->width()/2);
@@ -97,8 +98,8 @@ MainWindow::MainWindow(QWidget *parent) :
       tw=new QTabWidget(this);
       tw->resize(this->width(),this->height());
       /*************************SZS ekranı*******************************************/
-      player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
-      player->setVolume(70);
+      ///player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
+     /// player->setVolume(70);
 
 widgetShow();
 
@@ -108,6 +109,10 @@ widgetShow();
 MainWindow::~MainWindow()
 {
   //  delete ui;
+    ///if (engineInitialized)
+      ///  ma_engine_uninit(&engine);
+    if (miniPlayer)
+        miniPlayer->stop();   // sadece durdur
 }
 QTime MainWindow::saniyeToSaat(QString _zaman)
 {
