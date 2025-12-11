@@ -124,7 +124,7 @@ miniPlayer=new MiniAudioPlayer(this);
 
       timerZilBaslama = new QTimer(this);
       connect(timerZilBaslama, SIGNAL(timeout()), this, SLOT(zilKontrol()));
-      timerZilBaslama->start(6000);
+      timerZilBaslama->start(250);
 
       //player = new QMediaPlayer(nullptr, QMediaPlayer::StreamPlayback);
       //player->setVolume(70);
@@ -309,40 +309,40 @@ void MainWindow::zilKontrol()
         }
     }
     if(bulundu){
-        qDebug()
+        /*qDebug()
             << "zil:"
             <<zildersno
             <<zilturu
-            <<zilzamani;
-        if(zilturu=="giris")    ogrenciMuzik();
-        if(zilturu=="baslangic") ogretmenMuzik();
-        if(zilturu=="cikis") cikisMuzik();
-        if(zilturu=="toren") torenMuzik();
+            <<zilzamani;*/
+        if(zilturu=="giris")    ogrenciMuzik(QString::number(zildersno));
+        if(zilturu=="baslangic") ogretmenMuzik(QString::number(zildersno));
+        if(zilturu=="cikis") cikisMuzik(QString::number(zildersno));
+        if(zilturu=="toren") torenMuzik(QString::number(zildersno));
     }
 
     if (qAbs(currentsaniye - molaBaslamaSaati) <= tolerans) {
         //qDebug()<<"öğle arası başladı"<<molaBaslamaSaati;
          yayinMolaMuzik();
     }
-
+/*
     if (qAbs(currentsaniye - molaBitisSaati) <= tolerans) {
         qDebug()<<"öğle arası bitti"<<molaBitisSaati;
     }
-
+*/
     if(currentsaniye<torenBaslamaSaati)
     {
         //qDebug()<<"sabah"<<saatlist[i]<<currentsaniye;
         widget->zamanGostergesiDurum->setText("S");
     }
 
-    if (qAbs(currentsaniye - torenBaslamaSaati) <= tolerans) {
-        torenMuzik();
-    }
-
+   /* if (qAbs(currentsaniye - torenBaslamaSaati) <= tolerans) {
+        torenMuzik(QString ders);
+    }*/
+/*
     if (qAbs(currentsaniye - ilkOgrenciGirisSaati) <= tolerans) {
         qDebug()<<"ilk öğrenci girişi";
     }
-
+*/
     if (currentsaniye >(sonDersCikisSaati+tolerans)) {
         ///qDebug()<<"ders bitti";
         widget->zamanGostergesiDurum->setText("A");
@@ -353,7 +353,7 @@ void MainWindow::zilKontrol()
     }
 
     if (qAbs(currentsaniye - muzikson) <= tolerans) {
-        qDebug()<<"mola muzikson bitti";
+        ///qDebug()<<"mola muzikson bitti";
            if(molaMuzikYayinState)
             {
                 miniPlayer->stop();
@@ -362,6 +362,9 @@ void MainWindow::zilKontrol()
     }
 
     if (qAbs(currentsaniye - derssonupckapat) <= tolerans) {
+        if(kapatKomutStatus) return;
+        resetStatus();
+        kapatKomutStatus=true;
         qDebug()<<"kapatKomut";
         QString kmt="";
         if (ayarlar.contains("kapatKomut"))
@@ -370,6 +373,9 @@ void MainWindow::zilKontrol()
     }
 
     if (qAbs(currentsaniye - molapckapat) <= tolerans) {
+        if(molapckapatiStatus) return;
+        resetStatus();
+        molapckapatiStatus=true;
         qDebug()<<"molapckapati";
         QString kmt="";
         if (ayarlar.contains("kapatKomut"))
@@ -377,6 +383,10 @@ void MainWindow::zilKontrol()
         system(kmt.toStdString().c_str());
     }
 
+    onemliGun();
+}
+void MainWindow::onemliGun()
+{
     bool gunState;
     if (ayarlar.contains("gunState"))
         gunState=ayarlar["gunState"].toBool();
@@ -412,7 +422,7 @@ MainWindow::~MainWindow()
 {
 
 }
-void MainWindow::torenMuzik()
+void MainWindow::torenMuzik(QString ders)
 {
     //qDebug()<<"tören başladı";
     if(torenMuzikPlayStatus) return;
@@ -434,11 +444,11 @@ void MainWindow::torenMuzik()
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
         miniPlayer->play();
-        qDebug()<<"Tören Zili Çalıyor....."<<QDateTime::currentDateTime();
+        qDebug()<<ders<<"Tören Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
     }
 
 }
-void MainWindow::ogrenciMuzik()
+void MainWindow::ogrenciMuzik(QString ders)
 {
     //qDebug()<<"ogrenci müzik...";
     if(ogrenciMuzikPlayStatus) return;
@@ -466,11 +476,11 @@ void MainWindow::ogrenciMuzik()
         miniPlayer->setVolume(volume);
         miniPlayer->play();
         tempCurrentsaat=currentsaat;
-        qDebug()<<"Öğrenci Zili Çalıyor....."<<QDateTime::currentDateTime();
+        qDebug()<<ders<<"Öğrenci Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
     }
 
 }
-void MainWindow::ogretmenMuzik()
+void MainWindow::ogretmenMuzik(QString ders)
 {
     ///qDebug()<<"ogretmen müzik...";
     if(ogretmenMuzikPlayStatus) return;
@@ -499,10 +509,10 @@ void MainWindow::ogretmenMuzik()
         miniPlayer->setVolume(volume);
         miniPlayer->play();
         tempCurrentsaat=currentsaat;
-        qDebug()<<"Öğretmen Zili Çalıyor....."<<QDateTime::currentDateTime();
+        qDebug()<<ders<<"Öğretmen Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
     }
 }
-void MainWindow::cikisMuzik()
+void MainWindow::cikisMuzik(QString ders)
 {
    // qDebug()<<"çıkış müzik...";
     if(cikisMuzikPlayStatus) return;
@@ -527,7 +537,7 @@ void MainWindow::cikisMuzik()
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
         miniPlayer->play();
-        qDebug()<<"Çıkış Zili Çalıyor....."<<QDateTime::currentDateTime();
+        qDebug()<<ders<<"Çıkış Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
     }
 }
 
@@ -571,7 +581,7 @@ void MainWindow::yayinTenefusMuzik()
             miniPlayer->setVolume(volume);
             miniPlayer->play();
             tenefusYayin=true;
-            qDebug()<<"Tenefüs Müzik Yayını Başladı.."<<QDateTime::currentDateTime();
+            qDebug()<<"Tenefüs Müzik Yayını Başladı.."<<QTime::currentTime().toString("hh:mm:ss");
 
         }
 
@@ -612,7 +622,7 @@ void MainWindow::yayinMolaMuzik()
             miniPlayer->setVolume(volume);
             miniPlayer->play();
             tenefusYayin=true;
-            qDebug()<<"Mola Müzik Yayını Başladı.."<<QDateTime::currentDateTime();
+            qDebug()<<"Mola Müzik Yayını Başladı.."<<QTime::currentTime().toString("hh:mm:ss");
         }
 }
 

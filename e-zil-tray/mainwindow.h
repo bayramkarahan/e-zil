@@ -63,13 +63,16 @@ public slots:
         cikisMuzikPlayStatus=false;
         tenefusMuzikYayinPlayStatus=false;
         molaMuzikYayinPlayStatus=false;
+        kapatKomutStatus=false;
+        molapckapatiStatus=false;
     }
-    void torenMuzik();
-    void ogrenciMuzik();
-    void ogretmenMuzik();
-    void cikisMuzik();
+    void torenMuzik(QString ders);
+    void ogrenciMuzik(QString ders);
+    void ogretmenMuzik(QString ders);
+    void cikisMuzik(QString ders);
     void yayinTenefusMuzik();
     void yayinMolaMuzik();
+    void onemliGun();
 
     QTime saniyeToSaat(QString _zaman);
     QString saatToSaniye(QTime _zaman);
@@ -86,6 +89,8 @@ private:
     bool cikisMuzikPlayStatus=false;
     bool tenefusMuzikYayinPlayStatus=false;
     bool molaMuzikYayinPlayStatus=false;
+    bool kapatKomutStatus=false;
+    bool molapckapatiStatus=false;
 
     int girissaniye,baslamasaniye,cikissaniye,tenefussaniye,gbfark,bcfark,ctfark;
     QTime sb,sg,sc,st;
