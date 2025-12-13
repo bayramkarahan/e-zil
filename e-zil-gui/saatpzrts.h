@@ -54,7 +54,7 @@ QWidget *MainWindow::saatpzrts(int guns)
     QString gn=QString::number(guns)+"s";
     QString tn=QString::number(guns)+"storen";
     QWidget *ayarPage=new QWidget();
-    ayarPage->setFixedWidth(en*30);
+    ayarPage->setFixedWidth(en*27);
     ayarPage->setFixedHeight(200+derssayisi*25);
     /*******************************************************/
      // 16 ders için 3 time edit: giriş - ders başlangıç - ders bitiş
@@ -258,17 +258,7 @@ if(guns!=1) haftaUyarlaButton->hide();
      }
 
  });
-/************************mola sonrası**************************************/
-    QPushButton *MolaSonrasiSaatUyarlaButton= new QPushButton;
-   /// MolaSonrasiSaatUyarlaButton->setFixedSize(300, 30);
-    ///MolaSonrasiSaatUyarlaButton->setIconSize(QSize(450,30));
-    MolaSonrasiSaatUyarlaButton->setText("Mola Sonrası Saatleri Uyarla");
-    MolaSonrasiSaatUyarlaButton->setStyleSheet("Text-align:center");
 
-
-    connect(MolaSonrasiSaatUyarlaButton, &QPushButton::clicked, [=]() {
-
- });
 /******************************************************************/
 
     QPushButton *temizleButton= new QPushButton;
@@ -374,15 +364,13 @@ connect(ayarKaydetButton, &QPushButton::clicked, [=]() {
          if(j==0)
         {
           layout->addWidget(ders[0].teneffus, j+10+ara,4,1,1);ders[0].teneffus->setStyleSheet("background-color: #ffaaaa;");
-          layout->addWidget(MolaSonrasiSaatUyarlaButton,j+10,1,1,3,Qt::AlignHCenter);
 
         }
          if(ogleArasi==j+1)
          {
             ara=2;
              layout->addWidget(new QLabel("<font size=1>*************** Mola ***************</font>"),j+10+ara-1,1,1,3,Qt::AlignHCenter);
-             layout->addWidget(MolaSonrasiSaatUyarlaButton,j+10+ara,1,1,3,Qt::AlignHCenter);
-             ders[j].giris->setStyleSheet("background-color: #ffaaaa;");
+              ders[j].giris->setStyleSheet("background-color: #ffaaaa;");
              ders[j].baslangic->setStyleSheet("background-color: #ffaaaa;");
              ders[j].cikis->setStyleSheet("background-color: #ffaaaa;");
 

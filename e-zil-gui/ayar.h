@@ -52,7 +52,7 @@ QWidget *MainWindow::ayar()
  //   init();
 //burada ayarlar bölümü düzenleniyor yeni3
     QWidget *ayarPage=new QWidget();
-    ayarPage->setFixedWidth(en*30);
+    ayarPage->setFixedWidth(en*27);
     ayarPage->setFixedHeight(en*25);
    /**********************Tören Giriş**********************************/
 
@@ -64,30 +64,24 @@ QWidget *MainWindow::ayar()
 
 
     QLineEdit *torenZilLineEdit=new QLineEdit(ayarPage);
-    //torenZilLineEdit->resize(500,25);
     if (obj.contains("torenzil"))
         torenZilLineEdit->setText(obj["torenzil"].toString());
 
+    ModernValueSliderWidget *torenZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+    //torenZilSeviyeLineEdit->setFixedWidth(en * 10);
+    torenZilSeviyeLineEdit->setRange(0, 100);
+    torenZilSeviyeLineEdit->setValue(80);
 
-    QLineEdit *torenZilSeviyeLineEdit=new QLineEdit(ayarPage);
-    torenZilSeviyeLineEdit->setFixedWidth(30);
-    torenZilSeviyeLineEdit->setText("80");
     if (obj.contains("torenzilseviye"))
-        torenZilSeviyeLineEdit->setText(obj["torenzilseviye"].toString());
-
+        torenZilSeviyeLineEdit->setValue(obj["torenzilseviye"].toInt());
 
     connect(torenZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
-        QString deger=torenZilSeviyeLineEdit->text();
-       //player->setVolume(deger.toInt());
+        int deger=torenZilSeviyeLineEdit->value();
         QFile* file = new QFile(torenZilLineEdit->text());
         qDebug()<<"Tören zili çalınıyor.."<<torenZilLineEdit->text();
         if (file->open(QFile::ReadOnly)) {
-            //player->setMedia(QMediaContent(), file);
-           //file->seek(0);
-           // player->play();
-            /****************************/
-            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            float volume = deger / 100.0f;   // %50 → 0.50
             QStringList list;
             list <<torenZilLineEdit->text();
             miniPlayer->setPlaylist(list);
@@ -99,7 +93,7 @@ QWidget *MainWindow::ayar()
     });
 /************************************************************************/
     QPushButton *torenZilFileSelectButton= new QPushButton;
-    torenZilFileSelectButton->setFixedWidth(20);;
+    torenZilFileSelectButton->setFixedWidth(30);
     torenZilFileSelectButton->setText("...");
     torenZilFileSelectButton->setStyleSheet("Text-align:center");
     //ogrenciZilFileSelectButton->setFlat(true);
@@ -112,27 +106,26 @@ QWidget *MainWindow::ayar()
 
     /*************************Öğrenci*******************************/
     QPushButton *ogrenciZilButton= new QPushButton;
-  //  ogrenciZilButton->setFixedSize(170, 30);
-   // ogrenciZilButton->setIconSize(QSize(150,30));
     ogrenciZilButton->setText("Öğrenci Zil Çal");
     ogrenciZilButton->setStyleSheet("Text-align:center");
-    //ogrenciZilButton->setFlat(true);
     QLineEdit *ogrenciZilLineEdit=new QLineEdit(ayarPage);
-   // ogrenciZilLineEdit->resize(500,25);
     if (obj.contains("ogrencizil"))
         ogrenciZilLineEdit->setText(obj["ogrencizil"].toString());
 
-    QLineEdit *ogrenciZilSeviyeLineEdit=new QLineEdit(ayarPage);
-     ogrenciZilSeviyeLineEdit->setFixedWidth(30);
-    ogrenciZilSeviyeLineEdit->setText("80");
-     if (obj.contains("ogrencizilseviye"))
-        ogrenciZilSeviyeLineEdit->setText(obj["ogrencizilseviye"].toString());
+
+    ModernValueSliderWidget *ogrenciZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+    //ogrenciZilSeviyeLineEdit->setFixedWidth(en * 10);
+    ogrenciZilSeviyeLineEdit->setRange(0, 100);
+    ogrenciZilSeviyeLineEdit->setValue(80);
+
+    if (obj.contains("ogrencizilseviye"))
+        ogrenciZilSeviyeLineEdit->setValue(obj["ogrencizilseviye"].toInt());
 
     connect(ogrenciZilButton, &QPushButton::clicked, [=]() {
 
         if(!dosyaVarmi("e-zil.json")) return;
 
-         QString deger=ogrenciZilSeviyeLineEdit->text();
+         int deger=ogrenciZilSeviyeLineEdit->value();
         //player->setVolume(deger.toInt());
         QFile* file = new QFile(ogrenciZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
@@ -140,7 +133,7 @@ QWidget *MainWindow::ayar()
              /*player->setMedia(QMediaContent(), file);
             file->seek(0);
             player->play();*/
-             float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+             float volume = deger / 100.0f;   // %50 → 0.50
              QStringList list;
              list <<ogrenciZilLineEdit->text();
              miniPlayer->setPlaylist(list);
@@ -153,7 +146,7 @@ QWidget *MainWindow::ayar()
     });
 /************************************************************************/
     QPushButton *ogrenciZilFileSelectButton= new QPushButton;
-    ogrenciZilFileSelectButton->setFixedWidth(20);
+    ogrenciZilFileSelectButton->setFixedWidth(30);
     ogrenciZilFileSelectButton->setText("...");
     ogrenciZilFileSelectButton->setStyleSheet("Text-align:center");
     //ogrenciZilFileSelectButton->setFlat(true);
@@ -166,32 +159,28 @@ QWidget *MainWindow::ayar()
     /***************************Öğretmen*********************************************/
 
     QPushButton *ogretmenZilButton= new QPushButton;
-   // ogretmenZilButton->setFixedSize(170, 30);
-   // ogretmenZilButton->setIconSize(QSize(150,30));
     ogretmenZilButton->setText("Öğretmen Zil Çal");
     ogretmenZilButton->setStyleSheet("Text-align:center");
-  //  ogretmenZilButton->setFlat(true);
-   // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *ogretmenZilLineEdit=new QLineEdit;
     if (obj.contains("ogretmenzil"))
         ogretmenZilLineEdit->setText(obj["ogretmenzil"].toString());
 
-     QLineEdit *ogretmenZilSeviyeLineEdit=new QLineEdit;
-     ogretmenZilSeviyeLineEdit->setFixedWidth(30);
-     ogretmenZilSeviyeLineEdit->setText("80");
-     if (obj.contains("ogretmenzilseviye"))
-         ogretmenZilSeviyeLineEdit->setText(obj["ogretmenzilseviye"].toString());
+    ModernValueSliderWidget *ogretmenZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+    //ogretmenZilSeviyeLineEdit->setFixedWidth(en * 10);
+    ogretmenZilSeviyeLineEdit->setRange(0, 100);
+    ogretmenZilSeviyeLineEdit->setValue(80);
+
+    if (obj.contains("ogretmenzilseviye"))
+        ogretmenZilSeviyeLineEdit->setValue(obj["ogretmenzilseviye"].toInt());
+
 
       connect(ogretmenZilButton, &QPushButton::clicked, [=]() {
           if(!dosyaVarmi("e-zil.json")) return;
-          QString deger=ogretmenZilSeviyeLineEdit->text();
-         // player->setVolume(deger.toInt());
+          int deger=ogretmenZilSeviyeLineEdit->value();
           QFile* file = new QFile(ogretmenZilLineEdit->text());
           if (file->open(QFile::ReadOnly)) {
-              /*player->setMedia(QMediaContent(), file);
-              file->seek(0);
-              player->play();*/
-              float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+
+              float volume = deger / 100.0f;   // %50 → 0.50
               QStringList list;
               list <<ogretmenZilLineEdit->text();
               miniPlayer->setPlaylist(list);
@@ -204,7 +193,7 @@ QWidget *MainWindow::ayar()
       });
     /************************************************************************/
         QPushButton *ogretmenZilFileSelectButton= new QPushButton;
-        ogretmenZilFileSelectButton->setFixedWidth(20);
+        ogretmenZilFileSelectButton->setFixedWidth(30);
         ogretmenZilFileSelectButton->setText("...");
         ogretmenZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
@@ -226,22 +215,21 @@ QWidget *MainWindow::ayar()
     if (obj.contains("cikiszil"))
         cikisZilLineEdit->setText(obj["cikiszil"].toString());
 
-    QLineEdit *cikisZilSeviyeLineEdit=new QLineEdit;
-    cikisZilSeviyeLineEdit->setFixedWidth(30);
-    cikisZilSeviyeLineEdit->setText("80");
+    ModernValueSliderWidget *cikisZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+    //cikisZilSeviyeLineEdit->setFixedWidth(en * 10);
+    cikisZilSeviyeLineEdit->setRange(0, 100);
+    cikisZilSeviyeLineEdit->setValue(80);
+
     if (obj.contains("cikiszilseviye"))
-        cikisZilSeviyeLineEdit->setText(obj["cikiszilseviye"].toString());
+        cikisZilSeviyeLineEdit->setValue(obj["cikiszilseviye"].toInt());
+
 
     connect(cikisZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
-        QString deger=cikisZilSeviyeLineEdit->text();
-       // player->setVolume(deger.toInt());
+        int deger=cikisZilSeviyeLineEdit->value();
         QFile* file = new QFile(cikisZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-            /*player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();*/
-            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            float volume = deger / 100.0f;   // %50 → 0.50
             QStringList list;
             list <<cikisZilLineEdit->text();
             miniPlayer->setPlaylist(list);
@@ -253,7 +241,7 @@ QWidget *MainWindow::ayar()
     });
     /************************************************************************/
         QPushButton *cikisZilFileSelectButton= new QPushButton;
-        cikisZilFileSelectButton->setFixedWidth(20);
+        cikisZilFileSelectButton->setFixedWidth(30);
         cikisZilFileSelectButton->setText("...");
         cikisZilFileSelectButton->setStyleSheet("Text-align:center");
 
@@ -267,33 +255,28 @@ QWidget *MainWindow::ayar()
 
 
     QPushButton *istiklalZilButton= new QPushButton;
-    //istiklalZilButton->setFixedSize(170, 30);
-   // istiklalZilButton->setIconSize(QSize(150,30));
     istiklalZilButton->setText("İstiklal Marşı Çal");
     istiklalZilButton->setStyleSheet("Text-align:center");
-   // istiklalZilButton->setFlat(true);
-   // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *istiklalZilLineEdit=new QLineEdit;
     if (obj.contains("istiklalzil"))
         istiklalZilLineEdit->setText(obj["istiklalzil"].toString());
 
-    QLineEdit *istiklalZilSeviyeLineEdit=new QLineEdit;
-    istiklalZilSeviyeLineEdit->setFixedWidth(30);
-    istiklalZilSeviyeLineEdit->setText("80");
+    ModernValueSliderWidget *istiklalZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+    //istiklalZilSeviyeLineEdit->setFixedWidth(en * 10);
+    istiklalZilSeviyeLineEdit->setRange(0, 100);
+    istiklalZilSeviyeLineEdit->setValue(80);
+
     if (obj.contains("istiklalzilseviye"))
-        istiklalZilSeviyeLineEdit->setText(obj["istiklalzilseviye"].toString());
+        istiklalZilSeviyeLineEdit->setValue(obj["istiklalzilseviye"].toInt());
+
 
     connect(istiklalZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
-        QString deger=istiklalZilSeviyeLineEdit->text();
-       // player->setVolume(deger.toInt());
-
+        int deger=istiklalZilSeviyeLineEdit->value();
         QFile* file = new QFile(istiklalZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-            /*player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();*/
-            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+
+            float volume = deger / 100.0f;   // %50 → 0.50
             QStringList list;
             list <<istiklalZilLineEdit->text();
             miniPlayer->setPlaylist(list);
@@ -304,7 +287,7 @@ QWidget *MainWindow::ayar()
     });
     /************************************************************************/
         QPushButton *istiklalZilFileSelectButton= new QPushButton;
-        istiklalZilFileSelectButton->setFixedWidth(20);
+        istiklalZilFileSelectButton->setFixedWidth(30);
         istiklalZilFileSelectButton->setText("...");
         istiklalZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
@@ -316,32 +299,26 @@ QWidget *MainWindow::ayar()
         /************************************************************************/
 
     QPushButton *saygiIstiklalZilButton= new QPushButton;
-   // saygiIstiklalZilButton->setFixedSize(170, 30);
-   // saygiIstiklalZilButton->setIconSize(QSize(150,30));
     saygiIstiklalZilButton->setText("Saygı+İstiklal Marşı Çal");
     saygiIstiklalZilButton->setStyleSheet("Text-align:center");
-    //saygiIstiklalZilButton->setFlat(true);
-   // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *saygiIstiklalZilLineEdit=new QLineEdit;
      if (obj.contains("istiklalsaygizil"))
         saygiIstiklalZilLineEdit->setText(obj["istiklalsaygizil"].toString());
 
-    QLineEdit *saygiIstiklalZilSeviyeLineEdit=new QLineEdit;
-    saygiIstiklalZilSeviyeLineEdit->setFixedWidth(30);
-    saygiIstiklalZilSeviyeLineEdit->setText("80");
+     ModernValueSliderWidget *saygiIstiklalZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+     //saygiIstiklalZilSeviyeLineEdit->setFixedWidth(en * 10);
+     saygiIstiklalZilSeviyeLineEdit->setRange(0, 100);
+     saygiIstiklalZilSeviyeLineEdit->setValue(80);
+
      if (obj.contains("istiklalsaygizilseviye"))
-        saygiIstiklalZilSeviyeLineEdit->setText(obj["istiklalsaygizilseviye"].toString());
+         saygiIstiklalZilSeviyeLineEdit->setValue(obj["istiklalsaygizilseviye"].toInt());
 
     connect(saygiIstiklalZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
-        QString deger=saygiIstiklalZilSeviyeLineEdit->text();
-        //player->setVolume(deger.toInt());
+        int deger=saygiIstiklalZilSeviyeLineEdit->value();
         QFile* file = new QFile(saygiIstiklalZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-           /* player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();*/
-            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            float volume = deger / 100.0f;   // %50 → 0.50
             QStringList list;
             list <<saygiIstiklalZilLineEdit->text();
             //qDebug()<<"isc"<<list<<volume;
@@ -354,7 +331,7 @@ QWidget *MainWindow::ayar()
     });
     /************************************************************************/
         QPushButton *saygiIstiklalZilFileSelectButton= new QPushButton;
-        saygiIstiklalZilFileSelectButton->setFixedWidth(20);
+        saygiIstiklalZilFileSelectButton->setFixedWidth(30);
         saygiIstiklalZilFileSelectButton->setText("...");
         saygiIstiklalZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
@@ -366,34 +343,29 @@ QWidget *MainWindow::ayar()
         /************************************************************************/
 
     QPushButton *sirenZilButton= new QPushButton;
-   // sirenZilButton->setFixedSize(170, 30);
-   // sirenZilButton->setIconSize(QSize(150,30));
     sirenZilButton->setText("Siren Çal");
     sirenZilButton->setStyleSheet("Text-align:center");
-   // sirenZilButton->setFlat(true);
-   // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
     QLineEdit *sirenZilLineEdit=new QLineEdit;
 
     if (obj.contains("sirenzil"))
         sirenZilLineEdit->setText(obj["sirenzil"].toString());
 
-    QLineEdit *sirenZilSeviyeLineEdit=new QLineEdit;
-    sirenZilSeviyeLineEdit->setFixedWidth(30);
-    sirenZilSeviyeLineEdit->setText("80");
-    if (obj.contains("sirenzilseviye"))
-        sirenZilSeviyeLineEdit->setText(obj["sirenzilseviye"].toString());
+    ModernValueSliderWidget *sirenZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+    sirenZilSeviyeLineEdit->setFixedWidth(en * 10);
+    sirenZilSeviyeLineEdit->setRange(0, 100);
+    sirenZilSeviyeLineEdit->setValue(80);
 
-    connect(sirenZilButton, &QPushButton::clicked, [=]() {
+    if (obj.contains("sirenzilseviye"))
+        sirenZilSeviyeLineEdit->setValue(obj["sirenzilseviye"].toInt());
+
+  connect(sirenZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
-        QString deger=sirenZilSeviyeLineEdit->text();
+        int deger=sirenZilSeviyeLineEdit->value();
         //player->setVolume(deger.toInt());
 
         QFile* file = new QFile(sirenZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
-            /*player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();*/
-            float volume = deger.toFloat() / 100.0f;   // %50 → 0.50
+            float volume = deger / 100.0f;   // %50 → 0.50
             QStringList list;
             list <<sirenZilLineEdit->text();
             miniPlayer->setPlaylist(list);
@@ -406,7 +378,7 @@ QWidget *MainWindow::ayar()
     });
     /************************************************************************/
         QPushButton *sirenZilFileSelectButton= new QPushButton;
-        sirenZilFileSelectButton->setFixedWidth(20);
+        sirenZilFileSelectButton->setFixedWidth(30);
         sirenZilFileSelectButton->setText("...");
         sirenZilFileSelectButton->setStyleSheet("Text-align:center");
         //ogrenciZilFileSelectButton->setFlat(true);
@@ -417,12 +389,8 @@ QWidget *MainWindow::ayar()
      });
         /************************************************************************/
         QPushButton *dersSonuPcKapatButton= new QPushButton;
-       // dersSonuPcKapatButton->setFixedSize(200, 30);
-      //  dersSonuPcKapatButton->setIconSize(QSize(150,30));
         dersSonuPcKapatButton->setText("Hafta İçi Bilgisayar Kapat");
         dersSonuPcKapatButton->setStyleSheet("Text-align:center");
-       // dersSonuPcKapatButton->setFlat(true);
-       // dersSonuPcKapatButton->setIcon(QIcon(":icons/saveprofile.png"));
         QTimeEdit *dersSonuPcKapatTimeEdit=new QTimeEdit;
         if (obj.contains("derssonupckapat"))
             dersSonuPcKapatTimeEdit->setTime(saniyeToSaat(obj["derssonupckapat"].toString()));
@@ -438,8 +406,7 @@ QWidget *MainWindow::ayar()
            // }
 
      });
-                /************************************************************************/
-/************************************************************************/
+ /************************************************************************/
 QPushButton *molaPcKapatButton= new QPushButton;
 //molaPcKapatButton->setIconSize(QSize(150,30));
 molaPcKapatButton->setText("Hafta Sonu Bilgisayar Kapat");
@@ -482,7 +449,7 @@ if (obj.contains("muzikklasor"))
 /************************************************************************/
 QPushButton *muzikFileSelectButton= new QPushButton;
 //muzikFileSelectButton->setFixedSize(20, 30);
-muzikFileSelectButton->setFixedWidth(20);
+muzikFileSelectButton->setFixedWidth(30);
 muzikFileSelectButton->setText("...");
 muzikFileSelectButton->setStyleSheet("Text-align:center");
 //ogrenciZilFileSelectButton->setFlat(true);
@@ -503,13 +470,15 @@ if (obj.contains("muzikbaslama"))
  if (obj.contains("muzikson"))
       muzikSonTimeEdit->setTime(saniyeToSaat(obj["muzikson"].toString()));
 
-  QLineEdit *muzikYayinZilSeviyeLineEdit=new QLineEdit;
-  muzikYayinZilSeviyeLineEdit->setFixedWidth(30);
-  muzikYayinZilSeviyeLineEdit->setText("80");
-   if (obj.contains("muzikyayinseviye"))
-       muzikYayinZilSeviyeLineEdit->setText(obj["muzikyayinseviye"].toString());
+ ModernValueSliderWidget *muzikYayinZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
+ //muzikYayinZilSeviyeLineEdit->setFixedWidth(en * 10);
+ muzikYayinZilSeviyeLineEdit->setRange(0, 100);
+ muzikYayinZilSeviyeLineEdit->setValue(80);
 
-/**********************************************************************/
+ if (obj.contains("muzikyayinseviye"))
+     muzikYayinZilSeviyeLineEdit->setValue(obj["muzikyayinseviye"].toInt());
+
+ /**********************************************************************/
    QPushButton *muzikYayinZilButton= new QPushButton;
 //   muzikYayinZilButton->setFixedSize(170, 30);
  //  muzikYayinZilButton->setIconSize(QSize(150,30));
@@ -521,7 +490,7 @@ if (obj.contains("muzikbaslama"))
   // kilitButton->setIcon(QIcon(":icons/saveprofile.png"));
    connect(muzikYayinZilButton, &QPushButton::clicked, [=]() {
        if(!dosyaVarmi("e-zil.json")) return;
-       QString deger=muzikYayinZilSeviyeLineEdit->text();
+       int deger=muzikYayinZilSeviyeLineEdit->value();
        //player->setVolume(deger.toInt());
 
        if (obj.contains("muzikklasor"))
@@ -542,7 +511,7 @@ if (obj.contains("muzikbaslama"))
 
                   // qDebug()<<QUrl::fromLocalFile(finfo.absoluteFilePath()).toString();
               }
-              float volume = muzikYayinZilSeviyeLineEdit->text().toFloat() / 100.0f;   // %50 → 0.50
+              float volume = muzikYayinZilSeviyeLineEdit->value() / 100.0f;   // %50 → 0.50
               //qDebug()<<"Liste: "<<miniPlayList<<volume;
               miniPlayer->setPlaylist(miniPlayList);
               miniPlayer->setFadeDuration(400);   // ms
@@ -632,19 +601,16 @@ if (obj.contains("muzikbaslama"))
          obj["muzikbaslama"] =    saatToSaniye(muzikBaslamaTimeEdit->time());
          obj["muzikson"] =    saatToSaniye(muzikSonTimeEdit->time());
 
-         obj["torenzilseviye"] =    torenZilSeviyeLineEdit->text();
-         obj["ogrencizilseviye"] =    ogrenciZilSeviyeLineEdit->text();
-         obj["ogretmenzilseviye"] =    ogretmenZilSeviyeLineEdit->text();
-         obj["cikiszilseviye"] =    cikisZilSeviyeLineEdit->text();
+         obj["torenzilseviye"] =    torenZilSeviyeLineEdit->value();
+         obj["ogrencizilseviye"] =    ogrenciZilSeviyeLineEdit->value();
+         obj["ogretmenzilseviye"] =    ogretmenZilSeviyeLineEdit->value();
+         obj["cikiszilseviye"] =    cikisZilSeviyeLineEdit->value();
 
-         obj["istiklalzilseviye"] =    istiklalZilSeviyeLineEdit->text();
-         obj["istiklalsaygizilseviye"] =    saygiIstiklalZilSeviyeLineEdit->text();
-         obj["sirenzilseviye"] =    sirenZilSeviyeLineEdit->text();
-         obj["muzikyayinseviye"] =    muzikYayinZilSeviyeLineEdit->text();
-
-         obj["tenefusMuzikYayinState"] =   tenefusMuzikYayinState;
+         obj["istiklalzilseviye"] =    istiklalZilSeviyeLineEdit->value();
+         obj["istiklalsaygizilseviye"] =    saygiIstiklalZilSeviyeLineEdit->value();
+         obj["sirenzilseviye"] =    sirenZilSeviyeLineEdit->value();
+         obj["muzikyayinseviye"] =    muzikYayinZilSeviyeLineEdit->value();
          obj["oglenMuzikYayinState"] =    oglenMuzikYayinState;
-        qDebug()<<SZSState;
          obj["SZSState"] =   SZSState;
          obj["ekilitState"] =    ekilitState;
          obj["gunState"] =    gunState;
@@ -680,26 +646,6 @@ if (obj.contains("muzikbaslama"))
 
  });
 
-    QCheckBox *tenefusMuzikYayincb = new QCheckBox("Tenefüste Müzik Yayını Yapılsın!",ayarPage);
-//QFont ff( "Arial", 8, QFont::Normal);
-//tenefusMuzikYayincb->setFont(ff);
-if (obj.contains("tenefusMuzikYayinState"))
-    tenefusMuzikYayinState=obj["tenefusMuzikYayinState"].toBool();
-
-
-tenefusMuzikYayincb->setChecked(tenefusMuzikYayinState);
-connect(tenefusMuzikYayincb, &QCheckBox::clicked, [=]() {
-    if(tenefusMuzikYayincb->checkState()==Qt::Checked)
-    {
-        tenefusMuzikYayinState=true;
-
-    }
-    if(tenefusMuzikYayincb->checkState()==Qt::Unchecked)
-    {
-       tenefusMuzikYayinState=false;
-    }
-
-});
 
 QCheckBox *oglenMuzikYayincb = new QCheckBox("Müzik Yayını Yapılsın!",ayarPage);
 //QFont ff( "Arial", 8, QFont::Normal);
@@ -794,52 +740,44 @@ if(guncb->checkState()==Qt::Unchecked)
    // layout->setColumnMinimumWidth(0, 37);
     //layout->addWidget(adLabel, 2,0,1,2);
     layout->addWidget(torenZilButton, 5,0,1,1);
-    layout->addWidget(torenZilLineEdit, 5,1,1,2);
-    layout->addWidget(torenZilFileSelectButton, 5,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 5,4,1,1);
+    layout->addWidget(torenZilLineEdit, 5,1,1,3);
+    layout->addWidget(torenZilFileSelectButton, 5,4,1,1);
     layout->addWidget(torenZilSeviyeLineEdit, 5,5,1,1);
 
     layout->addWidget(ogrenciZilButton, 10,0,1,1);
-    layout->addWidget(ogrenciZilLineEdit, 10,1,1,2);
-    layout->addWidget(ogrenciZilFileSelectButton, 10,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 10,4,1,1);
+    layout->addWidget(ogrenciZilLineEdit, 10,1,1,3);
+    layout->addWidget(ogrenciZilFileSelectButton, 10,4,1,1);
     layout->addWidget(ogrenciZilSeviyeLineEdit, 10,5,1,1);
 
     layout->addWidget(ogretmenZilButton, 15,0,1,1);
-    layout->addWidget(ogretmenZilLineEdit, 15,1,1,2);
-    layout->addWidget(ogretmenZilFileSelectButton, 15,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 15,4,1,1);
+    layout->addWidget(ogretmenZilLineEdit, 15,1,1,3);
+    layout->addWidget(ogretmenZilFileSelectButton, 15,4,1,1);
     layout->addWidget(ogretmenZilSeviyeLineEdit, 15,5,1,1);
 
 
     layout->addWidget(cikisZilButton, 20,0,1,1);
-    layout->addWidget(cikisZilLineEdit, 20,1,1,2);
-    layout->addWidget(cikisZilFileSelectButton, 20,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 20,4,1,1);
+    layout->addWidget(cikisZilLineEdit, 20,1,1,3);
+    layout->addWidget(cikisZilFileSelectButton, 20,4,1,1);
     layout->addWidget(cikisZilSeviyeLineEdit, 20,5,1,1);
 
     layout->addWidget(istiklalZilButton, 25,0,1,1);
-    layout->addWidget(istiklalZilLineEdit, 25,1,1,2);
-    layout->addWidget(istiklalZilFileSelectButton, 25,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 25,4,1,1);
+    layout->addWidget(istiklalZilLineEdit, 25,1,1,3);
+    layout->addWidget(istiklalZilFileSelectButton, 25,4,1,1);
     layout->addWidget(istiklalZilSeviyeLineEdit, 25,5,1,1);
 
     layout->addWidget(saygiIstiklalZilButton, 30,0,1,1);
-    layout->addWidget(saygiIstiklalZilLineEdit, 30,1,1,2);
-    layout->addWidget(saygiIstiklalZilFileSelectButton, 30,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 30,4,1,1);
+    layout->addWidget(saygiIstiklalZilLineEdit, 30,1,1,3);
+    layout->addWidget(saygiIstiklalZilFileSelectButton, 30,4,1,1);
     layout->addWidget(saygiIstiklalZilSeviyeLineEdit, 30,5,1,1);
 
     layout->addWidget(sirenZilButton, 35,0,1,1);
-    layout->addWidget(sirenZilLineEdit, 35,1,1,2);
-    layout->addWidget(sirenZilFileSelectButton, 35,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 35,4,1,1);
+    layout->addWidget(sirenZilLineEdit, 35,1,1,3);
+    layout->addWidget(sirenZilFileSelectButton, 35,4,1,1);
     layout->addWidget(sirenZilSeviyeLineEdit, 35,5,1,1);
 
     layout->addWidget(muzikYayinZilButton,36,0,1,1);
-    layout->addWidget(muzikLineEdit, 36,1,1,2);
-    layout->addWidget(muzikFileSelectButton, 36,3,1,1);
-    layout->addWidget(new QLabel("Ses %") , 36,4,1,1);
+    layout->addWidget(muzikLineEdit, 36,1,1,3);
+    layout->addWidget(muzikFileSelectButton, 36,4,1,1);
     layout->addWidget(muzikYayinZilSeviyeLineEdit, 36,5,1,1);
 
     layout->addWidget(new QLabel("Ders Sayısı") , 37,0,1,1);
@@ -860,25 +798,18 @@ if(guncb->checkState()==Qt::Unchecked)
 
     layout->addWidget(new QLabel("Kapatma Komutu"), 43,0,1,1);
     layout->addWidget(kapatKomutEdit, 43,1,1,4);
-    //layout->addWidget(,37,0,1,1);
-  //  layout->addWidget(hsPcKapatTimeEdit, 37,1,1,1);
-
 
     layout->addWidget(new QLabel("Müzik Y. Başla/Dur Saati"),45,0,1,1);
     layout->addWidget(muzikBaslamaTimeEdit, 45,1,1,2);
     layout->addWidget(muzikSonTimeEdit, 45,3,1,2);
 
     layout->addWidget(oglenMuzikYayincb, 46,0,1,7);
-    layout->addWidget(tenefusMuzikYayincb, 47,0,1,7);
     layout->addWidget(SZScb, 49,0,1,7);
-   /// layout->addWidget(ekilitcb, 50,0,1,7);
     layout->addWidget(guncb, 51,0,1,7);
 
     layout->addWidget(durZilButton,52,0,1,1);
     layout->addWidget(ayarKaydetButton,52,3,1,3);
    layout->addWidget(onemligunButton,55,0,1,7);
-/**/
-  //  layout->addWidget(new QLabel("<font size=1>Okullara Zil Sistemi için Yazılmıştır.</font>"),50,0,1,1,Qt::AlignHCenter);
 
 //layout->setColumnStretch(6, 255);
 

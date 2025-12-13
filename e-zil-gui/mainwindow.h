@@ -36,7 +36,7 @@
 #include<Database.h>
 #include<QTimeEdit>
 #include<miniaudioplayer.h>
-
+#include<modernvaluesliderwidget.h>
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -49,12 +49,7 @@ public:
         QTimeEdit *cikis;
         QTimeEdit *teneffus;
     };
-   /* void playMp3(const QString& path);
-    static ma_engine engine;
-    static bool engineInitialized;
-    void stopMp3();
-    void playMp3(const char* path);
-    void setVolume(float volume);*/
+
 public slots:
 
     bool dosyaVarmi(QString dosya);
@@ -71,9 +66,8 @@ public slots:
         ogrenciMuzikPlayStatus=false;
         ogretmenMuzikPlayStatus=false;
         cikisMuzikPlayStatus=false;
-        tenefusMuzikYayinPlayStatus=false;
         molaMuzikYayinPlayStatus=false;
-    };
+    }
 
     QTime saniyeToSaat(QString _zaman);
     QString saatToSaniye(QTime _zaman);
@@ -89,7 +83,6 @@ private:
     bool ogrenciMuzikPlayStatus=false;
     bool ogretmenMuzikPlayStatus=false;
     bool cikisMuzikPlayStatus=false;
-    bool tenefusMuzikYayinPlayStatus=false;
     bool molaMuzikYayinPlayStatus=false;
 
     int girissaniye,baslamasaniye,cikissaniye,tenefussaniye,gbfark,bcfark,ctfark;
@@ -97,7 +90,6 @@ private:
     QString muziklist;
     QProcess process;
     QString localDir;
-     bool tenefusMuzikYayinState;
     bool molaMuzikYayinState;
     bool oglenMuzikYayinState;
     bool SZSState=false;

@@ -4,10 +4,11 @@
 #
 #-------------------------------------------------
 
-QT += widgets network core gui
+QT += widgets network core gui svg
 #multimedia # multimediawidgets
 #apt install libqt5multimedia5
-#sudo apt-get install qtmultimedia5-dev
+#sudo apt-get install qtmultimedia5-dev,
+#sudo apt install libqt5svg5-dev
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -28,15 +29,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        customslider.cpp \
         main.cpp \
         mainwindow.cpp \
-        miniaudioplayer.cpp
+        miniaudioplayer.cpp \
+        modernvaluesliderwidget.cpp
 
 HEADERS += \
     Database.h \
+    customslider.h \
         mainwindow.h \
     miniaudio.h \
     miniaudioplayer.h \
+    modernvaluesliderwidget.h \
     saatpzrts.h \
     hakkinda.h \
     giris.h \
@@ -65,7 +70,7 @@ polkit_policy.path = /usr/share/polkit-1/actions/
 polkit_rules.files = e-zil-gui.rules
 polkit_rules.path = /usr/share/polkit-1/rules.d/
 
-INSTALLS += target icon music_files polkit_policy polkit_rules
+INSTALLS += target icon music_files desktop_file polkit_policy polkit_rules
 
 DISTFILES += \
     e-zil.conf

@@ -3,8 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Bayram KARAHAN <bayramk@gmail.com>
 Build-Depends: debhelper (>= 10), 
-    qtdeclarative5-dev,
-    qtmultimedia5-dev
+    qtdeclarative5-dev
 Standards-Version: 3.9.8
 Homepage: http://pardus.org.tr
 
@@ -15,6 +14,5 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
     	libqt5gui5,
     	libqt5network5,
     	libqt5widgets5,
-     	libqt5multimedia5-plugins,
-     	libqt5multimediawidgets5
+    	libqt5svg5
 Description: E-Zil uygulaması

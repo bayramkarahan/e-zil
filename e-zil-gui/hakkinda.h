@@ -29,8 +29,11 @@ QWidget *MainWindow::hakkinda()
  QString yil=QString::number( QDateTime::currentDateTime().date().year());
     QWidget *hakkindaPage=new QWidget();
     /*******************************************************/
-    hakkindaPage->setFixedWidth(en*30);
+    hakkindaPage->setFixedWidth(en*27);
     hakkindaPage->setFixedHeight(en*25);
+
+
+   // connect(w, &ValueSliderWidget::valueChanged, ...);  // gerekirse ek sinyal ekleriz
 
    auto *hak=new QLabel(hakkindaPage);
 

@@ -58,15 +58,12 @@ MainWindow::MainWindow(QWidget *parent) :
    // qDebug()<< "Windows version";
      localDir = QCoreApplication::applicationDirPath() + "/";
 #endif
-miniPlayer=new MiniAudioPlayer(this);
 
-
-
-
+    miniPlayer=new MiniAudioPlayer(this);
    // wl=new QWidgetAction(this);
     timer1.setSingleShot(true);
     connect(&timer1, SIGNAL(timeout()), &loop, SLOT(quit()));
-  //  connect(this, SIGNAL(replayReceived()), &loop, SLOT(quit()));
+    //  connect(this, SIGNAL(replayReceived()), &loop, SLOT(quit()));
         // App icon
       auto appIcon = QIcon(":/icons/e-zil.svg");
         this->setWindowIcon(appIcon);
@@ -76,9 +73,6 @@ miniPlayer=new MiniAudioPlayer(this);
 
       QString version = QString::fromUtf8(process.readAll()).trimmed();
       setWindowTitle("e-zil " + version);
-
-
-
       /**********************form ayarları yapıldı***********************/
       QSize screenSize = qApp->screens()[0]->size();
      // qDebug()<<screenSize.width()/65<<screenSize.height()/35;
@@ -86,7 +80,7 @@ miniPlayer=new MiniAudioPlayer(this);
      en=boy;
 
       //this->resize(500,650);
-      setFixedWidth(en*30);
+      setFixedWidth(en*27);
       setFixedHeight(en*27);
 
       QRect screenGeometry = QApplication::desktop()->screenGeometry();
@@ -175,7 +169,7 @@ void  MainWindow::about()
 void  MainWindow::widgetShow()
 {
 
-    qDebug()<<"ekranı göster";
+   // qDebug()<<"ekranı göster";
     QFont ff( "Arial", 7.5, QFont::Normal);
     tw->setFont(ff);
   tw->clear();

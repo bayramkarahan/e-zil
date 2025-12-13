@@ -19,17 +19,27 @@
  *****************************************************************************/
 #include<QCheckBox>
 #include<QProcess>
+#include<QSvgWidget>
+#include<QSvgRenderer>
 QWidget *MainWindow::giris()
 {
     QWidget *girisPage=new QWidget();
-    girisPage->setFixedWidth(en*30);
+    girisPage->setFixedWidth(en*27);
    girisPage->setFixedHeight(en*25);
-   auto  screenbtn = new QPushButton(girisPage);
-    screenbtn->setFixedSize(QSize(250,250));
-    screenbtn->setIconSize(QSize(250,250));
+   auto  screenbtn = new QLabel(girisPage);
+    screenbtn->setFixedSize(QSize(en*12,en*12));
+    //screenbtn->setIconSize(QSize(250,250));
     screenbtn->setAutoFillBackground(true);
-    screenbtn->setIcon(QIcon(":/icons/e-zil.svg"));
-    screenbtn->setFlat(true);
+   // screenbtn->setIcon(QIcon(":/icons/e-zil.svg"));
+    QSvgRenderer svgRenderer(QString(":/icons/e-zil.svg"));
+
+    QPixmap pixmap(en*12, en*12);   // istediğin boyut
+    pixmap.fill(Qt::transparent);
+
+    QPainter painter(&pixmap);
+    svgRenderer.render(&painter);
+
+    screenbtn->setPixmap(pixmap);
 
     auto *sat0=new QLabel(girisPage);
     sat0->setText("Kullanım Hakkında Bilinmesi Gerekenler:");
@@ -62,7 +72,7 @@ QWidget *MainWindow::giris()
    // layout->setVerticalSpacing(5);
     //layout->setColumnMinimumWidth(0, 37);
     layout->addWidget(new QLabel("<font size=6></font>"),0,0,1,2,Qt::AlignHCenter);
-    layout->addWidget(new QLabel("<font size=6>E-Zil</font>"),1,0,1,2,Qt::AlignHCenter);
+    layout->addWidget(new QLabel("<font size=6>e-zil</font>"),1,0,1,2,Qt::AlignHCenter);
 
     layout->addWidget(screenbtn, 2,0,1,2,Qt::AlignHCenter);
     layout->addWidget(new QLabel("<font size=6></font>"),3,0,1,2,Qt::AlignHCenter);
