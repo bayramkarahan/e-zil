@@ -351,7 +351,7 @@ QWidget *MainWindow::ayar()
         sirenZilLineEdit->setText(obj["sirenzil"].toString());
 
     ModernValueSliderWidget *sirenZilSeviyeLineEdit = new ModernValueSliderWidget(ayarPage);
-    sirenZilSeviyeLineEdit->setFixedWidth(en * 10);
+    //sirenZilSeviyeLineEdit->setFixedWidth(en * 10);
     sirenZilSeviyeLineEdit->setRange(0, 100);
     sirenZilSeviyeLineEdit->setValue(80);
 

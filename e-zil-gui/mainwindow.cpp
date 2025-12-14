@@ -74,19 +74,14 @@ MainWindow::MainWindow(QWidget *parent) :
       QString version = QString::fromUtf8(process.readAll()).trimmed();
       setWindowTitle("e-zil " + version);
       /**********************form ayarları yapıldı***********************/
-      QSize screenSize = qApp->screens()[0]->size();
-     // qDebug()<<screenSize.width()/65<<screenSize.height()/35;
-      boy=screenSize.width()/65;
-     en=boy;
-
-      //this->resize(500,650);
-      setFixedWidth(en*27);
-      setFixedHeight(en*27);
-
-      QRect screenGeometry = QApplication::desktop()->screenGeometry();
-      int x = (screenGeometry.width()/2 - this->width()/2);
-      int y = (screenGeometry.height() - this->height()) / 2;
-      this->move(x, y);
+      QScreen *screen = QGuiApplication::primaryScreen();
+      QSize screenSize = screen->availableGeometry().size();
+      boy = screenSize.width() / 65;
+      en = boy;
+      setFixedSize(en * 27, en * 27);
+      int x = (screenSize.width() - width()) / 2;
+      int y = (screenSize.height() - height()) / 2;
+      move(x, y);
       this->setStyleSheet("background-color: #dfdfdf;");
 
       tw=new QTabWidget(this);
