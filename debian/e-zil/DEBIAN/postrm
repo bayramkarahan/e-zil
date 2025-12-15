@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#rm files from user home
+
+#rm -rf /usr/share/e-zil

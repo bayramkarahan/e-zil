@@ -1,0 +1,12 @@
+Package: e-zil-dbgsym
+Source: e-zil
+Version: 3.3.0
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Bayram KARAHAN <bayramk@gmail.com>
+Installed-Size: 308
+Depends: e-zil (= 3.3.0)
+Section: debug
+Priority: optional
+Description: debug symbols for e-zil
+Build-Ids: 603f9880f70afec8000ba4b42fbc0e9dfa40074e f5362248a96f637d781c11d8c554025de73b9aee
