@@ -431,7 +431,7 @@ void MainWindow::torenMuzik(QString ders)
     widget->zamanGostergesiDurum->setText("TRN");
     int deger=0;
     if (ayarlar.contains("torenzilseviye"))
-        deger=ayarlar["torenzilseviye"].toString().toInt();
+        deger=ayarlar["torenzilseviye"].toInt();
     QString filepath;
     if (ayarlar.contains("torenzil"))
         filepath=ayarlar["torenzil"].toString();
@@ -458,7 +458,7 @@ void MainWindow::ogrenciMuzik(QString ders)
 
     int deger=0;
     if (ayarlar.contains("ogrencizilseviye"))
-        deger=ayarlar["ogrencizilseviye"].toString().toInt();
+        deger=ayarlar["ogrencizilseviye"].toInt();
     QString filepath;
     if (ayarlar.contains("ogrencizil"))
         filepath=ayarlar["ogrencizil"].toString();
@@ -482,7 +482,7 @@ void MainWindow::ogrenciMuzik(QString ders)
 }
 void MainWindow::ogretmenMuzik(QString ders)
 {
-    ///qDebug()<<"ogretmen müzik...";
+    //qDebug()<<"ogretmen müzik...";
     if(ogretmenMuzikPlayStatus) return;
     resetStatus();
     ogretmenMuzikPlayStatus=true;
@@ -490,7 +490,7 @@ void MainWindow::ogretmenMuzik(QString ders)
 
     int deger=0;
     if (ayarlar.contains("ogretmenzilseviye"))
-        deger=ayarlar["ogretmenzilseviye"].toString().toInt();
+        deger=ayarlar["ogretmenzilseviye"].toInt();
     QString filepath;
     if (ayarlar.contains("ogretmenzil"))
         filepath=ayarlar["ogretmenzil"].toString();
@@ -521,7 +521,7 @@ void MainWindow::cikisMuzik(QString ders)
     widget->zamanGostergesiDurum->setText("TNF");
     int deger=0;
     if (ayarlar.contains("cikiszilseviye"))
-        deger=ayarlar["cikiszilseviye"].toString().toInt();
+        deger=ayarlar["cikiszilseviye"].toInt();
     QString filepath;
     if (ayarlar.contains("cikiszil"))
         filepath=ayarlar["cikiszil"].toString();
@@ -553,7 +553,7 @@ void MainWindow::yayinTenefusMuzik()
     {
         int deger=0;
         if (ayarlar.contains("muzikyayinseviye"))
-            deger=ayarlar["muzikyayinseviye"].toString().toInt();
+            deger=ayarlar["muzikyayinseviye"].toInt();
         //qDebug()<<"15sn sonra Tenefüs Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
         timer1.start(20000);
         loop.exec();
@@ -601,7 +601,7 @@ void MainWindow::yayinMolaMuzik()
     widget->zamanGostergesiDurum->setText("ML");
     int deger=0;
     if (ayarlar.contains("muzikyayinseviye"))
-        deger=ayarlar["muzikyayinseviye"].toString().toInt();
+        deger=ayarlar["muzikyayinseviye"].toInt();
     QDir klasorpath;
     if (ayarlar.contains("muzikklasor"))
         klasorpath=ayarlar["muzikklasor"].toString();
