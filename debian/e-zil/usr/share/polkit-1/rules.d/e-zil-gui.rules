@@ -1,5 +1,0 @@
-polkit.addRule(function(action, subject) {
-        if (action.id == "com.example.e-zil-gui"){
-            return polkit.Result.YES;
-        }
-});

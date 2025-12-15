@@ -1,5 +1,0 @@
-#!/bin/sh
-
-#copy files to user home
-#mkdir /usr/share/e-zil
-#chmod -R 777 /usr/share/e-zil/*
