@@ -14,7 +14,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = e-zil-gui
 TEMPLATE = app
-
+RC_FILE += app.rc
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -60,7 +60,7 @@ desktop_file.files = e-zil.desktop
 desktop_file.path = /usr/share/applications/
 
 icon.files = icons/e-zil.svg
-icon.path = /usr/share/icons/
+icon.path = /usr/share/icons/hicolor/scalable/apps
 
 music_files.files = e-zil-ses/
 music_files.path = /usr/share/e-zil/
@@ -73,4 +73,5 @@ polkit_rules.path = /usr/share/polkit-1/rules.d/
 INSTALLS += target icon music_files desktop_file polkit_policy polkit_rules
 
 DISTFILES += \
+    app.rc \
     e-zil.conf

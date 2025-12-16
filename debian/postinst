@@ -3,3 +3,5 @@
 #copy files to user home
 #mkdir /usr/share/e-zil
 #chmod -R 777 /usr/share/e-zil/*
+gtk-update-icon-cache /usr/share/icons/hicolor
+

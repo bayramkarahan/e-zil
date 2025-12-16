@@ -27,13 +27,17 @@ Widget(int _w,int _h)
     Qt::WindowFlags flags = 0;
    // flags |= Qt::Dialog;
     #ifdef Q_OS_LINUX
-        flags |= Qt::WindowStaysOnTopHint;
-        flags |= Qt::X11BypassWindowManagerHint;
+       // flags |= Qt::WindowStaysOnTopHint;
+        //flags |= Qt::X11BypassWindowManagerHint;
+      //  flags |= Qt::Tool | Qt::WindowStaysOnTopHint;
+    flags = Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
     #endif
 
     #ifdef Q_OS_WIN
        // qDebug()<< "Windows version";
-        flags = Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
+        //flags = Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
+        flags = Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
+
     #endif
 
     this->setWindowFlags(flags);

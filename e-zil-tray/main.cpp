@@ -45,6 +45,16 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+#ifdef Q_OS_LINUX
+    QIcon icon(":/icons/e-zil.svg");
+    a.setWindowIcon(icon);
+#endif
+
+#ifdef Q_OS_WIN
+    QIcon icon(":/icons/e-zil.ico");
+    a.setWindowIcon(icon);
+#endif
     QString name = SINGLE_INSTANCE;
 
     SingleInstance cInstance;

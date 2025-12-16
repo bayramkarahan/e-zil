@@ -13,7 +13,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = e-zil-tray
 TEMPLATE = app
-
+RC_FILE += app.rc
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -50,8 +50,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 target.path = /usr/bin
 
-icon.files = icons/bell.svg
-icon.path = /usr/share/e-zil
+icon.files = icons/e-zil.svg
+icon.path = /usr/share/icons/hicolor/scalable/apps
 
 auto_start.files = e-zil.desktop
 auto_start.path = /etc/xdg/autostart/
@@ -59,5 +59,6 @@ auto_start.path = /etc/xdg/autostart/
 INSTALLS += target icon auto_start
 
 DISTFILES += \
+    app.rc \
     e-zil.conf\
     e-zil.desktop

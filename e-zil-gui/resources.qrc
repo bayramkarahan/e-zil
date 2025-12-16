@@ -4,5 +4,6 @@
         <file>icons/gizle.png</file>
         <file>icons/goster.png</file>
         <file>icons/e-zil.svg</file>
+        <file>icons/e-zil.ico</file>
     </qresource>
 </RCC>
