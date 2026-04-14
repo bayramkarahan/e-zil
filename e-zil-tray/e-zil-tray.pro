@@ -39,6 +39,7 @@ HEADERS += \
         mainwindow.h \
     miniaudioplayer.h \
     singleinstance.h \
+    soundchannel.h \
     widget.h
 
 

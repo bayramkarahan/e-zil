@@ -62,6 +62,28 @@ void MiniAudioPlayer::play()
     playFile(playlist.at(currentIndex));
 }
 
+void MiniAudioPlayer::play(ChannelMode mode)
+{
+    if (playlist.isEmpty()) return;
+    if (currentIndex < 0) currentIndex = 0;
+
+    // playFile çağrısından sonra pan ayarlanacak
+    playFile(playlist.at(currentIndex));
+
+    if (!soundInitialized) return;
+
+    switch (mode) {
+    case Left:
+        ma_sound_set_pan(&currentSound, -1.0f);
+        break;
+    case Right:
+        ma_sound_set_pan(&currentSound, 1.0f);
+        break;
+    case Center:
+        ma_sound_set_pan(&currentSound, 0.0f);
+        break;
+    }
+}
 void MiniAudioPlayer::playIndex(int index)
 {
     if (index < 0 || index >= playlist.size()) return;

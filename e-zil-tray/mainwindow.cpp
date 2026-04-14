@@ -432,6 +432,12 @@ void MainWindow::torenMuzik(QString ders)
     int deger=0;
     if (ayarlar.contains("torenzilseviye"))
         deger=ayarlar["torenzilseviye"].toInt();
+
+    ChannelMode channeldeger=ChannelMode::Center;
+    if (ayarlar.contains("torenzilchannel"))
+        channeldeger=static_cast<ChannelMode>(ayarlar["torenzilchannel"].toInt());
+
+
     QString filepath;
     if (ayarlar.contains("torenzil"))
         filepath=ayarlar["torenzil"].toString();
@@ -443,7 +449,7 @@ void MainWindow::torenMuzik(QString ders)
         miniPlayer->setPlaylist(list);
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
-        miniPlayer->play();
+        miniPlayer->play(channeldeger);
         qDebug()<<ders<<"Tören Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
     }
 
@@ -459,6 +465,10 @@ void MainWindow::ogrenciMuzik(QString ders)
     int deger=0;
     if (ayarlar.contains("ogrencizilseviye"))
         deger=ayarlar["ogrencizilseviye"].toInt();
+    ChannelMode channeldeger=ChannelMode::Center;
+    if (ayarlar.contains("ogrencizilchannel"))
+        channeldeger=static_cast<ChannelMode>(ayarlar["ogrencizilchannel"].toInt());
+
     QString filepath;
     if (ayarlar.contains("ogrencizil"))
         filepath=ayarlar["ogrencizil"].toString();
@@ -474,7 +484,7 @@ void MainWindow::ogrenciMuzik(QString ders)
         miniPlayer->setPlaylist(list);
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
-        miniPlayer->play();
+        miniPlayer->play(channeldeger);
         tempCurrentsaat=currentsaat;
         qDebug()<<ders<<"Öğrenci Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
     }
@@ -491,6 +501,11 @@ void MainWindow::ogretmenMuzik(QString ders)
     int deger=0;
     if (ayarlar.contains("ogretmenzilseviye"))
         deger=ayarlar["ogretmenzilseviye"].toInt();
+
+    ChannelMode channeldeger=ChannelMode::Center;
+    if (ayarlar.contains("ogretmenzilchannel"))
+        channeldeger=static_cast<ChannelMode>(ayarlar["ogretmenzilchannel"].toInt());
+
     QString filepath;
     if (ayarlar.contains("ogretmenzil"))
         filepath=ayarlar["ogretmenzil"].toString();
@@ -507,7 +522,7 @@ void MainWindow::ogretmenMuzik(QString ders)
         miniPlayer->setPlaylist(list);
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
-        miniPlayer->play();
+        miniPlayer->play(channeldeger);
         tempCurrentsaat=currentsaat;
         qDebug()<<ders<<"Öğretmen Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
     }
@@ -522,6 +537,11 @@ void MainWindow::cikisMuzik(QString ders)
     int deger=0;
     if (ayarlar.contains("cikiszilseviye"))
         deger=ayarlar["cikiszilseviye"].toInt();
+    ChannelMode channeldeger=ChannelMode::Center;
+    if (ayarlar.contains("cikiszilchannel"))
+        channeldeger=static_cast<ChannelMode>(ayarlar["cikiszilchannel"].toInt());
+
+
     QString filepath;
     if (ayarlar.contains("cikiszil"))
         filepath=ayarlar["cikiszil"].toString();
@@ -536,11 +556,16 @@ void MainWindow::cikisMuzik(QString ders)
         miniPlayer->setPlaylist(list);
         miniPlayer->setFadeDuration(400);   // ms
         miniPlayer->setVolume(volume);
-        miniPlayer->play();
+        miniPlayer->play(channeldeger);
         qDebug()<<ders<<"Çıkış Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
+
+        //çıkıştan 20 sn sonra yayinTenefusMuzik başlayacak
+        QTimer::singleShot(20000, this, [=]() {
+            yayinTenefusMuzik();
+        });
+
     }
 }
-
 void MainWindow::yayinTenefusMuzik()
 {
     //qDebug()<<"yayin müzik...";
@@ -554,6 +579,10 @@ void MainWindow::yayinTenefusMuzik()
         int deger=0;
         if (ayarlar.contains("muzikyayinseviye"))
             deger=ayarlar["muzikyayinseviye"].toInt();
+        ChannelMode channeldeger=ChannelMode::Center;
+        if (ayarlar.contains("muzikyayinzilchannel"))
+            channeldeger=static_cast<ChannelMode>(ayarlar["muzikyayinzilchannel"].toInt());
+
         //qDebug()<<"15sn sonra Tenefüs Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
         timer1.start(20000);
         loop.exec();
@@ -579,7 +608,7 @@ void MainWindow::yayinTenefusMuzik()
             miniPlayer->setPlaylist(list);
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
-            miniPlayer->play();
+            miniPlayer->play(channeldeger);
             tenefusYayin=true;
             qDebug()<<"Tenefüs Müzik Yayını Başladı.."<<QTime::currentTime().toString("hh:mm:ss");
 
@@ -602,6 +631,11 @@ void MainWindow::yayinMolaMuzik()
     int deger=0;
     if (ayarlar.contains("muzikyayinseviye"))
         deger=ayarlar["muzikyayinseviye"].toInt();
+    ChannelMode channeldeger=ChannelMode::Center;
+    if (ayarlar.contains("muzikyayinzilchannel"))
+        channeldeger=static_cast<ChannelMode>(ayarlar["muzikyayinzilchannel"].toInt());
+
+
     QDir klasorpath;
     if (ayarlar.contains("muzikklasor"))
         klasorpath=ayarlar["muzikklasor"].toString();
@@ -620,7 +654,7 @@ void MainWindow::yayinMolaMuzik()
             miniPlayer->setPlaylist(list);
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
-            miniPlayer->play();
+            miniPlayer->play(channeldeger);
             tenefusYayin=true;
             qDebug()<<"Mola Müzik Yayını Başladı.."<<QTime::currentTime().toString("hh:mm:ss");
         }

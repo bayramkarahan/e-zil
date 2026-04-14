@@ -37,6 +37,7 @@
 #include<QTimeEdit>
 #include<miniaudioplayer.h>
 #include<modernvaluesliderwidget.h>
+#include<soundchannelwidget.h>
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -92,6 +93,8 @@ private:
     QString localDir;
     bool molaMuzikYayinState;
     bool oglenMuzikYayinState;
+    bool teneffusMuzikYayinState;
+
     bool SZSState=false;
     bool SZSShowState=false;
     bool gunState=false;

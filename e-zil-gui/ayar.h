@@ -71,9 +71,12 @@ QWidget *MainWindow::ayar()
     //torenZilSeviyeLineEdit->setFixedWidth(en * 10);
     torenZilSeviyeLineEdit->setRange(0, 100);
     torenZilSeviyeLineEdit->setValue(80);
-
     if (obj.contains("torenzilseviye"))
         torenZilSeviyeLineEdit->setValue(obj["torenzilseviye"].toInt());
+
+    SoundChannelWidget *torenZilChannelWidget = new SoundChannelWidget(this);
+    if (obj.contains("torenzilchannel"))
+        torenZilChannelWidget->setValue(static_cast<ChannelMode>(obj["torenzilchannel"].toInt()));
 
     connect(torenZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
@@ -87,7 +90,8 @@ QWidget *MainWindow::ayar()
             miniPlayer->setPlaylist(list);
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
-            miniPlayer->play();
+           // qDebug()<<"Kanal modu:"<<ChannelMode::Center<<torenZilChannelWidget->value();
+            miniPlayer->play(torenZilChannelWidget->value());
         }
 
     });
@@ -117,9 +121,12 @@ QWidget *MainWindow::ayar()
     //ogrenciZilSeviyeLineEdit->setFixedWidth(en * 10);
     ogrenciZilSeviyeLineEdit->setRange(0, 100);
     ogrenciZilSeviyeLineEdit->setValue(80);
-
     if (obj.contains("ogrencizilseviye"))
         ogrenciZilSeviyeLineEdit->setValue(obj["ogrencizilseviye"].toInt());
+
+    SoundChannelWidget *ogrenciZilChannelWidget = new SoundChannelWidget(this);
+    if (obj.contains("ogrencizilchannel"))
+        ogrenciZilChannelWidget->setValue(static_cast<ChannelMode>(obj["ogrencizilchannel"].toInt()));
 
     connect(ogrenciZilButton, &QPushButton::clicked, [=]() {
 
@@ -139,7 +146,7 @@ QWidget *MainWindow::ayar()
              miniPlayer->setPlaylist(list);
              miniPlayer->setFadeDuration(400);   // ms
              miniPlayer->setVolume(volume);
-             miniPlayer->play();
+             miniPlayer->play(ogrenciZilChannelWidget->value());
 
 
         }
@@ -169,9 +176,12 @@ QWidget *MainWindow::ayar()
     //ogretmenZilSeviyeLineEdit->setFixedWidth(en * 10);
     ogretmenZilSeviyeLineEdit->setRange(0, 100);
     ogretmenZilSeviyeLineEdit->setValue(80);
-
     if (obj.contains("ogretmenzilseviye"))
         ogretmenZilSeviyeLineEdit->setValue(obj["ogretmenzilseviye"].toInt());
+
+    SoundChannelWidget *ogretmenZilChannelWidget = new SoundChannelWidget(this);
+    if (obj.contains("ogretmenzilchannel"))
+        ogretmenZilChannelWidget->setValue(static_cast<ChannelMode>(obj["ogretmenzilchannel"].toInt()));
 
 
       connect(ogretmenZilButton, &QPushButton::clicked, [=]() {
@@ -186,7 +196,7 @@ QWidget *MainWindow::ayar()
               miniPlayer->setPlaylist(list);
               miniPlayer->setFadeDuration(400);   // ms
               miniPlayer->setVolume(volume);
-              miniPlayer->play();
+              miniPlayer->play(ogretmenZilChannelWidget->value());
 
           }
 
@@ -219,9 +229,13 @@ QWidget *MainWindow::ayar()
     //cikisZilSeviyeLineEdit->setFixedWidth(en * 10);
     cikisZilSeviyeLineEdit->setRange(0, 100);
     cikisZilSeviyeLineEdit->setValue(80);
-
     if (obj.contains("cikiszilseviye"))
         cikisZilSeviyeLineEdit->setValue(obj["cikiszilseviye"].toInt());
+
+    SoundChannelWidget *cikisZilChannelWidget = new SoundChannelWidget(this);
+    if (obj.contains("cikiszilchannel"))
+        cikisZilChannelWidget->setValue(static_cast<ChannelMode>(obj["cikiszilchannel"].toInt()));
+
 
 
     connect(cikisZilButton, &QPushButton::clicked, [=]() {
@@ -235,7 +249,7 @@ QWidget *MainWindow::ayar()
             miniPlayer->setPlaylist(list);
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
-            miniPlayer->play();
+            miniPlayer->play(cikisZilChannelWidget->value());
 
         }
     });
@@ -265,9 +279,12 @@ QWidget *MainWindow::ayar()
     //istiklalZilSeviyeLineEdit->setFixedWidth(en * 10);
     istiklalZilSeviyeLineEdit->setRange(0, 100);
     istiklalZilSeviyeLineEdit->setValue(80);
-
     if (obj.contains("istiklalzilseviye"))
         istiklalZilSeviyeLineEdit->setValue(obj["istiklalzilseviye"].toInt());
+
+    SoundChannelWidget *istiklalZilChannelWidget = new SoundChannelWidget(this);
+    if (obj.contains("istiklalzilchannel"))
+        istiklalZilChannelWidget->setValue(static_cast<ChannelMode>(obj["istiklalzilchannel"].toInt()));
 
 
     connect(istiklalZilButton, &QPushButton::clicked, [=]() {
@@ -282,7 +299,7 @@ QWidget *MainWindow::ayar()
             miniPlayer->setPlaylist(list);
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
-            miniPlayer->play();
+            miniPlayer->play(istiklalZilChannelWidget->value());
         }
     });
     /************************************************************************/
@@ -309,9 +326,12 @@ QWidget *MainWindow::ayar()
      //saygiIstiklalZilSeviyeLineEdit->setFixedWidth(en * 10);
      saygiIstiklalZilSeviyeLineEdit->setRange(0, 100);
      saygiIstiklalZilSeviyeLineEdit->setValue(80);
+     if (obj.contains("saygiistiklalzilseviye"))
+         saygiIstiklalZilSeviyeLineEdit->setValue(obj["saygiistiklalzilseviye"].toInt());
 
-     if (obj.contains("istiklalsaygizilseviye"))
-         saygiIstiklalZilSeviyeLineEdit->setValue(obj["istiklalsaygizilseviye"].toInt());
+     SoundChannelWidget *saygiIstiklalZilChannelWidget = new SoundChannelWidget(this);
+     if (obj.contains("saygiistiklalzilchannel"))
+         saygiIstiklalZilChannelWidget->setValue(static_cast<ChannelMode>(obj["saygiistiklalzilchannel"].toInt()));
 
     connect(saygiIstiklalZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
@@ -325,7 +345,7 @@ QWidget *MainWindow::ayar()
             miniPlayer->setPlaylist(list);
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
-            miniPlayer->play();
+            miniPlayer->play(saygiIstiklalZilChannelWidget->value());
         }
 
     });
@@ -354,9 +374,13 @@ QWidget *MainWindow::ayar()
     //sirenZilSeviyeLineEdit->setFixedWidth(en * 10);
     sirenZilSeviyeLineEdit->setRange(0, 100);
     sirenZilSeviyeLineEdit->setValue(80);
-
     if (obj.contains("sirenzilseviye"))
         sirenZilSeviyeLineEdit->setValue(obj["sirenzilseviye"].toInt());
+
+    SoundChannelWidget *sirenZilChannelWidget = new SoundChannelWidget(this);
+    if (obj.contains("sirenzilchannel"))
+        sirenZilChannelWidget->setValue(static_cast<ChannelMode>(obj["sirenzilchannel"].toInt()));
+
 
   connect(sirenZilButton, &QPushButton::clicked, [=]() {
         if(!dosyaVarmi("e-zil.json")) return;
@@ -371,7 +395,7 @@ QWidget *MainWindow::ayar()
             miniPlayer->setPlaylist(list);
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
-            miniPlayer->play();
+            miniPlayer->play(sirenZilChannelWidget->value());
         }
 
 
@@ -478,6 +502,11 @@ if (obj.contains("muzikbaslama"))
  if (obj.contains("muzikyayinseviye"))
      muzikYayinZilSeviyeLineEdit->setValue(obj["muzikyayinseviye"].toInt());
 
+ SoundChannelWidget *muzikYayinZilChannelWidget = new SoundChannelWidget(this);
+ if (obj.contains("muzikyayinzilchannel"))
+     muzikYayinZilChannelWidget->setValue(static_cast<ChannelMode>(obj["muzikyayinzilchannel"].toInt()));
+
+
  /**********************************************************************/
    QPushButton *muzikYayinZilButton= new QPushButton;
 //   muzikYayinZilButton->setFixedSize(170, 30);
@@ -516,7 +545,7 @@ if (obj.contains("muzikbaslama"))
               miniPlayer->setPlaylist(miniPlayList);
               miniPlayer->setFadeDuration(400);   // ms
               miniPlayer->setVolume(volume);
-              miniPlayer->play();
+              miniPlayer->play(muzikYayinZilChannelWidget->value());
 
              // player->setMedia(playlist);
              // player->play();
@@ -602,15 +631,32 @@ if (obj.contains("muzikbaslama"))
          obj["muzikson"] =    saatToSaniye(muzikSonTimeEdit->time());
 
          obj["torenzilseviye"] =    torenZilSeviyeLineEdit->value();
+         obj["torenzilchannel"] =    torenZilChannelWidget->value();
+
          obj["ogrencizilseviye"] =    ogrenciZilSeviyeLineEdit->value();
+         obj["ogrencizilchannel"] =    ogrenciZilChannelWidget->value();
+
          obj["ogretmenzilseviye"] =    ogretmenZilSeviyeLineEdit->value();
+         obj["ogretmenzilchannel"] =    ogretmenZilChannelWidget->value();
+
          obj["cikiszilseviye"] =    cikisZilSeviyeLineEdit->value();
+         obj["cikiszilchannel"] =    cikisZilChannelWidget->value();
 
          obj["istiklalzilseviye"] =    istiklalZilSeviyeLineEdit->value();
-         obj["istiklalsaygizilseviye"] =    saygiIstiklalZilSeviyeLineEdit->value();
+         obj["istiklalzilchannel"] =    istiklalZilChannelWidget->value();
+
+         obj["saygiistiklalzilseviye"] =    saygiIstiklalZilSeviyeLineEdit->value();
+         obj["saygiistiklalzilchannel"] =    saygiIstiklalZilChannelWidget->value();
+
          obj["sirenzilseviye"] =    sirenZilSeviyeLineEdit->value();
+         obj["sirenzilchannel"] =    sirenZilChannelWidget->value();
+
          obj["muzikyayinseviye"] =    muzikYayinZilSeviyeLineEdit->value();
+         obj["muzikyayinzilchannel"] =    muzikYayinZilChannelWidget->value();
+
+         obj["teneffusMuzikYayinState"] =    teneffusMuzikYayinState;
          obj["oglenMuzikYayinState"] =    oglenMuzikYayinState;
+
          obj["SZSState"] =   SZSState;
          obj["ekilitState"] =    ekilitState;
          obj["gunState"] =    gunState;
@@ -648,9 +694,6 @@ if (obj.contains("muzikbaslama"))
 
 
 QCheckBox *oglenMuzikYayincb = new QCheckBox("Müzik Yayını Yapılsın!",ayarPage);
-//QFont ff( "Arial", 8, QFont::Normal);
-//tenefusMuzikYayincb->setFont(ff);
-
 if (obj.contains("oglenMuzikYayinState"))
    oglenMuzikYayinState=obj["oglenMuzikYayinState"].toBool();
 
@@ -665,6 +708,24 @@ if(oglenMuzikYayincb->checkState()==Qt::Unchecked)
 {
    oglenMuzikYayinState=false;
 }
+
+});
+//*********************teneffüs yayin******************************************
+QCheckBox *teneffusMuzikYayincb = new QCheckBox("Teneffüste Müzik Yayını Yapılsın!",ayarPage);
+if (obj.contains("teneffusMuzikYayinState"))
+    teneffusMuzikYayinState=obj["teneffusMuzikYayinState"].toBool();
+
+teneffusMuzikYayincb->setChecked(teneffusMuzikYayinState);
+connect(teneffusMuzikYayincb, &QCheckBox::clicked, [=]() {
+    if(teneffusMuzikYayincb->checkState()==Qt::Checked)
+    {
+        teneffusMuzikYayinState=true;
+
+    }
+    if(teneffusMuzikYayincb->checkState()==Qt::Unchecked)
+    {
+        teneffusMuzikYayinState=false;
+    }
 
 });
 /*********************Sessiz zil gösteri ayarı************************************/
@@ -743,42 +804,49 @@ if(guncb->checkState()==Qt::Unchecked)
     layout->addWidget(torenZilLineEdit, 5,1,1,3);
     layout->addWidget(torenZilFileSelectButton, 5,4,1,1);
     layout->addWidget(torenZilSeviyeLineEdit, 5,5,1,1);
+    layout->addWidget(torenZilChannelWidget, 5,6,1,1);
 
     layout->addWidget(ogrenciZilButton, 10,0,1,1);
     layout->addWidget(ogrenciZilLineEdit, 10,1,1,3);
     layout->addWidget(ogrenciZilFileSelectButton, 10,4,1,1);
     layout->addWidget(ogrenciZilSeviyeLineEdit, 10,5,1,1);
+    layout->addWidget(ogrenciZilChannelWidget, 10,6,1,1);
 
     layout->addWidget(ogretmenZilButton, 15,0,1,1);
     layout->addWidget(ogretmenZilLineEdit, 15,1,1,3);
     layout->addWidget(ogretmenZilFileSelectButton, 15,4,1,1);
     layout->addWidget(ogretmenZilSeviyeLineEdit, 15,5,1,1);
-
+    layout->addWidget(ogretmenZilChannelWidget, 15,6,1,1);
 
     layout->addWidget(cikisZilButton, 20,0,1,1);
     layout->addWidget(cikisZilLineEdit, 20,1,1,3);
     layout->addWidget(cikisZilFileSelectButton, 20,4,1,1);
     layout->addWidget(cikisZilSeviyeLineEdit, 20,5,1,1);
+    layout->addWidget(cikisZilChannelWidget, 20,6,1,1);
 
     layout->addWidget(istiklalZilButton, 25,0,1,1);
     layout->addWidget(istiklalZilLineEdit, 25,1,1,3);
     layout->addWidget(istiklalZilFileSelectButton, 25,4,1,1);
     layout->addWidget(istiklalZilSeviyeLineEdit, 25,5,1,1);
+    layout->addWidget(istiklalZilChannelWidget, 25,6,1,1);
 
     layout->addWidget(saygiIstiklalZilButton, 30,0,1,1);
     layout->addWidget(saygiIstiklalZilLineEdit, 30,1,1,3);
     layout->addWidget(saygiIstiklalZilFileSelectButton, 30,4,1,1);
     layout->addWidget(saygiIstiklalZilSeviyeLineEdit, 30,5,1,1);
+    layout->addWidget(saygiIstiklalZilChannelWidget, 30,6,1,1);
 
     layout->addWidget(sirenZilButton, 35,0,1,1);
     layout->addWidget(sirenZilLineEdit, 35,1,1,3);
     layout->addWidget(sirenZilFileSelectButton, 35,4,1,1);
     layout->addWidget(sirenZilSeviyeLineEdit, 35,5,1,1);
+    layout->addWidget(sirenZilChannelWidget, 35,6,1,1);
 
     layout->addWidget(muzikYayinZilButton,36,0,1,1);
     layout->addWidget(muzikLineEdit, 36,1,1,3);
     layout->addWidget(muzikFileSelectButton, 36,4,1,1);
     layout->addWidget(muzikYayinZilSeviyeLineEdit, 36,5,1,1);
+    layout->addWidget(muzikYayinZilChannelWidget, 36,6,1,1);
 
     layout->addWidget(new QLabel("Ders Sayısı") , 37,0,1,1);
     layout->addWidget(dersSayisiLineEdit, 37,1,1,2);
@@ -802,8 +870,8 @@ if(guncb->checkState()==Qt::Unchecked)
     layout->addWidget(new QLabel("Müzik Y. Başla/Dur Saati"),45,0,1,1);
     layout->addWidget(muzikBaslamaTimeEdit, 45,1,1,2);
     layout->addWidget(muzikSonTimeEdit, 45,3,1,2);
-
-    layout->addWidget(oglenMuzikYayincb, 46,0,1,7);
+    layout->addWidget(teneffusMuzikYayincb, 46,0,1,7);
+    layout->addWidget(oglenMuzikYayincb, 47,0,1,7);
     layout->addWidget(SZScb, 49,0,1,7);
     layout->addWidget(guncb, 51,0,1,7);
 

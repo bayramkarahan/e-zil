@@ -33,7 +33,8 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         miniaudioplayer.cpp \
-        modernvaluesliderwidget.cpp
+        modernvaluesliderwidget.cpp \
+        soundchannelwidget.cpp
 
 HEADERS += \
     Database.h \
@@ -45,7 +46,9 @@ HEADERS += \
     saatpzrts.h \
     hakkinda.h \
     giris.h \
-    ayar.h
+    ayar.h \
+    soundchannel.h \
+    soundchannelwidget.h
 
 
 RESOURCES += \

@@ -10,6 +10,7 @@
 
 // Include header only (do NOT define MINIAUDIO_IMPLEMENTATION here)
 #include "miniaudio.h"
+#include<soundchannel.h>
 /*****************************************/
 /* QStringList list;
             list <<torenZilLineEdit->text();
@@ -27,6 +28,7 @@
           ///  miniPlayer->next();
           ///  miniPlayer->previous();
      /********************************************/
+
 class MiniAudioPlayer : public QObject
 {
     Q_OBJECT
@@ -35,6 +37,7 @@ public:
     ~MiniAudioPlayer();
 
     void setPlaylist(const QStringList &list);
+    void play(ChannelMode mode);
     void play();               // play current index (or first)
     void playIndex(int index); // play specific index
     void stop();               // stop and uninit current sound
@@ -47,6 +50,7 @@ public:
 
     QString currentFile() const;
     float duration() const;           // seconds, 0 if unknown
+
 
 signals:
     void currentSongChanged(const QString &filename);
