@@ -61,7 +61,7 @@ public slots:
         ogrenciMuzikPlayStatus=false;
         ogretmenMuzikPlayStatus=false;
         cikisMuzikPlayStatus=false;
-        tenefusMuzikYayinPlayStatus=false;
+        teneffusMuzikYayinPlayStatus=false;
         molaMuzikYayinPlayStatus=false;
         kapatKomutStatus=false;
         molapckapatiStatus=false;
@@ -70,7 +70,7 @@ public slots:
     void ogrenciMuzik(QString ders);
     void ogretmenMuzik(QString ders);
     void cikisMuzik(QString ders);
-    void yayinTenefusMuzik();
+    void yayinTeneffusMuzik();
     void yayinMolaMuzik();
     void onemliGun();
 
@@ -87,17 +87,17 @@ private:
     bool ogrenciMuzikPlayStatus=false;
     bool ogretmenMuzikPlayStatus=false;
     bool cikisMuzikPlayStatus=false;
-    bool tenefusMuzikYayinPlayStatus=false;
+    bool teneffusMuzikYayinPlayStatus=false;
     bool molaMuzikYayinPlayStatus=false;
     bool kapatKomutStatus=false;
     bool molapckapatiStatus=false;
 
-    int girissaniye,baslamasaniye,cikissaniye,tenefussaniye,gbfark,bcfark,ctfark;
+    int girissaniye,baslamasaniye,cikissaniye,teneffussaniye,gbfark,bcfark,ctfark;
     QTime sb,sg,sc,st;
     QString muziklist;
     QProcess process;
     QString localDir;
-     bool tenefusMuzikYayinState;
+     bool teneffusMuzikYayinState;
     bool molaMuzikYayinState;
     bool oglenMuzikYayinState;
     bool SZSState=false;
@@ -126,7 +126,7 @@ private:
     QTimer *timergizle;
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
-    bool tenefusYayin;
+    bool teneffusYayin;
     QMenu* createMenu();
     Widget *widget;
     int en,boy;

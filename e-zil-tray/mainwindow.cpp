@@ -559,22 +559,21 @@ void MainWindow::cikisMuzik(QString ders)
         miniPlayer->play(channeldeger);
         qDebug()<<ders<<"Çıkış Zili Çalıyor....."<<QTime::currentTime().toString("hh:mm:ss");
 
-        //çıkıştan 20 sn sonra yayinTenefusMuzik başlayacak
-        QTimer::singleShot(20000, this, [=]() {
-            yayinTenefusMuzik();
-        });
+        //çıkıştan 20 sn sonra yayinTeneffusMuzik başlayacak
+            yayinTeneffusMuzik();
+
 
     }
 }
-void MainWindow::yayinTenefusMuzik()
+void MainWindow::yayinTeneffusMuzik()
 {
     //qDebug()<<"yayin müzik...";
 
-    bool tenefusMuzikYayinState=false;
-    if (ayarlar.contains("tenefusMuzikYayinState"))
-        tenefusMuzikYayinState=ayarlar["tenefusMuzikYayinState"].toBool();
+    bool teneffusMuzikYayinState=false;
+    if (ayarlar.contains("teneffusMuzikYayinState"))
+        teneffusMuzikYayinState=ayarlar["teneffusMuzikYayinState"].toBool();
 
-    if(tenefusMuzikYayinState)
+    if(teneffusMuzikYayinState)
     {
         int deger=0;
         if (ayarlar.contains("muzikyayinseviye"))
@@ -583,7 +582,7 @@ void MainWindow::yayinTenefusMuzik()
         if (ayarlar.contains("muzikyayinzilchannel"))
             channeldeger=static_cast<ChannelMode>(ayarlar["muzikyayinzilchannel"].toInt());
 
-        //qDebug()<<"15sn sonra Tenefüs Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
+        qDebug()<<"20sn sonra Teneffüs Müzik Yayını Başlayacak.."<<QDateTime::currentDateTime();
         timer1.start(20000);
         loop.exec();
 
@@ -599,9 +598,6 @@ void MainWindow::yayinTenefusMuzik()
             for(const QFileInfo & finfo: klasorpath.entryInfoList()){
                 miniPlayList << finfo.absoluteFilePath();
             }
-
-            //player->setMedia(playlist);
-            //player->play();
             float volume = deger / 100.0f;   // %50 → 0.50
             QStringList list;
             list <<miniPlayList;
@@ -609,8 +605,8 @@ void MainWindow::yayinTenefusMuzik()
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
             miniPlayer->play(channeldeger);
-            tenefusYayin=true;
-            qDebug()<<"Tenefüs Müzik Yayını Başladı.."<<QTime::currentTime().toString("hh:mm:ss");
+            teneffusYayin=true;
+            qDebug()<<"Teneffüs Müzik Yayını Başladı.."<<QTime::currentTime().toString("hh:mm:ss");
 
         }
 
@@ -646,8 +642,6 @@ void MainWindow::yayinMolaMuzik()
             for(const QFileInfo & finfo: klasorpath.entryInfoList()){
                 miniPlayList << finfo.absoluteFilePath();
             }
-            //player->setMedia(playlist);
-            //player->play();
             float volume = deger / 100.0f;   // %50 → 0.50
             QStringList list;
             list <<miniPlayList;
@@ -655,7 +649,6 @@ void MainWindow::yayinMolaMuzik()
             miniPlayer->setFadeDuration(400);   // ms
             miniPlayer->setVolume(volume);
             miniPlayer->play(channeldeger);
-            tenefusYayin=true;
             qDebug()<<"Mola Müzik Yayını Başladı.."<<QTime::currentTime().toString("hh:mm:ss");
         }
 }

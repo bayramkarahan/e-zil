@@ -137,9 +137,6 @@ QWidget *MainWindow::ayar()
         QFile* file = new QFile(ogrenciZilLineEdit->text());
         if (file->open(QFile::ReadOnly)) {
              qDebug()<<"Öğrenci zili çalınıyor..";
-             /*player->setMedia(QMediaContent(), file);
-            file->seek(0);
-            player->play();*/
              float volume = deger / 100.0f;   // %50 → 0.50
              QStringList list;
              list <<ogrenciZilLineEdit->text();
@@ -478,11 +475,16 @@ muzikFileSelectButton->setText("...");
 muzikFileSelectButton->setStyleSheet("Text-align:center");
 //ogrenciZilFileSelectButton->setFlat(true);
 connect(muzikFileSelectButton, &QPushButton::clicked, [=]() {
-    QString fileName = QFileDialog::getExistingDirectory(this, tr("Klasör Seç"),"/usr/share/e-zil/e-zil-ses",
+    QString dirPath = QFileDialog::getExistingDirectory(
+        this,
+        tr("Klasör Seç"),
+        QDir::homePath(),   // başlangıç konumu daha mantıklı
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+        );
 
-                                                         QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);
-//qDebug()<<fileName;
-    muzikLineEdit->setText(fileName.remove(QDir::homePath()+"/"));
+    if (!dirPath.isEmpty()) {
+        muzikLineEdit->setText(dirPath);  // 🔥 TAM YOL
+    }
 });
 /************************************************************************/
 QTimeEdit *muzikBaslamaTimeEdit=new QTimeEdit;
