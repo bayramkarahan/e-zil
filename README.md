@@ -7,7 +7,7 @@ Debian Tabanlı Sistemlerde Kullanılmak Üzere Kodlanmış Okul Zil Yazılımı
 ![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/3-uygulama-e-zil.png)
 ![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/4-uygulama-e-zil.png)
 ![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/5-uygulama-e-zil.png)
-
+![E-Zil](https://github.com/bayramkarahan/e-zil/blob/master/6-icdis-e-zil.png)
 <br/>
 Uygulama Qt ortamında c++ ile yazılmıştır..
 <br/>

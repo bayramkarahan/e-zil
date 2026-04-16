@@ -78,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
       QSize screenSize = screen->availableGeometry().size();
       boy = screenSize.width() / 65;
       en = boy;
-      setFixedSize(en * 27, en * 27);
+      setFixedSize(en * 32, en * 27);
       int x = (screenSize.width() - width()) / 2;
       int y = (screenSize.height() - height()) / 2;
       move(x, y);

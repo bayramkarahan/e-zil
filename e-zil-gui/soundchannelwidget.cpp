@@ -3,9 +3,9 @@
 SoundChannelWidget::SoundChannelWidget(QWidget *parent)
     : QWidget(parent)
 {
-    rbLeft   = new QRadioButton("Left", this);
-    rbCenter = new QRadioButton("Center", this);
-    rbRight  = new QRadioButton("Right", this);
+    rbLeft   = new QRadioButton("Sol", this);
+    rbCenter = new QRadioButton("Orta", this);
+    rbRight  = new QRadioButton("Sağ", this);
 
     group = new QButtonGroup(this);
     group->addButton(rbLeft, Left);
@@ -16,7 +16,7 @@ SoundChannelWidget::SoundChannelWidget(QWidget *parent)
     rbCenter->setChecked(true);
 
     auto *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0,0,5,0);
+    layout->setContentsMargins(0,0,10,0);
     layout->setSpacing(3);
 
     layout->addWidget(rbLeft);

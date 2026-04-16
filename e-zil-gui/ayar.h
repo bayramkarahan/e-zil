@@ -52,7 +52,7 @@ QWidget *MainWindow::ayar()
  //   init();
 //burada ayarlar bölümü düzenleniyor yeni3
     QWidget *ayarPage=new QWidget();
-    ayarPage->setFixedWidth(en*27);
+    ayarPage->setFixedWidth(en*32);
     ayarPage->setFixedHeight(en*25);
    /**********************Tören Giriş**********************************/
 
